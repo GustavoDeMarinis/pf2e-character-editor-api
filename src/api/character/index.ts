@@ -1,11 +1,17 @@
 import Router from "express-promise-router";
-import { handleSearchCharacter } from "./character-api";
+import {
+  handleGetCharacter,
+  handlePostCharacter,
+  handleSearchCharacter,
+} from "./character-api";
 
-const router = Router();
+const router = Router({
+  mergeParams: true,
+});
 
+router.get("/:characterId", handleGetCharacter);
 router.get("/", handleSearchCharacter);
-// router.get("/:characterId", handleGetCharacter);
-// router.post("/", handlePostCharacter);
+router.post("/", handlePostCharacter);
 // router.patch("/:fileId", handlePatchCharacter);
 // router.delete("/:fileId", handleDeleteCharacter);
 
