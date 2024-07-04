@@ -1,6 +1,8 @@
 import Router from "express-promise-router";
 import {
+  handleDeleteCharacter,
   handleGetCharacter,
+  handlePatchCharacter,
   handlePostCharacter,
   handleSearchCharacter,
 } from "./character-api";
@@ -12,7 +14,7 @@ const router = Router({
 router.get("/:characterId", handleGetCharacter);
 router.get("/", handleSearchCharacter);
 router.post("/", handlePostCharacter);
-// router.patch("/:fileId", handlePatchCharacter);
-// router.delete("/:fileId", handleDeleteCharacter);
+router.patch("/:characterId", handlePatchCharacter);
+router.delete("/:characterId", handleDeleteCharacter);
 
 export { router };

@@ -3,7 +3,9 @@ import prisma from "../../integrations/prisma/prisma-client";
 import { ErrorCode } from "../shared-types";
 
 export const searchCharacters = async () => {
-  const where: Prisma.CharacterWhereInput = {};
+  const where: Prisma.CharacterWhereInput = {
+    deletedAt: null,
+  };
   const items = await prisma.character.findMany({
     select: {
       characterName: true,
@@ -74,4 +76,62 @@ export const insertCharacter = async (characterToInsert: any) => {
   });
 
   return createdCharacter;
+};
+
+export const updateCharacter = async (
+  { id }: Prisma.CharacterWhereUniqueInput,
+  characterToUpdate: Pick<
+    Prisma.CharacterUncheckedUpdateInput,
+    | "characterName"
+    | "characterClass"
+    | "playerName"
+    | "ancestry"
+    | "background"
+  >,
+  reactivate?: false
+) => {
+  const data: Prisma.CharacterUncheckedUpdateInput = {
+    ...characterToUpdate,
+  };
+  if (reactivate) {
+    data.deletedAt = null;
+  }
+
+  const updatedCharacter = await prisma.character.update({
+    where: { id },
+    data,
+  });
+
+  return { updatedCharacter };
+};
+
+export const deleteCharacter = async ({
+  id,
+}: Required<Pick<Prisma.CharacterWhereUniqueInput, "id">>) => {
+  const existingCharacter = await prisma.character.findUnique({
+    select: {
+      deletedAt: true,
+    },
+    where: {
+      id,
+    },
+  });
+  if (!existingCharacter || existingCharacter.deletedAt) {
+    return {
+      code: ErrorCode.NotFound,
+      message: `User Not Found`,
+    };
+  }
+  const data = {
+    deletedAt: new Date(),
+  };
+
+  const deletedCharacter = await prisma.character.update({
+    data,
+    where: {
+      id,
+    },
+  });
+
+  return { deletedCharacter };
 };
