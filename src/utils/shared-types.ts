@@ -1,4 +1,14 @@
 import { Prisma } from "@prisma/client";
+import { StatusCodes } from "http-status-codes";
+
+export interface SearchResult<T> {
+  items: T[];
+  count: number;
+}
+
+export type GetArrayResponseOptions = {
+  pagination?: PaginationOptions;
+};
 
 export type PaginationOptions = {
   skip: number;
@@ -9,6 +19,14 @@ export interface ResultWithOptionalId {
   id?: string;
   [key: string]: unknown;
 }
+
+export type ErrorResponse = {
+  error: {
+    code: StatusCodes;
+    message: string;
+    validationDetails?: { [key: string]: string };
+  };
+};
 
 export type ErrorResult = {
   code: ErrorCode;
@@ -23,4 +41,13 @@ export enum ErrorCode {
   DataNotProcessable,
   BadRequest, // Should be reserved for request validation errors that cannot be included in ajv
   Forbidden,
+  Unknown,
+}
+export interface ArrayResponse<T> {
+  items: T[];
+  pagination?: {
+    pageLimit: number;
+    pageOffset: number;
+    total: number;
+  };
 }

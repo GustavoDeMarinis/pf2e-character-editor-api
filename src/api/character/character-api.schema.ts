@@ -1,1 +1,92 @@
-//TODO SCHEMAS
+import {
+  paginationRequestPropertySchema,
+  paginationRequiredPropertiesSchema,
+  paginationResponsePropertySchema,
+} from "../../utils/pagination.types";
+
+export const characterSearchRequestQuerySchema = {
+  type: "object",
+  properties: {
+    playerName: {
+      type: "string",
+    },
+    isActive: {
+      type: "boolean",
+      description: "Is The Character Active?",
+    },
+    sort: {
+      type: "string",
+      description: "Columns To Build Prisma OrderBy Clause",
+    },
+    ...paginationRequestPropertySchema,
+  },
+  additionalProperties: false,
+} as const;
+
+export const characterSearchResponseSchema = {
+  type: "object",
+  properties: {
+    items: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: {
+            description: "Character Id",
+            type: "string",
+          },
+          createdAt: {
+            type: "string",
+            format: "date-time",
+          },
+          updatedAt: {
+            type: "string",
+            format: "date-time",
+          },
+          deletedAt: {
+            type: "string",
+            format: "date-time-nullable",
+          },
+          characterName: {
+            description: "Character Name",
+            type: "string",
+          },
+          playerName: {
+            description: "Player Name",
+            type: "string",
+            nullable: true,
+          },
+          ancestry: {
+            description: "Character Ancestry",
+            type: "string",
+            nullable: true,
+          },
+          characterClass: {
+            description: "Character Class",
+            type: "string",
+            nullable: true,
+          },
+          background: {
+            description: "Character Background",
+            type: "string",
+            nullable: true,
+          },
+        },
+        required: [
+          "id",
+          "createdAt",
+          "updatedAt",
+          "deletedAt",
+          "characterName",
+          "playerName",
+          "ancestry",
+          "characterClass",
+          "background",
+        ],
+        additionalProperties: false,
+      },
+    },
+    ...paginationResponsePropertySchema,
+  },
+  ...paginationRequiredPropertiesSchema,
+} as const;

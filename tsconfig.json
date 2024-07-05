@@ -17,5 +17,5 @@
     "rootDir": "./src",
     "noErrorTruncation": true
   },
-  "include": ["src"]
+  "include": ["src/**/*"]
 }

@@ -1,20 +1,67 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../../integrations/prisma/prisma-client";
-import { ErrorCode } from "../shared-types";
+import { ErrorCode, PaginationOptions } from "../../utils/shared-types";
+import { handleSort } from "../../utils/sorting";
+import { getQueryCount } from "../../utils/pagination";
+import { logDebug } from "../../utils/logging";
 
-export const searchCharacters = async () => {
-  const where: Prisma.CharacterWhereInput = {
-    deletedAt: null,
-  };
-  const items = await prisma.character.findMany({
-    select: {
-      characterName: true,
-      characterClass: true,
-    },
-    where,
+const subService = "character/service";
+
+export const searchCharacterSelect = {
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  deletedAt: true,
+  characterName: true,
+  playerName: true,
+  ancestry: true,
+  characterClass: true,
+  background: true,
+};
+
+export const characterSearchArgs =
+  Prisma.validator<Prisma.CharacterDefaultArgs>()({
+    select: searchCharacterSelect,
   });
 
-  return { items };
+export type CharacterSearchResult = Prisma.CharacterGetPayload<
+  typeof characterSearchArgs
+>;
+
+export const searchCharacters = async (
+  search: Pick<Prisma.CharacterWhereInput, "playerName"> & {
+    isActive?: boolean;
+  },
+  { skip, take }: PaginationOptions,
+  sort?: string
+) => {
+  const { isActive, ...searchFilters } = search;
+  const where: Prisma.CharacterWhereInput = {
+    ...searchFilters,
+  };
+
+  if (search.isActive !== undefined) {
+    where.deletedAt = !isActive ? { not: null } : null;
+  }
+  const orderBy = handleSort(sort);
+  const items = await prisma.character.findMany({
+    select: searchCharacterSelect,
+    skip,
+    take,
+    orderBy,
+    where,
+  });
+  const count = await getQueryCount(prisma.character, where);
+
+  logDebug({
+    subService,
+    message: `User Search found (${count}) results`,
+    details: {
+      count: count,
+      filter: where,
+    },
+  });
+  return { items, count };
 };
 
 export const getCharacter = async ({
