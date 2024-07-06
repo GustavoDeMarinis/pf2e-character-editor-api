@@ -5,6 +5,9 @@ export interface SearchResult<T> {
   items: T[];
   count: number;
 }
+export interface ResultWithId {
+  id: string;
+}
 
 export type GetArrayResponseOptions = {
   pagination?: PaginationOptions;
@@ -42,6 +45,7 @@ export enum ErrorCode {
   BadRequest, // Should be reserved for request validation errors that cannot be included in ajv
   Forbidden,
   Unknown,
+  SeeOther,
 }
 export interface ArrayResponse<T> {
   items: T[];

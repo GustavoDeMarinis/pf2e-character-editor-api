@@ -23,6 +23,49 @@ export const characterSearchRequestQuerySchema = {
   additionalProperties: false,
 } as const;
 
+const commonGetSearchProperties = {
+  id: {
+    description: "Character Id",
+    type: "string",
+  },
+  createdAt: {
+    type: "string",
+    format: "date-time",
+  },
+  updatedAt: {
+    type: "string",
+    format: "date-time",
+  },
+  deletedAt: {
+    type: "string",
+    format: "date-time-nullable",
+  },
+  characterName: {
+    description: "Character Name",
+    type: "string",
+  },
+  playerName: {
+    description: "Player Name",
+    type: "string",
+    nullable: true,
+  },
+  ancestry: {
+    description: "Character Ancestry",
+    type: "string",
+    nullable: true,
+  },
+  characterClass: {
+    description: "Character Class",
+    type: "string",
+    nullable: true,
+  },
+  background: {
+    description: "Character Background",
+    type: "string",
+    nullable: true,
+  },
+} as const;
+
 export const characterSearchResponseSchema = {
   type: "object",
   properties: {
@@ -31,46 +74,7 @@ export const characterSearchResponseSchema = {
       items: {
         type: "object",
         properties: {
-          id: {
-            description: "Character Id",
-            type: "string",
-          },
-          createdAt: {
-            type: "string",
-            format: "date-time",
-          },
-          updatedAt: {
-            type: "string",
-            format: "date-time",
-          },
-          deletedAt: {
-            type: "string",
-            format: "date-time-nullable",
-          },
-          characterName: {
-            description: "Character Name",
-            type: "string",
-          },
-          playerName: {
-            description: "Player Name",
-            type: "string",
-            nullable: true,
-          },
-          ancestry: {
-            description: "Character Ancestry",
-            type: "string",
-            nullable: true,
-          },
-          characterClass: {
-            description: "Character Class",
-            type: "string",
-            nullable: true,
-          },
-          background: {
-            description: "Character Background",
-            type: "string",
-            nullable: true,
-          },
+          ...commonGetSearchProperties,
         },
         required: [
           "id",
@@ -89,4 +93,55 @@ export const characterSearchResponseSchema = {
     ...paginationResponsePropertySchema,
   },
   ...paginationRequiredPropertiesSchema,
+} as const;
+
+export const characterRequestParamsSchema = {
+  type: "object",
+  properties: {
+    characterId: {
+      type: "string",
+      description: "character Id",
+      checkIdIsCuid: true,
+    },
+  },
+  additionalProperties: false,
+  required: ["userId"],
+} as const;
+
+export const characterGetResponseSchema = {
+  type: "object",
+  properties: {
+    ...commonGetSearchProperties,
+  },
+  required: [
+    "id",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "characterName",
+    "playerName",
+    "ancestry",
+    "characterClass",
+    "background",
+  ],
+  additionalProperties: false,
+} as const;
+
+export const characterPostResponseSchema = {
+  type: "object",
+  properties: {
+    ...commonGetSearchProperties,
+  },
+  required: [
+    "id",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "characterName",
+    "playerName",
+    "ancestry",
+    "characterClass",
+    "background",
+  ],
+  additionalProperties: false,
 } as const;

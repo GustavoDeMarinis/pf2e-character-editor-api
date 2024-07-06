@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
 import {
   ArrayResponse,
   ErrorCode,
   ErrorResponse,
   ErrorResult,
   GetArrayResponseOptions,
+  ResultWithId,
+  ResultWithOptionalId,
   SearchResult,
 } from "./shared-types";
 import { isErrorResult } from "./exceptions";
@@ -89,3 +91,44 @@ export const createGetArrayResponse = <T>(
 
   return response.status(StatusCodes.OK).json(arrayResponse);
 };
+
+export const createGetResponse = <T extends ResultWithOptionalId>(
+  response: Response,
+  result: ErrorResult | T | null
+): Response<ErrorResponse> | Response<T> => {
+  if (!result) {
+    return createErrorResponse(response, {
+      code: ErrorCode.NotFound,
+      message: ReasonPhrases.NOT_FOUND,
+    });
+  }
+  if (isErrorResult(result)) {
+    return createErrorResponse(response, result);
+  }
+  return response.status(StatusCodes.OK).json(result);
+};
+
+export function createPostResponse<T extends ResultWithOptionalId>(
+  request: Request,
+  response: Response,
+  result: T | ErrorResult,
+  customLocationHeader: string | null = null
+): Response<ErrorResponse> | Response<T> {
+  if (isErrorResult(result)) {
+    if (result.code === ErrorCode.SeeOther) {
+      response.setHeader(
+        "Location",
+        customLocationHeader ||
+          `${request.originalUrl}/${result.internalErrorDetails?.existingId}`
+      );
+      return response.status(StatusCodes.SEE_OTHER).send();
+    }
+    return createErrorResponse(response, result);
+  }
+  response.setHeader(
+    "Location",
+    customLocationHeader ||
+      `${request.originalUrl}/${(result as ResultWithId).id}`
+  );
+  return response.status(StatusCodes.CREATED).json(result);
+}

@@ -8,15 +8,26 @@ import {
   updateCharacter,
 } from "./character";
 import { StatusCodes } from "http-status-codes";
-import { createGetArrayResponse } from "../../utils/http-response-factory";
+import {
+  createGetArrayResponse,
+  createGetResponse,
+  createPostResponse,
+} from "../../utils/http-response-factory";
 import { getPaginationOptions } from "../../utils/pagination";
 import { validateJSONSchemaObject } from "../../middleware/validators/ajv-validator";
 import {
+  CharacterGetResponse,
+  CharacterPostResponse,
+  CharacterRequestParams,
   CharacterSearchRequestQuery,
   CharacterSearchResponse,
 } from "./character-api.types";
-import { characterSearchRequestQuerySchema } from "./character-api.schema";
+import {
+  characterRequestParamsSchema,
+  characterSearchRequestQuerySchema,
+} from "./character-api.schema";
 import { ErrorResponse } from "../../utils/shared-types";
+import { Character } from "@prisma/client";
 
 export const handleSearchCharacter = async (
   req: Request,
@@ -39,25 +50,43 @@ export const handleSearchCharacter = async (
   });
 };
 
-export const handleGetCharacter = async (req: Request, res: Response) => {
-  const { characterId } = req.params;
+export const handleGetCharacter = async (
+  req: Request,
+  res: Response
+): Promise<Response<CharacterGetResponse> | Response<ErrorResponse>> => {
+  const { characterId } = validateJSONSchemaObject<CharacterRequestParams>(
+    characterRequestParamsSchema,
+    req.params
+  );
   const result = await getCharacter({ id: characterId });
 
-  return res.status(StatusCodes.OK).json(result);
+  return createGetResponse<Character>(res, result);
 };
 
-export const handlePostCharacter = async (req: Request, res: Response) => {
+export const handlePostCharacter = async (
+  req: Request,
+  res: Response
+): Promise<Response<CharacterPostResponse> | Response<ErrorResponse>> => {
   const body = req.body;
   const result = await insertCharacter(body);
 
-  return res.status(StatusCodes.OK).json(result);
+  return createPostResponse<Character>(req, res, result);
 };
 
-export const handlePatchCharacter = async (req: Request, res: Response) => {
-  const { characterId } = req.params;
-  const body = req.body;
+export const handlePatchCharacter = async (
+  req: Request,
+  res: Response
+): Promise<Response<CharacterPostResponse> | Response<ErrorResponse>> => {
+  const { characterId } = validateJSONSchemaObject<CharacterRequestParams>(
+    characterRequestParamsSchema,
+    req.params
+  );
+  const body = validateJSONSchemaObject<CharacterPatchRequestBody>(
+    characterPatchRequestBodySchema,
+    req.body
+  );
   const result = await updateCharacter({ id: characterId }, body);
-  return res.status(StatusCodes.OK).json(result);
+  return createPatchResponse<Character>(req, res, result);
 };
 
 export const handleDeleteCharacter = async (req: Request, res: Response) => {

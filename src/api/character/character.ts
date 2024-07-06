@@ -1,13 +1,18 @@
-import { Prisma } from "@prisma/client";
+import { Character, Prisma } from "@prisma/client";
 import prisma from "../../integrations/prisma/prisma-client";
-import { ErrorCode, PaginationOptions } from "../../utils/shared-types";
+import {
+  ErrorCode,
+  ErrorResult,
+  PaginationOptions,
+  SearchResult,
+} from "../../utils/shared-types";
 import { handleSort } from "../../utils/sorting";
 import { getQueryCount } from "../../utils/pagination";
 import { logDebug } from "../../utils/logging";
 
 const subService = "character/service";
 
-export const searchCharacterSelect = {
+export const characterSelect = {
   id: true,
   createdAt: true,
   updatedAt: true,
@@ -21,11 +26,16 @@ export const searchCharacterSelect = {
 
 export const characterSearchArgs =
   Prisma.validator<Prisma.CharacterDefaultArgs>()({
-    select: searchCharacterSelect,
+    select: characterSelect,
   });
 
 export type CharacterSearchResult = Prisma.CharacterGetPayload<
   typeof characterSearchArgs
+>;
+
+type CharacterForInsert = Pick<
+  Prisma.CharacterUncheckedCreateInput,
+  "characterName" | "playerName" | "characterClass" | "ancestry" | "background"
 >;
 
 export const searchCharacters = async (
@@ -34,7 +44,7 @@ export const searchCharacters = async (
   },
   { skip, take }: PaginationOptions,
   sort?: string
-) => {
+): Promise<SearchResult<CharacterSearchResult> | ErrorResult> => {
   const { isActive, ...searchFilters } = search;
   const where: Prisma.CharacterWhereInput = {
     ...searchFilters,
@@ -45,7 +55,7 @@ export const searchCharacters = async (
   }
   const orderBy = handleSort(sort);
   const items = await prisma.character.findMany({
-    select: searchCharacterSelect,
+    select: characterSelect,
     skip,
     take,
     orderBy,
@@ -66,22 +76,30 @@ export const searchCharacters = async (
 
 export const getCharacter = async ({
   id,
-}: Required<Pick<Prisma.CharacterWhereUniqueInput, "id">>) => {
+}: Required<Pick<Prisma.CharacterWhereUniqueInput, "id">>): Promise<
+  Character | ErrorResult
+> => {
   const where: Prisma.CharacterWhereUniqueInput = {
     id,
   };
-  const character = await prisma.character.findUnique({
+  const character = await prisma.character.findUniqueOrThrow({
     where,
-    select: {
-      characterClass: true,
-      characterName: true,
-    },
+    select: characterSelect,
   });
+
+  if (character) {
+    logDebug({
+      subService,
+      message: "Character Retrieved by Id",
+      details: { character },
+    });
+  }
   return character;
 };
 
-//TODO CharacterToInsert Types to secure consistency
-export const insertCharacter = async (characterToInsert: any) => {
+export const insertCharacter = async (
+  characterToInsert: CharacterForInsert
+): Promise<Character | ErrorResult> => {
   const existingCharacters = await prisma.character.findMany({
     select: {
       id: true,
@@ -100,7 +118,7 @@ export const insertCharacter = async (characterToInsert: any) => {
       ],
     },
   });
-  let activeCharacters = existingCharacters.find(
+  const activeCharacters = existingCharacters.find(
     (character) => character.deletedAt !== null
   );
 
@@ -112,12 +130,8 @@ export const insertCharacter = async (characterToInsert: any) => {
   }
 
   const createdCharacter = prisma.character.create({
-    select: {
-      characterName: true,
-      characterClass: true,
-    },
+    select: characterSelect,
     data: {
-      //TODO Types to secure consistency
       ...characterToInsert,
     },
   });
