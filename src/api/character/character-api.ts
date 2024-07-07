@@ -7,22 +7,25 @@ import {
   searchCharacters,
   updateCharacter,
 } from "./character";
-import { StatusCodes } from "http-status-codes";
 import {
+  createDeleteResponse,
   createGetArrayResponse,
   createGetResponse,
+  createPatchResponse,
   createPostResponse,
 } from "../../utils/http-response-factory";
 import { getPaginationOptions } from "../../utils/pagination";
 import { validateJSONSchemaObject } from "../../middleware/validators/ajv-validator";
 import {
   CharacterGetResponse,
+  CharacterPatchRequestBody,
   CharacterPostResponse,
   CharacterRequestParams,
   CharacterSearchRequestQuery,
   CharacterSearchResponse,
 } from "./character-api.types";
 import {
+  characterPatchRequestBodySchema,
   characterRequestParamsSchema,
   characterSearchRequestQuerySchema,
 } from "./character-api.schema";
@@ -76,7 +79,7 @@ export const handlePostCharacter = async (
 export const handlePatchCharacter = async (
   req: Request,
   res: Response
-): Promise<Response<CharacterPostResponse> | Response<ErrorResponse>> => {
+): Promise<Response<void> | Response<ErrorResponse>> => {
   const { characterId } = validateJSONSchemaObject<CharacterRequestParams>(
     characterRequestParamsSchema,
     req.params
@@ -86,12 +89,18 @@ export const handlePatchCharacter = async (
     req.body
   );
   const result = await updateCharacter({ id: characterId }, body);
-  return createPatchResponse<Character>(req, res, result);
+  return createPatchResponse<Character>(res, result);
 };
 
-export const handleDeleteCharacter = async (req: Request, res: Response) => {
-  const { characterId } = req.params;
+export const handleDeleteCharacter = async (
+  req: Request,
+  res: Response
+): Promise<Response<void> | Response<ErrorResponse>> => {
+  const { characterId } = validateJSONSchemaObject<CharacterRequestParams>(
+    characterRequestParamsSchema,
+    req.params
+  );
   const result = await deleteCharacter({ id: characterId });
 
-  return res.status(StatusCodes.OK).json(result);
+  return createDeleteResponse<Character>(res, result);
 };

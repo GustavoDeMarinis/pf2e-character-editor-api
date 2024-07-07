@@ -105,7 +105,7 @@ export const characterRequestParamsSchema = {
     },
   },
   additionalProperties: false,
-  required: ["userId"],
+  required: ["characterId"],
 } as const;
 
 export const characterGetResponseSchema = {
@@ -144,4 +144,38 @@ export const characterPostResponseSchema = {
     "background",
   ],
   additionalProperties: false,
+} as const;
+
+export const characterPatchRequestBodySchema = {
+  type: "object",
+  properties: {
+    characterName: {
+      description: "Character Name",
+      type: "string",
+    },
+    playerName: {
+      description: "Player Name",
+      type: "string",
+    },
+    ancestry: {
+      description: "Character Ancestry",
+      type: "string",
+    },
+    characterClass: {
+      description: "Character Class",
+      type: "string",
+    },
+    background: {
+      description: "Character Background",
+      type: "string",
+    },
+  },
+  additionalProperties: false,
+  anyOf: [
+    { required: ["characterName"] },
+    { required: ["playerName"] },
+    { required: ["ancestry"] },
+    { required: ["characterClass"] },
+    { required: ["background"] },
+  ],
 } as const;

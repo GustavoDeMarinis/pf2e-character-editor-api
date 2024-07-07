@@ -86,7 +86,6 @@ export const getCharacter = async ({
     where,
     select: characterSelect,
   });
-
   if (character) {
     logDebug({
       subService,
@@ -163,7 +162,7 @@ export const updateCharacter = async (
     data,
   });
 
-  return { updatedCharacter };
+  return updatedCharacter;
 };
 
 export const deleteCharacter = async ({
@@ -194,5 +193,5 @@ export const deleteCharacter = async ({
     },
   });
 
-  return { deletedCharacter };
+  return deletedCharacter;
 };

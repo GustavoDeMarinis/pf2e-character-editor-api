@@ -132,3 +132,23 @@ export function createPostResponse<T extends ResultWithOptionalId>(
   );
   return response.status(StatusCodes.CREATED).json(result);
 }
+
+export function createPatchResponse<T>(
+  response: Response,
+  result: T | ErrorResult
+): Response<ErrorResponse> | Response<void> {
+  if (isErrorResult(result)) {
+    return createErrorResponse(response, result);
+  }
+  return response.status(StatusCodes.NO_CONTENT).send();
+}
+
+export function createDeleteResponse<T>(
+  response: Response,
+  result: T | ErrorResult
+): Response<ErrorResponse> | Response<void> {
+  if (isErrorResult(result)) {
+    return createErrorResponse(response, result);
+  }
+  return response.status(StatusCodes.NO_CONTENT).send();
+}

@@ -2,6 +2,7 @@ import { FromSchema } from "json-schema-to-ts";
 import { CommonDeserializationOptions } from "../../utils/schema.types";
 import {
   characterGetResponseSchema,
+  characterPatchRequestBodySchema,
   characterPostResponseSchema,
   characterRequestParamsSchema,
   characterSearchRequestQuerySchema,
@@ -30,5 +31,10 @@ export type CharacterGetResponse = FromSchema<
 
 export type CharacterPostResponse = FromSchema<
   typeof characterPostResponseSchema,
+  CommonDeserializationOptions
+>;
+
+export type CharacterPatchRequestBody = FromSchema<
+  typeof characterPatchRequestBodySchema,
   CommonDeserializationOptions
 >;
