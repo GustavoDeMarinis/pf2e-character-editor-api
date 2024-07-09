@@ -7,12 +7,10 @@ import {
   handleSearchCharacter,
 } from "./character-api";
 
-const router = Router({
-  mergeParams: true,
-});
+const router = Router();
 
-router.get("/:characterId", handleGetCharacter);
 router.get("/", handleSearchCharacter);
+router.get("/:characterId", handleGetCharacter);
 router.post("/", handlePostCharacter);
 router.patch("/:characterId", handlePatchCharacter);
 router.delete("/:characterId", handleDeleteCharacter);

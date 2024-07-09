@@ -127,6 +127,44 @@ export const characterGetResponseSchema = {
   additionalProperties: false,
 } as const;
 
+export const characterPostRequestBodySchema = {
+  type: "object",
+  properties: {
+    characterName: {
+      description: "Character Name",
+      type: "string",
+    },
+    playerName: {
+      description: "Player Name",
+      type: "string",
+      nullable: true,
+    },
+    ancestry: {
+      description: "Character Ancestry",
+      type: "string",
+      nullable: true,
+    },
+    characterClass: {
+      description: "Character Class",
+      type: "string",
+      nullable: true,
+    },
+    background: {
+      description: "Character Background",
+      type: "string",
+      nullable: true,
+    },
+  },
+  additionalProperties: false,
+  required: [
+    "characterName",
+    "playerName",
+    "ancestry",
+    "characterClass",
+    "background",
+  ],
+} as const;
+
 export const characterPostResponseSchema = {
   type: "object",
   properties: {

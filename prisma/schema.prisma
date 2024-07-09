@@ -18,3 +18,13 @@ model Character {
   characterClass String?
   background     String?
 }
+
+model User {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  userEmail String
+  userName  String
+  password  String
+}

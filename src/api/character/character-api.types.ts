@@ -3,6 +3,7 @@ import { CommonDeserializationOptions } from "../../utils/schema.types";
 import {
   characterGetResponseSchema,
   characterPatchRequestBodySchema,
+  characterPostRequestBodySchema,
   characterPostResponseSchema,
   characterRequestParamsSchema,
   characterSearchRequestQuerySchema,
@@ -26,6 +27,11 @@ export type CharacterRequestParams = FromSchema<
 
 export type CharacterGetResponse = FromSchema<
   typeof characterGetResponseSchema,
+  CommonDeserializationOptions
+>;
+
+export type CharacterPostRequestBody = FromSchema<
+  typeof characterPostRequestBodySchema,
   CommonDeserializationOptions
 >;
 

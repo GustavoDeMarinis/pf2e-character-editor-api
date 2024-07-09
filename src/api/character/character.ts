@@ -97,7 +97,7 @@ export const getCharacter = async ({
 };
 
 export const insertCharacter = async (
-  characterToInsert: CharacterForInsert
+  characterForInsert: CharacterForInsert
 ): Promise<Character | ErrorResult> => {
   const existingCharacters = await prisma.character.findMany({
     select: {
@@ -109,10 +109,10 @@ export const insertCharacter = async (
     where: {
       AND: [
         {
-          characterName: characterToInsert.characterName,
+          characterName: characterForInsert.characterName,
         },
         {
-          playerName: characterToInsert.playerName,
+          playerName: characterForInsert.playerName,
         },
       ],
     },
@@ -131,7 +131,7 @@ export const insertCharacter = async (
   const createdCharacter = prisma.character.create({
     select: characterSelect,
     data: {
-      ...characterToInsert,
+      ...characterForInsert,
     },
   });
 

@@ -19,6 +19,7 @@ import { validateJSONSchemaObject } from "../../middleware/validators/ajv-valida
 import {
   CharacterGetResponse,
   CharacterPatchRequestBody,
+  CharacterPostRequestBody,
   CharacterPostResponse,
   CharacterRequestParams,
   CharacterSearchRequestQuery,
@@ -70,7 +71,10 @@ export const handlePostCharacter = async (
   req: Request,
   res: Response
 ): Promise<Response<CharacterPostResponse> | Response<ErrorResponse>> => {
-  const body = req.body;
+  const body = validateJSONSchemaObject<CharacterPostRequestBody>(
+    characterRequestParamsSchema,
+    req.body
+  );
   const result = await insertCharacter(body);
 
   return createPostResponse<Character>(req, res, result);
