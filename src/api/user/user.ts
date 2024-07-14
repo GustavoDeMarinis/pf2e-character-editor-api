@@ -1,40 +1,47 @@
-import { Prisma } from "@prisma/client";
-import bcrypt from "bcrypt";
+import { Prisma, User } from "@prisma/client";
 import prisma from "../../integrations/prisma/prisma-client";
-import { ErrorCode } from "../../utils/shared-types";
+import { ErrorCode, ErrorResult } from "../../utils/shared-types";
 
-const LOCAL_SALT_ROUNDS = 10; //TODO pass this to config
+export const userSelect = {
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  deletedAt: true,
+  userName: true,
+  userEmail: true,
+  role: true,
+};
 
-type UserForInsert = Pick<
-  Prisma.UserUncheckedCreateInput,
-  "userName" | "userEmail" | "password"
+type UserToUpdate = Pick<
+  Prisma.UserUncheckedUpdateInput,
+  "userName" | "userEmail" | "role"
 >;
 
-//TODO add password rules now it can be anything
-export const insertUser = async ({
-  userName,
-  userEmail,
-  password,
-}: UserForInsert) => {
-  const user = await prisma.user.findFirst({
+export const updateUser = async (
+  { id }: Prisma.UserWhereUniqueInput,
+  { userName, userEmail, role }: UserToUpdate
+): Promise<Omit<User, "password"> | ErrorResult> => {
+  const user = await prisma.user.findUniqueOrThrow({
     where: {
-      OR: [{ userName }, { userEmail }],
+      id,
     },
   });
-  if (user) {
+  if (!user) {
     return {
-      code: ErrorCode.DataConflict,
-      message: "User already has an active character with the same name",
+      code: ErrorCode.NotFound,
+      message: "User not found",
     };
   }
-  const hashedPassword = await bcrypt.hash(password, LOCAL_SALT_ROUNDS);
-  const createdUser = prisma.user.create({
+
+  const updatedUser = prisma.user.update({
+    where: { id },
+    select: userSelect,
     data: {
       userName,
       userEmail,
-      password: hashedPassword,
+      role,
     },
   });
 
-  return createdUser;
+  return updatedUser;
 };

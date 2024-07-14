@@ -1,8 +1,14 @@
 import Router from "express-promise-router";
-import { handlePostUser } from "./user-api";
+import { handlePatchUser } from "./user-api";
+import { authorize } from "../../middleware/security/authorization";
+import { UserRole } from "@prisma/client";
 
 const router = Router();
 
-router.post("/", handlePostUser);
+router.patch(
+  "/:userId",
+  authorize({ roles: [UserRole.Admin, UserRole.Player] }),
+  handlePatchUser
+);
 
 export { router };

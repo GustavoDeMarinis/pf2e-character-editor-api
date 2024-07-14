@@ -16,17 +16,17 @@ export enum ValidatorData {
   query = "query",
 }
 
-export function validateJSONSchemaObject<ObjectType>(
+export const validateJSONSchemaObject = <ObjectType>(
   schema: Schema,
   object: unknown
-): ObjectType {
+): ObjectType => {
   const validator = ajv.compile<ObjectType>(schema);
   if (validator(object)) {
     return object;
   } else {
     throw new AjvValidationsError(validator.errors);
   }
-}
+};
 
 const checkIdIsCuid = (_schema: unknown, data: string) => {
   return cuid.isCuid(data);

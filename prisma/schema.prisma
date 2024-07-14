@@ -19,12 +19,18 @@ model Character {
   background     String?
 }
 
+enum UserRole {
+  Admin
+  Player
+}
+
 model User {
   id        String    @id @default(cuid())
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
-  userEmail String
-  userName  String
+  userEmail String    @unique
+  userName  String    @unique
   password  String
+  role      UserRole  @default(Player)
 }

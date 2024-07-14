@@ -21,6 +21,8 @@
     "@swc/jest": "^0.2.36",
     "ajv": "^8.16.0",
     "ajv-formats": "^3.0.1",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "cuid": "^3.0.0",
     "dotenv": "^16.4.5",
@@ -28,6 +30,7 @@
     "express-promise-router": "^4.1.1",
     "http-status-codes": "^2.3.0",
     "json-schema-to-ts": "^3.1.0",
+    "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.8.0",
     "mongoose": "^8.4.4",
     "nodemon": "^3.1.4",
@@ -36,15 +39,22 @@
     "winston": "^3.13.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.14.9",
     "jest": "^29.7.0",
     "jest-mock-extended": "^3.0.7",
     "prisma": "^5.16.1",
+    "standard": "^17.1.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.5.2"
+  },
+  "eslintConfig": {
+    "extends": "standard"
   }
 }

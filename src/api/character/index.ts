@@ -6,13 +6,35 @@ import {
   handlePostCharacter,
   handleSearchCharacter,
 } from "./character-api";
+import { authorize } from "../../middleware/security/authorization";
+import { UserRole } from "@prisma/client";
 
 const router = Router();
 
-router.get("/", handleSearchCharacter);
-router.get("/:characterId", handleGetCharacter);
-router.post("/", handlePostCharacter);
-router.patch("/:characterId", handlePatchCharacter);
-router.delete("/:characterId", handleDeleteCharacter);
+router.get(
+  "/",
+  authorize({ roles: [UserRole.Admin, UserRole.Player] }),
+  handleSearchCharacter
+);
+router.get(
+  "/:characterId",
+  authorize({ roles: [UserRole.Admin, UserRole.Player] }),
+  handleGetCharacter
+);
+router.post(
+  "/",
+  authorize({ roles: [UserRole.Admin, UserRole.Player] }),
+  handlePostCharacter
+);
+router.patch(
+  "/:characterId",
+  authorize({ roles: [UserRole.Admin, UserRole.Player] }),
+  handlePatchCharacter
+);
+router.delete(
+  "/:characterId",
+  authorize({ roles: [UserRole.Admin, UserRole.Player] }),
+  handleDeleteCharacter
+);
 
 export { router };

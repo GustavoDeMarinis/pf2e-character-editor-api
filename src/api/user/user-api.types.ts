@@ -1,16 +1,19 @@
 import { FromSchema } from "json-schema-to-ts";
 import { CommonDeserializationOptions } from "../../utils/schema.types";
 import {
-  userPostRequestBodySchema,
-  userPostResponseSchema,
+  userPatchRequestBodySchema,
+  userPostPatchResponseSchema,
+  userRequestParamsSchema,
 } from "./user-api.schema";
 
-export type UserPostRequestBody = FromSchema<
-  typeof userPostRequestBodySchema,
+export type UserRequestParams = FromSchema<typeof userRequestParamsSchema>;
+
+export type UserPatchRequestBody = FromSchema<
+  typeof userPatchRequestBodySchema,
   CommonDeserializationOptions
 >;
 
-export type UserPostResponse = FromSchema<
-  typeof userPostResponseSchema,
+export type UserPostPatchResponse = FromSchema<
+  typeof userPostPatchResponseSchema,
   CommonDeserializationOptions
 >;

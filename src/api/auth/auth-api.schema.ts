@@ -1,6 +1,6 @@
 import { UserRole } from "@prisma/client";
 
-export const userPatchRequestBodySchema = {
+export const authSignUpPostRequestBodySchema = {
   type: "object",
   properties: {
     userName: {
@@ -11,6 +11,10 @@ export const userPatchRequestBodySchema = {
       description: "User Email",
       type: "string",
     },
+    password: {
+      description: "User Password",
+      type: "string",
+    },
     role: {
       description: "User Role",
       type: "string",
@@ -18,14 +22,31 @@ export const userPatchRequestBodySchema = {
     },
   },
   additionalProperties: false,
-  anyOf: [
-    { required: ["userName"] },
-    { required: ["userEmail"] },
-    { required: ["role"] },
-  ],
+  required: ["userName", "userEmail", "password", "role"],
 } as const;
 
-export const userPostPatchResponseSchema = {
+export const authSignInPostRequestBodySchema = {
+  type: "object",
+  properties: {
+    userName: {
+      description: "User UserName",
+      type: "string",
+    },
+    userEmail: {
+      description: "User Email",
+      type: "string",
+    },
+    password: {
+      description: "User Password",
+      type: "string",
+    },
+  },
+  additionalProperties: false,
+  oneOf: [{ required: ["userName"] }, { required: ["userEmail"] }],
+  required: ["password"],
+} as const;
+
+export const userPostResponseSchema = {
   type: "object",
   properties: {
     id: {
@@ -48,37 +69,7 @@ export const userPostPatchResponseSchema = {
       description: "User UserName",
       type: "string",
     },
-    userEmail: {
-      description: "User Email",
-      type: "string",
-    },
-    role: {
-      description: "User Role",
-      type: "string",
-      enum: Object.values(UserRole),
-    },
   },
   additionalProperties: false,
-  required: [
-    "id",
-    "createdAt",
-    "updatedAt",
-    "deletedAt",
-    "userEmail",
-    "userName",
-    "role",
-  ],
-} as const;
-
-export const userRequestParamsSchema = {
-  type: "object",
-  properties: {
-    userId: {
-      type: "string",
-      description: "character Id",
-      checkIdIsCuid: true,
-    },
-  },
-  additionalProperties: false,
-  required: ["userId"],
+  required: ["id", "createdAt", "updatedAt", "deletedAt", "userName"],
 } as const;

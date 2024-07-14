@@ -1,21 +1,33 @@
 import { Request, Response } from "express";
 import { validateJSONSchemaObject } from "../../middleware/validators/ajv-validator";
 import { ErrorResponse } from "../../utils/shared-types";
-import { UserPostRequestBody, UserPostResponse } from "./user-api.types";
-import { userPostRequestBodySchema } from "./user-api.schema";
-import { User } from "@prisma/client";
-import { insertUser } from "./user";
-import { createPostResponse } from "../../utils/http-response-factory";
 
-export const handlePostUser = async (
+import { User } from "@prisma/client";
+import { updateUser } from "./user";
+import { createPostResponse } from "../../utils/http-response-factory";
+import {
+  userPatchRequestBodySchema,
+  userRequestParamsSchema,
+} from "./user-api.schema";
+import {
+  UserPatchRequestBody,
+  UserPostPatchResponse,
+  UserRequestParams,
+} from "./user-api.types";
+
+export const handlePatchUser = async (
   req: Request,
   res: Response
-): Promise<Response<UserPostResponse> | Response<ErrorResponse>> => {
-  const body = validateJSONSchemaObject<UserPostRequestBody>(
-    userPostRequestBodySchema,
+): Promise<Response<UserPostPatchResponse> | Response<ErrorResponse>> => {
+  const { userId } = validateJSONSchemaObject<UserRequestParams>(
+    userRequestParamsSchema,
+    req.params
+  );
+  const body = validateJSONSchemaObject<UserPatchRequestBody>(
+    userPatchRequestBodySchema,
     req.body
   );
-  const result = await insertUser(body);
+  const result = await updateUser({ id: userId }, body);
 
   return createPostResponse<Omit<User, "password">>(req, res, result);
 };
