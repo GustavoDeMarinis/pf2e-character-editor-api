@@ -2,6 +2,7 @@ import { FromSchema } from "json-schema-to-ts";
 import { CommonDeserializationOptions } from "../../utils/schema.types";
 
 import {
+  authPatchPasswordRequestBodySchema,
   authSignInPostRequestBodySchema,
   authSignUpPostRequestBodySchema,
 } from "./auth-api.schema";
@@ -12,6 +13,9 @@ export type AuthSignUpPostRequestBody = FromSchema<
 >;
 
 export type AuthSignInPostRequestBody = FromSchema<
-  typeof authSignInPostRequestBodySchema,
-  CommonDeserializationOptions
+  typeof authSignInPostRequestBodySchema
+>;
+
+export type AuthPatchPasswordRequestBody = FromSchema<
+  typeof authPatchPasswordRequestBodySchema
 >;

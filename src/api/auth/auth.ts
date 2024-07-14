@@ -124,8 +124,10 @@ export const signIn = async (
 export const changePassword = async (
   { id }: Prisma.UserWhereUniqueInput,
   currentUser: CurrentUserAuthorization,
-  oldPassword: string,
-  newPassword: string
+  {
+    currentPassword,
+    newPassword,
+  }: { currentPassword: string; newPassword: string }
 ): Promise<void | ErrorResult> => {
   const user = await prisma.user.findUnique({
     select: {
@@ -147,7 +149,10 @@ export const changePassword = async (
         message: "Forbidden",
       };
     }
-    const isValidPassword = await bcrypt.compare(oldPassword, user.password);
+    const isValidPassword = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
 
     if (!isValidPassword) {
       return {
@@ -155,14 +160,6 @@ export const changePassword = async (
         message: "Forbidden",
       };
     }
-    await prisma.user.update({
-      where: {
-        id,
-      },
-      data: {
-        password: newPassword,
-      },
-    });
   }
   await prisma.user.update({
     where: {

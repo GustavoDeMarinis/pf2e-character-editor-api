@@ -8,6 +8,7 @@ import {
 } from "../../utils/http-response-factory";
 import { changePassword, signIn, signUp } from "./auth";
 import {
+  AuthPatchPasswordRequestBody,
   AuthSignInPostRequestBody,
   AuthSignUpPostRequestBody,
 } from "./auth-api.types";
@@ -17,6 +18,7 @@ import {
 } from "../user/user-api.types";
 import { isErrorResult } from "../../utils/exceptions";
 import {
+  authPatchPasswordRequestBodySchema,
   authSignInPostRequestBodySchema,
   authSignUpPostRequestBodySchema,
 } from "./auth-api.schema";
@@ -64,8 +66,17 @@ export const handleChangePassword = async (
     userRequestParamsSchema,
     req.params
   );
+  const { currentPassword, newPassword } =
+    validateJSONSchemaObject<AuthPatchPasswordRequestBody>(
+      authPatchPasswordRequestBodySchema,
+      req.body
+    );
+
   const currentUser = getCurrentUserAuthorization(req);
-  const result = await changePassword({ id: userId }, currentUser);
+  const result = await changePassword({ id: userId }, currentUser, {
+    currentPassword,
+    newPassword,
+  });
 
   return createPatchResponse<void>(res, result);
 };

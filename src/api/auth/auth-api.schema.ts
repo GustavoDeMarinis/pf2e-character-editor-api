@@ -73,3 +73,19 @@ export const userPostResponseSchema = {
   additionalProperties: false,
   required: ["id", "createdAt", "updatedAt", "deletedAt", "userName"],
 } as const;
+
+export const authPatchPasswordRequestBodySchema = {
+  type: "object",
+  properties: {
+    currentPassword: {
+      description: "User Current Password",
+      type: "string",
+    },
+    newPassword: {
+      description: "User New Password",
+      type: "string",
+    },
+  },
+  additionalProperties: false,
+  required: ["currentPassword", "newPassword"],
+} as const;
