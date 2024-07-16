@@ -3,13 +3,14 @@ import bcrypt from "bcrypt";
 import { Response } from "express";
 import prisma from "../../integrations/prisma/prisma-client";
 import { ErrorCode, ErrorResult } from "../../utils/shared-types";
-import { PASSWORDREGEX } from "../../utils/regexs";
+import { checkInputPasswordFormat } from "../../utils/regexs";
 import {
   CurrentUserAuthorization,
   jwtSign,
 } from "../../middleware/security/authorization";
+import { config } from "../../config";
 
-const LOCAL_SALT_ROUNDS = 10; //TODO pass this to config
+//TODO pass this to config
 
 export const userSelect = {
   id: true,
@@ -39,7 +40,7 @@ type SignUpParams = Pick<
 export const signUp = async (
   userToInsert: SignUpParams
 ): Promise<Omit<User, "password"> | ErrorResult> => {
-  if (!PASSWORDREGEX.test(userToInsert.password)) {
+  if (!checkInputPasswordFormat(userToInsert.password)) {
     return {
       code: ErrorCode.BadRequest,
       message:
@@ -57,12 +58,12 @@ export const signUp = async (
   if (user) {
     return {
       code: ErrorCode.DataConflict,
-      message: "User already has an active character with the same name",
+      message: "UserName or email are already used",
     };
   }
   const hashedPassword = await bcrypt.hash(
     userToInsert.password,
-    LOCAL_SALT_ROUNDS
+    config.LOCAL_SALT_ROUNDS
   );
   const createdUser = prisma.user.create({
     select: userSelect,
@@ -81,7 +82,7 @@ export const signIn = async (
   res: Response,
   userToAuthenticate: AuthUsingEmailParams | AuthUsingUserNameParams
 ): Promise<Pick<User, "id"> | ErrorResult> => {
-  if (!PASSWORDREGEX.test(userToAuthenticate.password)) {
+  if (!checkInputPasswordFormat(userToAuthenticate.password)) {
     return {
       code: ErrorCode.Forbidden,
       message: "Forbidden", //Improve message
@@ -127,7 +128,7 @@ export const changePassword = async (
   {
     currentPassword,
     newPassword,
-  }: { currentPassword: string; newPassword: string }
+  }: { currentPassword?: string; newPassword: string }
 ): Promise<void | ErrorResult> => {
   const user = await prisma.user.findUnique({
     select: {
@@ -136,12 +137,14 @@ export const changePassword = async (
     },
     where: { id },
   });
+
   if (!user) {
     return {
       code: ErrorCode.NotFound,
       message: "User Not Found",
     };
   }
+
   if (currentUser.role !== UserRole.Admin) {
     if (user.id !== currentUser.userId) {
       return {
@@ -150,7 +153,7 @@ export const changePassword = async (
       };
     }
     const isValidPassword = await bcrypt.compare(
-      currentPassword,
+      currentPassword ?? "",
       user.password
     );
 
@@ -161,12 +164,16 @@ export const changePassword = async (
       };
     }
   }
+  const hashedPassword = await bcrypt.hash(
+    newPassword,
+    config.LOCAL_SALT_ROUNDS
+  );
   await prisma.user.update({
     where: {
       id,
     },
     data: {
-      password: newPassword,
+      password: hashedPassword,
     },
   });
 };

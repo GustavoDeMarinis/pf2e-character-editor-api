@@ -6,7 +6,8 @@
     "build": "npx tsc",
     "start": "nodemon ./src/index.ts",
     "generate-cuid": "npx ts-node ./prisma/seeders/local/utils/cuid-generator.ts",
-    "test": "jest"
+    "test": "jest",
+    "test:cv": "jest --coverage"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

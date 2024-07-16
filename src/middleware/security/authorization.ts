@@ -21,7 +21,7 @@ export function getCurrentUserAuthorization(
 ): CurrentUserAuthorization {
   return {
     userId: req.cookies.user.userId,
-    role: req.cookies.user.roles,
+    role: req.cookies.user.role,
   };
 }
 

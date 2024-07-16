@@ -65,7 +65,7 @@ export const searchCharacters = async (
 
   logDebug({
     subService,
-    message: `User Search found (${count}) results`,
+    message: `Character Search found (${count}) results`,
     details: {
       count: count,
       filter: where,
@@ -179,7 +179,7 @@ export const deleteCharacter = async ({
   if (!existingCharacter || existingCharacter.deletedAt) {
     return {
       code: ErrorCode.NotFound,
-      message: `User Not Found`,
+      message: `Character Not Found`,
     };
   }
   const data = {

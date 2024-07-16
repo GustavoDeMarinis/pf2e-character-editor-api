@@ -87,5 +87,5 @@ export const authPatchPasswordRequestBodySchema = {
     },
   },
   additionalProperties: false,
-  required: ["currentPassword", "newPassword"],
+  required: ["newPassword"],
 } as const;
