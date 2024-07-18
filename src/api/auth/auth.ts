@@ -65,7 +65,7 @@ export const signUp = async (
     userToInsert.password,
     config.LOCAL_SALT_ROUNDS
   );
-  const createdUser = prisma.user.create({
+  const createdUser = await prisma.user.create({
     select: userSelect,
     data: {
       userName: userToInsert.userName,
@@ -130,6 +130,14 @@ export const changePassword = async (
     newPassword,
   }: { currentPassword?: string; newPassword: string }
 ): Promise<void | ErrorResult> => {
+  if (!checkInputPasswordFormat(newPassword)) {
+    return {
+      code: ErrorCode.BadRequest,
+      message:
+        "Password must have at least one special character, one number and be 8 character long.", //Improve message
+    };
+  }
+
   const user = await prisma.user.findUnique({
     select: {
       id: true,

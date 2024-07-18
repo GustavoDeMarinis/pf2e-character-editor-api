@@ -9,6 +9,7 @@ export const characterSearchRequestQuerySchema = {
   properties: {
     playerName: {
       type: "string",
+      description: "User name",
     },
     isActive: {
       type: "boolean",

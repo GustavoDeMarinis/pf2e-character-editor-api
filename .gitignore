@@ -3,6 +3,7 @@ node_modules
 .env
 
 #Logs
+info.log
 debug.log
 error.log
 combined.log
