@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { config } from "../config";
 import { securitySchema } from "./security.swagger";
 import { characterPaths } from "./character/character.swagger";
+import { authPaths } from "./auth/auth.swagger";
 
 export const swaggerDocument = {
   openapi: "3.0.1",
@@ -22,6 +23,7 @@ export const swaggerDocument = {
   },
   security: [{ cookieAuth: [] }],
   paths: {
+    ...authPaths,
     ...characterPaths,
   },
 };

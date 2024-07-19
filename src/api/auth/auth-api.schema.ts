@@ -25,28 +25,7 @@ export const authSignUpPostRequestBodySchema = {
   required: ["userName", "userEmail", "password", "role"],
 } as const;
 
-export const authSignInPostRequestBodySchema = {
-  type: "object",
-  properties: {
-    userName: {
-      description: "User UserName",
-      type: "string",
-    },
-    userEmail: {
-      description: "User Email",
-      type: "string",
-    },
-    password: {
-      description: "User Password",
-      type: "string",
-    },
-  },
-  additionalProperties: false,
-  oneOf: [{ required: ["userName"] }, { required: ["userEmail"] }],
-  required: ["password"],
-} as const;
-
-export const userPostResponseSchema = {
+export const authSignUpResponseSchema = {
   type: "object",
   properties: {
     id: {
@@ -69,9 +48,64 @@ export const userPostResponseSchema = {
       description: "User UserName",
       type: "string",
     },
+    userEmail: {
+      description: "User UserEmail",
+      type: "string",
+    },
+    role: {
+      description: "User Role",
+      type: "string",
+      enum: Object.values(UserRole),
+    },
   },
   additionalProperties: false,
-  required: ["id", "createdAt", "updatedAt", "deletedAt", "userName"],
+  required: [
+    "id",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "userName",
+    "userEmail",
+    "role",
+  ],
+} as const;
+
+export const authSignInPostRequestBodySchema = {
+  type: "object",
+  properties: {
+    userName: {
+      description: "User UserName",
+      type: "string",
+    },
+    userEmail: {
+      description: "User Email",
+      type: "string",
+    },
+    password: {
+      description: "User Password",
+      type: "string",
+    },
+  },
+  additionalProperties: false,
+  oneOf: [{ required: ["userName"] }, { required: ["userEmail"] }],
+  required: ["password"],
+} as const;
+
+export const authSignInResponseSchema = {
+  type: "object",
+  properties: {
+    id: {
+      description: "User Id",
+      type: "string",
+    },
+    role: {
+      description: "User Role",
+      type: "string",
+      enum: Object.values(UserRole),
+    },
+  },
+  additionalProperties: false,
+  required: ["id", "role"],
 } as const;
 
 export const authPatchPasswordRequestBodySchema = {

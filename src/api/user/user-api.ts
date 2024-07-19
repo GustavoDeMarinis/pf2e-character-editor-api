@@ -24,7 +24,6 @@ import {
 import {
   UserGetResponse,
   UserPatchRequestBody,
-  UserPostPatchResponse,
   UserRequestParams,
   UserSearchRequestQueryParams,
   UserSearchResponse,

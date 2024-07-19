@@ -10,13 +10,11 @@ import { changePassword, signIn, signUp } from "./auth";
 import {
   AuthPatchPasswordRequestBody,
   AuthSignInPostRequestBody,
+  AuthSignInResponse,
   AuthSignUpPostRequestBody,
+  AuthSignUpResponse,
 } from "./auth-api.types";
-import {
-  UserPostPatchResponse,
-  UserRequestParams,
-} from "../user/user-api.types";
-import { isErrorResult } from "../../utils/exceptions";
+import { UserRequestParams } from "../user/user-api.types";
 import {
   authPatchPasswordRequestBodySchema,
   authSignInPostRequestBodySchema,
@@ -29,7 +27,7 @@ import { getCurrentUserAuthorization } from "../../middleware/security/authoriza
 export const handleSignUp = async (
   req: Request,
   res: Response
-): Promise<Response<UserPostPatchResponse> | Response<ErrorResponse>> => {
+): Promise<Response<AuthSignUpResponse> | Response<ErrorResponse>> => {
   const body = validateJSONSchemaObject<AuthSignUpPostRequestBody>(
     authSignUpPostRequestBodySchema,
     req.body
@@ -42,21 +40,14 @@ export const handleSignUp = async (
 export const handleSignIn = async (
   req: Request,
   res: Response
-): Promise<Response<UserPostPatchResponse> | Response<ErrorResponse>> => {
+): Promise<Response<AuthSignInResponse> | Response<ErrorResponse>> => {
   const body = validateJSONSchemaObject<AuthSignInPostRequestBody>(
     authSignInPostRequestBodySchema,
     req.body
   );
   const result = await signIn(res, body);
-  if (isErrorResult(result)) {
-    return createPostResponse<Omit<User, "userEmail" | "password">>(
-      req,
-      res,
-      result
-    );
-  }
 
-  return createPostResponse<Pick<User, "id">>(req, res, result);
+  return createPostResponse<Pick<User, "id" | "role">>(req, res, result);
 };
 
 export const handleChangePassword = async (

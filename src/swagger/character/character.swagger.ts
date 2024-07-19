@@ -14,7 +14,7 @@ const searchCharacter = {
   description:
     "## Search Character\n" +
     "**Postman:** [GET Search Character](https://web.postman.co/workspace/My-Workspace~cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-6cf417f2-4090-45c0-a3a1-084965653ea3)",
-  operationId: "searchFile",
+  operationId: "searchCharacter",
   security: [securitySchema],
   parameters: [
     {
@@ -75,7 +75,7 @@ export const getCharacter = {
   security: [securitySchema],
   responses: {
     "200": {
-      description: "Successful file retrieval",
+      description: "Successful Character retrieval",
       content: {
         "application/json": {
           schema: characterGetResponseSchema,

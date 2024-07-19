@@ -81,7 +81,7 @@ export const signUp = async (
 export const signIn = async (
   res: Response,
   userToAuthenticate: AuthUsingEmailParams | AuthUsingUserNameParams
-): Promise<Pick<User, "id"> | ErrorResult> => {
+): Promise<Pick<User, "id" | "role"> | ErrorResult> => {
   if (!checkInputPasswordFormat(userToAuthenticate.password)) {
     return {
       code: ErrorCode.Forbidden,
