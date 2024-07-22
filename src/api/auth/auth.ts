@@ -172,10 +172,7 @@ export const changePassword = async (
       };
     }
   }
-  const hashedPassword = await bcrypt.hash(
-    newPassword,
-    config.LOCAL_SALT_ROUNDS
-  );
+  const hashedPassword = await handlePasswordEncription(newPassword);
   await prisma.user.update({
     where: {
       id,
@@ -184,4 +181,10 @@ export const changePassword = async (
       password: hashedPassword,
     },
   });
+};
+
+export const handlePasswordEncription = async (
+  newPassword: string
+): Promise<string> => {
+  return await bcrypt.hash(newPassword, config.LOCAL_SALT_ROUNDS);
 };

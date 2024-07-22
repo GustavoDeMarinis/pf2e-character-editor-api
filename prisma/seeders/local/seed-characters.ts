@@ -1,27 +1,44 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../../../src/integrations/prisma/prisma-client";
+import { UserIds } from "./seed-users";
+import { ClassIds } from "./seed-character-class";
 
 const buildLocalCharacters = (): Prisma.CharacterUncheckedCreateInput[] => {
   const characters: Prisma.CharacterUncheckedCreateInput[] = [
     {
       characterName: "Saskia",
-      characterClass: "Barbarian",
+      characterClassId: ClassIds.barbarian,
+      assignedUserId: UserIds.GustavoDm,
+      createdByUserId: UserIds.GustavoDm,
+      level: 14,
     },
     {
       characterName: "Boro",
-      characterClass: "Monk",
+      characterClassId: ClassIds.monk,
+      assignedUserId: UserIds.GustavoDm,
+      createdByUserId: UserIds.GustavoDm,
+      level: 14,
     },
     {
       characterName: "Harumi",
-      characterClass: "Oracle",
+      characterClassId: ClassIds.oracle,
+      assignedUserId: UserIds.GustavoDm,
+      createdByUserId: UserIds.GustavoDm,
+      level: 14,
     },
     {
       characterName: "Dunah",
-      characterClass: "Druid",
+      characterClassId: ClassIds.druid,
+      assignedUserId: UserIds.GustavoDm,
+      createdByUserId: UserIds.GustavoDm,
+      level: 14,
     },
     {
       characterName: "Ithrael",
-      characterClass: "Magus",
+      characterClassId: ClassIds.magus,
+      assignedUserId: UserIds.GustavoDm,
+      createdByUserId: UserIds.GustavoDm,
+      level: 14,
     },
   ];
 

@@ -7,9 +7,15 @@ import {
 export const characterSearchRequestQuerySchema = {
   type: "object",
   properties: {
-    playerName: {
+    createdByUserId: {
+      description: "User Creator Id",
       type: "string",
-      description: "User name",
+      checkIdIsCuid: true,
+    },
+    assignedUserId: {
+      description: "User Assigned Id",
+      type: "string",
+      checkIdIsCuid: true,
     },
     isActive: {
       type: "boolean",
@@ -45,10 +51,13 @@ const commonGetSearchProperties = {
     description: "Character Name",
     type: "string",
   },
-  playerName: {
-    description: "Player Name",
+  createdByUserId: {
+    description: "User Creator Id",
     type: "string",
-    nullable: true,
+  },
+  assignedUserId: {
+    description: "User Assigned Id",
+    type: "string",
   },
   ancestry: {
     description: "Character Ancestry",
@@ -83,7 +92,8 @@ export const characterSearchResponseSchema = {
           "updatedAt",
           "deletedAt",
           "characterName",
-          "playerName",
+          "createdByUserId",
+          "assignedUserId",
           "ancestry",
           "characterClass",
           "background",
@@ -120,7 +130,8 @@ export const characterGetResponseSchema = {
     "updatedAt",
     "deletedAt",
     "characterName",
-    "playerName",
+    "createdUserId",
+    "assignedUserId",
     "ancestry",
     "characterClass",
     "background",
@@ -135,10 +146,13 @@ export const characterPostRequestBodySchema = {
       description: "Character Name",
       type: "string",
     },
-    playerName: {
-      description: "Player Name",
+    createdByUserId: {
+      description: "User Creator Id",
       type: "string",
-      nullable: true,
+    },
+    assignedUserId: {
+      description: "User Assigned Id",
+      type: "string",
     },
     ancestry: {
       description: "Character Ancestry",
@@ -159,7 +173,8 @@ export const characterPostRequestBodySchema = {
   additionalProperties: false,
   required: [
     "characterName",
-    "playerName",
+    "createdUserId",
+    "assignedUserId",
     "ancestry",
     "characterClass",
     "background",
@@ -177,7 +192,8 @@ export const characterPostResponseSchema = {
     "updatedAt",
     "deletedAt",
     "characterName",
-    "playerName",
+    "createdUserId",
+    "assignedUserId",
     "ancestry",
     "characterClass",
     "background",
@@ -192,8 +208,12 @@ export const characterPatchRequestBodySchema = {
       description: "Character Name",
       type: "string",
     },
-    playerName: {
-      description: "Player Name",
+    createdByUserId: {
+      description: "User Creator Id",
+      type: "string",
+    },
+    assignedUserId: {
+      description: "User Assigned Id",
       type: "string",
     },
     ancestry: {
@@ -212,7 +232,7 @@ export const characterPatchRequestBodySchema = {
   additionalProperties: false,
   anyOf: [
     { required: ["characterName"] },
-    { required: ["playerName"] },
+    { required: ["assignedUserId"] },
     { required: ["ancestry"] },
     { required: ["characterClass"] },
     { required: ["background"] },

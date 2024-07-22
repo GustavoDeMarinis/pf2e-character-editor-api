@@ -8,15 +8,42 @@ datasource db {
 }
 
 model Character {
-  id             String    @id @default(cuid())
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  deletedAt      DateTime?
-  characterName  String
-  playerName     String?
-  ancestry       String?
-  characterClass String?
-  background     String?
+  id               String         @id @default(cuid())
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  deletedAt        DateTime?
+  characterName    String
+  ancestry         String?
+  background       String?
+  createdByUser    User           @relation("User_createdByUserId_fkey", fields: [createdByUserId], references: [id])
+  createdByUserId  String
+  assignedUser     User           @relation("User_assignedUserId_fkey", fields: [assignedUserId], references: [id])
+  assignedUserId   String
+  level            Int            @default(1)
+  characterClass   CharacterClass @relation(fields: [characterClassId], references: [id])
+  characterClassId String
+}
+
+enum Attributes {
+  Strength
+  Dexterity
+  Constitution
+  Intelligence
+  Wisdom
+  Charisma
+  Other
+}
+
+model CharacterClass {
+  id            String       @id @default(cuid())
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  deletedAt     DateTime?
+  className     String
+  description   String
+  keyAttributes Attributes[]
+  hitPoints     Int
+  character     Character[]
 }
 
 enum UserRole {
@@ -25,12 +52,14 @@ enum UserRole {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-  userEmail String    @unique
-  userName  String    @unique
-  password  String
-  role      UserRole  @default(Player)
+  id                String      @id @default(cuid())
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  deletedAt         DateTime?
+  userEmail         String      @unique
+  userName          String      @unique
+  password          String
+  role              UserRole    @default(Player)
+  characters        Character[] @relation("User_assignedUserId_fkey")
+  charactersCreated Character[] @relation("User_createdByUserId_fkey")
 }

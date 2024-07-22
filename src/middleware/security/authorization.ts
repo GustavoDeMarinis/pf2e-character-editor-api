@@ -16,14 +16,14 @@ export type CurrentUserAuthorization = {
   role: UserRole;
 };
 
-export function getCurrentUserAuthorization(
+export const getCurrentUserAuthorization = (
   req: Request
-): CurrentUserAuthorization {
+): CurrentUserAuthorization => {
   return {
     userId: req.cookies.user.userId,
     role: req.cookies.user.role,
   };
-}
+};
 
 export const jwtSign = (res: Response, payload: PayloadType): void => {
   const token = jwt.sign(payload, config.JWT_SECRET_KEY, {
@@ -42,7 +42,7 @@ export const jwtVerify = (req: Request) => {
   return jwt.verify(authHeader, config.JWT_SECRET_KEY);
 };
 
-export function authorize(roleAuthOptions?: { roles: UserRole[] }) {
+export const authorize = (roleAuthOptions?: { roles: UserRole[] }) => {
   return async function authMiddleware(
     req: Request,
     res: Response,
@@ -83,4 +83,4 @@ export function authorize(roleAuthOptions?: { roles: UserRole[] }) {
 
     next();
   };
-}
+};

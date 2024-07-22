@@ -18,7 +18,8 @@ export const characterSelect = {
   updatedAt: true,
   deletedAt: true,
   characterName: true,
-  playerName: true,
+  assignedUserId: true,
+  createdByUserId: true,
   ancestry: true,
   characterClass: true,
   background: true,
@@ -35,11 +36,19 @@ export type CharacterSearchResult = Prisma.CharacterGetPayload<
 
 type CharacterForInsert = Pick<
   Prisma.CharacterUncheckedCreateInput,
-  "characterName" | "playerName" | "characterClass" | "ancestry" | "background"
+  | "characterName"
+  | "characterClassId"
+  | "ancestry"
+  | "background"
+  | "createdByUserId"
+  | "assignedUserId"
 >;
 
 export const searchCharacters = async (
-  search: Pick<Prisma.CharacterWhereInput, "playerName"> & {
+  search: Pick<
+    Prisma.CharacterWhereInput,
+    "createdByUserId" | "assignedUserId"
+  > & {
     isActive?: boolean;
   },
   { skip, take }: PaginationOptions,
@@ -104,7 +113,7 @@ export const insertCharacter = async (
       id: true,
       deletedAt: true,
       characterName: true,
-      playerName: true,
+      createdByUserId: true,
     },
     where: {
       AND: [
@@ -112,7 +121,7 @@ export const insertCharacter = async (
           characterName: characterForInsert.characterName,
         },
         {
-          playerName: characterForInsert.playerName,
+          createdByUserId: characterForInsert.createdByUserId,
         },
       ],
     },
@@ -143,8 +152,8 @@ export const updateCharacter = async (
   characterToUpdate: Pick<
     Prisma.CharacterUncheckedUpdateInput,
     | "characterName"
-    | "characterClass"
-    | "playerName"
+    | "characterClassId"
+    | "assignedUserId"
     | "ancestry"
     | "background"
   >,

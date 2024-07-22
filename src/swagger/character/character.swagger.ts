@@ -33,10 +33,18 @@ const searchCharacter = {
     },
     {
       in: "query",
-      name: "playerName",
-      schema: characterSearchRequestQuerySchema.properties.playerName,
+      name: "createdByUserId",
+      schema: characterSearchRequestQuerySchema.properties.createdByUserId,
       description:
-        characterSearchRequestQuerySchema.properties.playerName.description,
+        characterSearchRequestQuerySchema.properties.createdByUserId
+          .description,
+    },
+    {
+      in: "query",
+      name: "playerName",
+      schema: characterSearchRequestQuerySchema.properties.assignedUserId,
+      description:
+        characterSearchRequestQuerySchema.properties.assignedUserId.description,
     },
     {
       in: "query",

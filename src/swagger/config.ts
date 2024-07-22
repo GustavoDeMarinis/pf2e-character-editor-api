@@ -3,6 +3,7 @@ import { config } from "../config";
 import { securitySchema } from "./security.swagger";
 import { characterPaths } from "./character/character.swagger";
 import { authPaths } from "./auth/auth.swagger";
+import { userPaths } from "./user/user.swagger";
 
 export const swaggerDocument = {
   openapi: "3.0.1",
@@ -24,6 +25,7 @@ export const swaggerDocument = {
   security: [{ cookieAuth: [] }],
   paths: {
     ...authPaths,
+    ...userPaths,
     ...characterPaths,
   },
 };

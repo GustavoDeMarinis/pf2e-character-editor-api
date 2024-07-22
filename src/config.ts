@@ -6,4 +6,5 @@ export const config = {
   JWT_EXPIRATION_PERIOD: "1d",
   LOCAL_SALT_ROUNDS: 10,
   ENV: process.env.ENV ?? "local",
+  USER_DEFAULT_PASSWORD: process.env.USER_DEFAULT_PASSWORD ?? "",
 };
