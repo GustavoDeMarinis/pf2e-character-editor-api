@@ -1,3 +1,4 @@
+import { Attributes } from "@prisma/client";
 import {
   paginationRequestPropertySchema,
   paginationRequiredPropertiesSchema,
@@ -17,6 +18,11 @@ export const characterSearchRequestQuerySchema = {
       type: "string",
       checkIdIsCuid: true,
     },
+    characterClassId: {
+      description: "Character Class Id",
+      type: "string",
+      checkIdIsCuid: true,
+    },
     isActive: {
       type: "boolean",
       description: "Is The Character Active?",
@@ -30,7 +36,7 @@ export const characterSearchRequestQuerySchema = {
   additionalProperties: false,
 } as const;
 
-const commonGetSearchProperties = {
+const commonCharacterProperties = {
   id: {
     description: "Character Id",
     type: "string",
@@ -65,9 +71,56 @@ const commonGetSearchProperties = {
     nullable: true,
   },
   characterClass: {
-    description: "Character Class",
-    type: "string",
-    nullable: true,
+    type: "object",
+    properties: {
+      id: {
+        description: "Character Id",
+        type: "string",
+      },
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+      deletedAt: {
+        type: "string",
+        format: "date-time-nullable",
+      },
+      className: {
+        description: "Character Class Name",
+        type: "string",
+      },
+      description: {
+        description: "Character Class Description",
+        type: "string",
+      },
+      keyAttributes: {
+        description: "Attribute Option To Give Bonus",
+        type: "array",
+        items: {
+          type: "string",
+          enum: Object.values(Attributes),
+        },
+      },
+      hitPoints: {
+        description: "Amount Of Hitpoints Gained Per Level",
+        type: "number",
+      },
+    },
+    required: [
+      "id",
+      "createdAt",
+      "updatedAt",
+      "deletedAt",
+      "className",
+      "description",
+      "keyAttributes",
+      "hitPoints",
+    ],
+    additionalProperties: false,
   },
   background: {
     description: "Character Background",
@@ -84,7 +137,7 @@ export const characterSearchResponseSchema = {
       items: {
         type: "object",
         properties: {
-          ...commonGetSearchProperties,
+          ...commonCharacterProperties,
         },
         required: [
           "id",
@@ -122,7 +175,7 @@ export const characterRequestParamsSchema = {
 export const characterGetResponseSchema = {
   type: "object",
   properties: {
-    ...commonGetSearchProperties,
+    ...commonCharacterProperties,
   },
   required: [
     "id",
@@ -159,10 +212,9 @@ export const characterPostRequestBodySchema = {
       type: "string",
       nullable: true,
     },
-    characterClass: {
-      description: "Character Class",
+    characterClassId: {
+      description: "Character Class Id",
       type: "string",
-      nullable: true,
     },
     background: {
       description: "Character Background",
@@ -173,10 +225,10 @@ export const characterPostRequestBodySchema = {
   additionalProperties: false,
   required: [
     "characterName",
-    "createdUserId",
+    "createdByUserId",
     "assignedUserId",
     "ancestry",
-    "characterClass",
+    "characterClassId",
     "background",
   ],
 } as const;
@@ -184,7 +236,7 @@ export const characterPostRequestBodySchema = {
 export const characterPostResponseSchema = {
   type: "object",
   properties: {
-    ...commonGetSearchProperties,
+    ...commonCharacterProperties,
   },
   required: [
     "id",

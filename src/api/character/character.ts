@@ -25,14 +25,11 @@ export const characterSelect = {
   background: true,
 };
 
-export const characterSearchArgs =
-  Prisma.validator<Prisma.CharacterDefaultArgs>()({
-    select: characterSelect,
-  });
+export const characterArgs = Prisma.validator<Prisma.CharacterDefaultArgs>()({
+  select: characterSelect,
+});
 
-export type CharacterSearchResult = Prisma.CharacterGetPayload<
-  typeof characterSearchArgs
->;
+export type CharacterResult = Prisma.CharacterGetPayload<typeof characterArgs>;
 
 type CharacterForInsert = Pick<
   Prisma.CharacterUncheckedCreateInput,
@@ -47,13 +44,13 @@ type CharacterForInsert = Pick<
 export const searchCharacters = async (
   search: Pick<
     Prisma.CharacterWhereInput,
-    "createdByUserId" | "assignedUserId"
+    "createdByUserId" | "assignedUserId" | "characterClassId"
   > & {
     isActive?: boolean;
   },
   { skip, take }: PaginationOptions,
   sort?: string
-): Promise<SearchResult<CharacterSearchResult> | ErrorResult> => {
+): Promise<SearchResult<CharacterResult> | ErrorResult> => {
   const { isActive, ...searchFilters } = search;
   const where: Prisma.CharacterWhereInput = {
     ...searchFilters,
@@ -86,7 +83,7 @@ export const searchCharacters = async (
 export const getCharacter = async ({
   id,
 }: Required<Pick<Prisma.CharacterWhereUniqueInput, "id">>): Promise<
-  Character | ErrorResult
+  CharacterResult | ErrorResult
 > => {
   const where: Prisma.CharacterWhereUniqueInput = {
     id,
@@ -107,7 +104,7 @@ export const getCharacter = async ({
 
 export const insertCharacter = async (
   characterForInsert: CharacterForInsert
-): Promise<Character | ErrorResult> => {
+): Promise<CharacterResult | ErrorResult> => {
   const existingCharacters = await prisma.character.findMany({
     select: {
       id: true,

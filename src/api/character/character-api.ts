@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import {
-  CharacterSearchResult,
+  CharacterResult,
   deleteCharacter,
   getCharacter,
   insertCharacter,
@@ -27,6 +27,7 @@ import {
 } from "./character-api.types";
 import {
   characterPatchRequestBodySchema,
+  characterPostRequestBodySchema,
   characterRequestParamsSchema,
   characterSearchRequestQuerySchema,
 } from "./character-api.schema";
@@ -49,7 +50,7 @@ export const handleSearchCharacter = async (
   });
 
   const results = await searchCharacters(query, pagination, sort);
-  return createGetArrayResponse<CharacterSearchResult>(res, results, {
+  return createGetArrayResponse<CharacterResult>(res, results, {
     pagination,
   });
 };
@@ -64,7 +65,7 @@ export const handleGetCharacter = async (
   );
   const result = await getCharacter({ id: characterId });
 
-  return createGetResponse<Character>(res, result);
+  return createGetResponse<CharacterResult>(res, result);
 };
 
 export const handlePostCharacter = async (
@@ -72,12 +73,12 @@ export const handlePostCharacter = async (
   res: Response
 ): Promise<Response<CharacterPostResponse> | Response<ErrorResponse>> => {
   const body = validateJSONSchemaObject<CharacterPostRequestBody>(
-    characterRequestParamsSchema,
+    characterPostRequestBodySchema,
     req.body
   );
   const result = await insertCharacter(body);
 
-  return createPostResponse<Character>(req, res, result);
+  return createPostResponse<CharacterResult>(req, res, result);
 };
 
 export const handlePatchCharacter = async (
