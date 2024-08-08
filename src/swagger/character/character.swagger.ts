@@ -98,7 +98,7 @@ export const insertCharacter = {
   tags: ["Character"],
   description:
     "## Create a Character record\n" +
-    "**Postman:** [POST Create a Character record](https://lio-data.postman.co/workspace/LIO-IICE~15d79b5b-510b-4c5d-a774-c904574bdd65/request/22262514-c30420d8-43b8-49a6-bac9-c7e3055bae91)",
+    "**Postman:** [POST Create a Character record](https://web.postman.co/workspace/My-Workspace~cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-e9ff2c68-966e-4e85-8499-e102a785fa5e)",
   operationId: "insertCharacter",
   security: [securitySchema],
   requestBody: {

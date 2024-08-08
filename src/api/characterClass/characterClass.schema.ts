@@ -76,17 +76,16 @@ export const characterClassSearchRequestQuerySchema = {
   type: "object",
   properties: {
     className: {
-      description: "User Creator Id",
+      description: "Class Name",
       type: "string",
     },
     hitPoints: {
-      description: "Character Class Id",
-      type: "string",
-      checkIdIsCuid: true,
+      description: "Amount Of Hitpoints Gained Per Level",
+      type: "number",
     },
     isActive: {
       type: "boolean",
-      description: "Is The Character Active?",
+      description: "Is The Character Class Active?",
     },
     sort: {
       type: "string",

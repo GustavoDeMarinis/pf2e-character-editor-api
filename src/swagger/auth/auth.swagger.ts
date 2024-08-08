@@ -13,7 +13,7 @@ export const AuthSignUp = {
   tags: ["Auth"],
   description:
     "## Create a User record\n" +
-    "**Postman:** [POST Create a User record](https://lio-data.postman.co/workspace/LIO-IICE~15d79b5b-510b-4c5d-a774-c904574bdd65/request/22262514-c30420d8-43b8-49a6-bac9-c7e3055bae91)",
+    "**Postman:** [POST Create a User record](https://web.postman.co/workspace/My-Workspace~cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-90953e40-85ef-43ed-9407-4c9f8742ce6c)",
   operationId: "signUp",
   security: [],
   requestBody: {
@@ -40,7 +40,7 @@ export const AuthSignIn = {
   tags: ["Auth"],
   description:
     "## SignIn a User\n" +
-    "**Postman:** [POST SignIn a User](https://lio-data.postman.co/workspace/LIO-IICE~15d79b5b-510b-4c5d-a774-c904574bdd65/request/22262514-c30420d8-43b8-49a6-bac9-c7e3055bae91)",
+    "**Postman:** [POST SignIn a User](https://web.postman.co/workspace/My-Workspace~cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-5011763f-06a4-43a4-9088-ef978a1a5c95)",
   operationId: "signIn",
   security: [],
   requestBody: {
