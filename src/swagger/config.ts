@@ -4,6 +4,7 @@ import { securitySchema } from "./security.swagger";
 import { characterPaths } from "./character/character.swagger";
 import { authPaths } from "./auth/auth.swagger";
 import { userPaths } from "./user/user.swagger";
+import { characterClassPaths } from "./character-class/character-class.swagger";
 
 export const swaggerDocument = {
   openapi: "3.0.1",
@@ -27,6 +28,7 @@ export const swaggerDocument = {
     ...authPaths,
     ...userPaths,
     ...characterPaths,
+    ...characterClassPaths,
   },
 };
 

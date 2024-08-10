@@ -1,5 +1,11 @@
 import { faker } from "@faker-js/faker";
-import { Character, User, UserRole } from "@prisma/client";
+import {
+  Attributes,
+  Character,
+  CharacterClass,
+  User,
+  UserRole,
+} from "@prisma/client";
 import cuid from "cuid";
 import { CurrentUserAuthorization } from "../middleware/security/authorization";
 import { config } from "../config";
@@ -45,4 +51,22 @@ export const getFakeUser = (partialUser?: Partial<User>): User => {
     role: partialUser?.role ?? UserRole.Player,
   };
   return user;
+};
+
+export const getFakeCharacterClass = (
+  partialCharacterClass?: Partial<CharacterClass>
+): CharacterClass => {
+  const characterClass: CharacterClass = {
+    id: partialCharacterClass?.id ?? cuid(),
+    createdAt: partialCharacterClass?.createdAt ?? new Date(),
+    updatedAt: partialCharacterClass?.updatedAt ?? new Date(),
+    deletedAt: partialCharacterClass?.createdAt ?? null,
+    className: partialCharacterClass?.className ?? faker.internet.userName(),
+    description: partialCharacterClass?.description ?? "",
+    hitPoints: partialCharacterClass?.hitPoints ?? 8,
+    keyAttributes: partialCharacterClass?.keyAttributes ?? [
+      Attributes.Strength,
+    ],
+  };
+  return characterClass;
 };

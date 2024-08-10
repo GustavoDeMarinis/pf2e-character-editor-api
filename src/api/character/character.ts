@@ -18,8 +18,18 @@ export const characterSelect = {
   updatedAt: true,
   deletedAt: true,
   characterName: true,
-  assignedUserId: true,
-  createdByUserId: true,
+  assignedUser: {
+    select: {
+      id: true,
+      userName: true,
+    },
+  },
+  createdByUser: {
+    select: {
+      id: true,
+      userName: true,
+    },
+  },
   ancestry: true,
   characterClass: true,
   background: true,
@@ -42,18 +52,32 @@ type CharacterForInsert = Pick<
 >;
 
 export const searchCharacters = async (
-  search: Pick<
-    Prisma.CharacterWhereInput,
-    "createdByUserId" | "assignedUserId" | "characterClassId"
-  > & {
+  search: {
+    userCreatorName?: string;
+    userAssignedName?: string;
+    characterClassName?: string;
     isActive?: boolean;
   },
   { skip, take }: PaginationOptions,
   sort?: string
 ): Promise<SearchResult<CharacterResult> | ErrorResult> => {
-  const { isActive, ...searchFilters } = search;
+  const {
+    isActive,
+    userAssignedName,
+    userCreatorName,
+    characterClassName,
+    ...searchFilters
+  } = search;
   const where: Prisma.CharacterWhereInput = {
-    ...searchFilters,
+    assignedUser: {
+      userName: userAssignedName,
+    },
+    createdByUser: {
+      userName: userCreatorName,
+    },
+    characterClass: {
+      className: characterClassName,
+    },
   };
 
   if (search.isActive !== undefined) {
@@ -124,7 +148,7 @@ export const insertCharacter = async (
     },
   });
   const activeCharacters = existingCharacters.find(
-    (character) => character.deletedAt !== null
+    (character) => character.deletedAt === null
   );
 
   if (activeCharacters) {

@@ -109,7 +109,7 @@ export const insertCharacterClass = async (
     },
   });
   const activeCharactersClass = existingCharactersClass.find(
-    (characterClass) => characterClass.deletedAt !== null
+    (characterClass) => characterClass.deletedAt === null
   );
 
   if (activeCharactersClass) {

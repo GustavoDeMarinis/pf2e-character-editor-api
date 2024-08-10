@@ -8,20 +8,17 @@ import {
 export const characterSearchRequestQuerySchema = {
   type: "object",
   properties: {
-    createdByUserId: {
-      description: "User Creator Id",
+    userCreatorName: {
+      description: "User Creator Name",
       type: "string",
-      checkIdIsCuid: true,
     },
-    assignedUserId: {
-      description: "User Assigned Id",
+    userAssignedName: {
+      description: "User Assigned Name",
       type: "string",
-      checkIdIsCuid: true,
     },
-    characterClassId: {
-      description: "Character Class Id",
+    characterClassName: {
+      description: "Character ClassName",
       type: "string",
-      checkIdIsCuid: true,
     },
     isActive: {
       type: "boolean",
@@ -57,13 +54,35 @@ const commonCharacterProperties = {
     description: "Character Name",
     type: "string",
   },
-  createdByUserId: {
-    description: "User Creator Id",
-    type: "string",
+  createdByUser: {
+    type: "object",
+    properties: {
+      id: {
+        description: "User Assigned Id",
+        type: "string",
+      },
+      userName: {
+        description: "User Name",
+        type: "string",
+      },
+    },
+    additionalProperties: false,
+    required: ["id", "userName"],
   },
-  assignedUserId: {
-    description: "User Assigned Id",
-    type: "string",
+  assignedUser: {
+    type: "object",
+    properties: {
+      id: {
+        description: "User Assigned Id",
+        type: "string",
+      },
+      userName: {
+        description: "User Name",
+        type: "string",
+      },
+    },
+    additionalProperties: false,
+    required: ["id", "userName"],
   },
   ancestry: {
     description: "Character Ancestry",
@@ -145,8 +164,8 @@ export const characterSearchResponseSchema = {
           "updatedAt",
           "deletedAt",
           "characterName",
-          "createdByUserId",
-          "assignedUserId",
+          "createdByUser",
+          "assignedUser",
           "ancestry",
           "characterClass",
           "background",

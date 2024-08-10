@@ -122,7 +122,7 @@ export const insertCharacterClass = {
 };
 
 const updateCharacterClass = {
-  tags: ["Character"],
+  tags: ["Character Class"],
   description:
     "## Update a Character record\n" +
     "**Postman:** [PATCH Update a Character record](https://web.postman.co/workspace/My-Workspace~cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-ac57516d-37d3-4f12-892f-d01296d09e03)",
@@ -144,7 +144,7 @@ const updateCharacterClass = {
 };
 
 export const deleteCharacterClass = {
-  tags: ["Character"],
+  tags: ["Character Class"],
   description:
     "## Delete a Character record\n" +
     "**Postman:** [DELETE Delete a Character record](https://web.postman.co/workspace/My-Workspace~cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-ac1df5eb-731d-4ef1-94df-76d1dce43556)",
@@ -170,7 +170,7 @@ const parameterId = {
   ],
 };
 
-export const characterPaths = {
+export const characterClassPaths = {
   "/characterClass": {
     post: insertCharacterClass,
     get: searchCharacterClass,
