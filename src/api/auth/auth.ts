@@ -81,7 +81,7 @@ export const signUp = async (
 export const signIn = async (
   res: Response,
   userToAuthenticate: AuthUsingEmailParams | AuthUsingUserNameParams
-): Promise<Pick<User, "id" | "role"> | ErrorResult> => {
+): Promise<(Pick<User, "id" | "role"> & { token: string }) | ErrorResult> => {
   if (!checkInputPasswordFormat(userToAuthenticate.password)) {
     return {
       code: ErrorCode.Forbidden,
@@ -117,9 +117,9 @@ export const signIn = async (
       message: "Forbidden",
     };
   }
-  jwtSign(res, { userId: user.id, role: user.role });
+  const token = jwtSign(res, { userId: user.id, role: user.role });
   const { password, ...publicUser } = user;
-  return { ...publicUser };
+  return { ...publicUser, token };
 };
 
 export const changePassword = async (

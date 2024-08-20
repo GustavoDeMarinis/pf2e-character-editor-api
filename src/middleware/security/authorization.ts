@@ -25,16 +25,17 @@ export const getCurrentUserAuthorization = (
   };
 };
 
-export const jwtSign = (res: Response, payload: PayloadType): void => {
+export const jwtSign = (res: Response, payload: PayloadType): string => {
   const token = jwt.sign(payload, config.JWT_SECRET_KEY, {
     expiresIn: config.JWT_EXPIRATION_PERIOD,
   });
   res.cookie("access_token", token, {
-    httpOnly: true, //Cookie can only be access by server
+    httpOnly: false, //Cookie can only be access by server
     secure: false, // Cookie can only be access by https
     sameSite: true,
   });
   res.cookie("user", payload);
+  return token;
 };
 
 export const jwtVerify = (req: Request) => {
@@ -49,6 +50,7 @@ export const authorize = (roleAuthOptions?: { roles: UserRole[] }) => {
     next: NextFunction
   ): Promise<Response | void> {
     try {
+      jwtVerify(req);
       if (roleAuthOptions?.roles) {
         const roleAuthorized = roleAuthOptions.roles.includes(
           req.cookies.user.role
@@ -59,7 +61,6 @@ export const authorize = (roleAuthOptions?: { roles: UserRole[] }) => {
           });
         }
       }
-      jwtVerify(req);
     } catch (err) {
       const error = err as { message: string; name: string };
       switch (error.message) {

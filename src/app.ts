@@ -1,13 +1,31 @@
 import router from "./router";
 import express from "express";
 import cookieParser from "cookie-parser";
-
+import cors from "cors";
 const app = express();
 app.use(cookieParser());
+
+app.use((req, res, next) => {
+  if (req.cookies.user) {
+    try {
+      req.cookies.user = JSON.parse(req.cookies.user);
+    } catch (err) {
+      console.error("Failed to parse user cookie", err);
+    }
+  }
+  next();
+});
 app.use((req, res, next) => {
   console.log(`Received request for ${req.url}`);
   next();
 });
+
+const corsOptions = {
+  origin: "http://localhost:3000", // Allow requests only from this origin
+  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+};
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(router);

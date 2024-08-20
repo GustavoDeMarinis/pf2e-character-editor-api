@@ -63,3 +63,84 @@ model User {
   characters        Character[] @relation("User_assignedUserId_fkey")
   charactersCreated Character[] @relation("User_createdByUserId_fkey")
 }
+
+enum WeaponCategory {
+  Simple
+  Martial
+  Advanced
+  MataHombresDeArena
+}
+
+enum WeaponDamageType {
+  Bludgeoning
+  Slashing
+  Piercing
+}
+
+enum WeaponType {
+  Melee
+  Ranged
+}
+
+enum WeaponHands {
+  One
+  Two
+  Both
+}
+
+model WeaponBase {
+  id                 String             @id @default(cuid())
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  deletedAt          DateTime?
+  name               String
+  category           WeaponCategory
+  ancestry           String? //Todo create Ancestry table
+  damageType         WeaponDamageType[]
+  diceAmount         Int
+  diceSize           Int
+  criticalDiceAmount Int?
+  criticalDiceSize   Int?
+  weaponGroup        WeaponGroup        @relation(fields: [weaponGroupId], references: [id])
+  weaponGroupId      String
+  weaponTrait        WeaponTrait[]
+  hands              WeaponHands
+  range              Int
+}
+
+model WeaponGroup {
+  id                             String                       @id @default(cuid())
+  createdAt                      DateTime                     @default(now())
+  updatedAt                      DateTime                     @updatedAt
+  deletedAt                      DateTime?
+  name                           String
+  weaponBase                     WeaponBase[]
+  criticalSpecialization         WeaponCriticalSpecialization @relation(fields: [weaponCriticalSpecializationId], references: [id])
+  weaponCriticalSpecializationId String
+}
+
+model WeaponTrait {
+  id         String       @id @default(cuid())
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  deletedAt  DateTime?
+  name       String
+  weaponBase WeaponBase[]
+}
+
+model WeaponCriticalSpecialization {
+  id          String        @id @default(cuid())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
+  name        String
+  weaponGroup WeaponGroup[]
+}
+
+// model itemPasiveBonus {
+//   id        String   @id @default(cuid())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   bonusTo   String
+//   bonusType String
+// }
