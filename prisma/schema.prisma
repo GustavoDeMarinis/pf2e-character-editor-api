@@ -43,7 +43,7 @@ model CharacterClass {
   description   String
   keyAttributes Attributes[]
   hitPoints     Int
-  character     Character[]
+  characters    Character[]
 }
 
 enum UserRole {
@@ -97,14 +97,14 @@ model WeaponBase {
   description        String
   category           WeaponCategory
   ancestry           String? //Todo create Ancestry table
-  damageType         WeaponDamageType[]
+  damageTypes        WeaponDamageType[]
   diceAmount         Int
   diceSize           Int
   criticalDiceAmount Int?
   criticalDiceSize   Int?
   weaponGroup        WeaponGroup        @relation(fields: [weaponGroupId], references: [id])
   weaponGroupId      String
-  weaponTrait        WeaponTrait[]
+  traits             Trait[]
   hands              WeaponHands
   range              Int
   bulk               String
@@ -117,29 +117,31 @@ model WeaponGroup {
   deletedAt                      DateTime?
   name                           String
   description                    String
-  weaponBase                     WeaponBase[]
+  weaponBases                    WeaponBase[]
   criticalSpecialization         WeaponCriticalSpecialization @relation(fields: [weaponCriticalSpecializationId], references: [id])
   weaponCriticalSpecializationId String
 }
 
-model WeaponTrait {
+model Trait {
   id          String       @id @default(cuid())
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   deletedAt   DateTime?
   name        String
   description String
-  weaponBase  WeaponBase[]
+  weaponBases WeaponBase[]
+  armorBases  ArmorBase[]
+  runes       Rune[]
 }
 
 model WeaponCriticalSpecialization {
-  id          String        @id @default(cuid())
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  deletedAt   DateTime?
-  name        String
-  description String
-  weaponGroup WeaponGroup[]
+  id           String        @id @default(cuid())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  deletedAt    DateTime?
+  name         String
+  description  String
+  weaponGroups WeaponGroup[]
 }
 
 enum ItemRarity {
@@ -162,7 +164,7 @@ model ArmorBase {
   deletedAt     DateTime?
   name          String
   rarity        ItemRarity
-  armorTrait    ArmorTrait[]
+  traits        Trait[]
   armorCategory ArmorCategory
   AC            Int
   dexCap        Int
@@ -175,16 +177,6 @@ model ArmorBase {
   armorGroupId  String
 }
 
-model ArmorTrait {
-  id          String      @id @default(cuid())
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  deletedAt   DateTime?
-  name        String
-  description String
-  armorBase   ArmorBase[]
-}
-
 model ArmorGroup {
   id          String      @id @default(cuid())
   createdAt   DateTime    @default(now())
@@ -192,5 +184,28 @@ model ArmorGroup {
   deletedAt   DateTime?
   name        String
   description String
-  armorBase   ArmorBase[]
+  armorBases  ArmorBase[]
+}
+
+enum RuneItemSubcategory {
+  WeaponProperty
+  WeaponFundamental
+  ArmorProperty
+  ArmorFundamental
+  Shield
+  Accessory
+}
+
+model Rune {
+  id                  String              @id @default(cuid())
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  deletedAt           DateTime?
+  name                String
+  description         String
+  rarity              ItemRarity
+  traits              Trait[]
+  runeItemSubcategory RuneItemSubcategory
+  level               Int                 @default(1)
+  price               Int
 }
