@@ -94,6 +94,7 @@ model WeaponBase {
   updatedAt          DateTime           @updatedAt
   deletedAt          DateTime?
   name               String
+  description        String
   category           WeaponCategory
   ancestry           String? //Todo create Ancestry table
   damageType         WeaponDamageType[]
@@ -106,6 +107,7 @@ model WeaponBase {
   weaponTrait        WeaponTrait[]
   hands              WeaponHands
   range              Int
+  bulk               String
 }
 
 model WeaponGroup {
@@ -114,18 +116,20 @@ model WeaponGroup {
   updatedAt                      DateTime                     @updatedAt
   deletedAt                      DateTime?
   name                           String
+  description                    String
   weaponBase                     WeaponBase[]
   criticalSpecialization         WeaponCriticalSpecialization @relation(fields: [weaponCriticalSpecializationId], references: [id])
   weaponCriticalSpecializationId String
 }
 
 model WeaponTrait {
-  id         String       @id @default(cuid())
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  deletedAt  DateTime?
-  name       String
-  weaponBase WeaponBase[]
+  id          String       @id @default(cuid())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
+  name        String
+  description String
+  weaponBase  WeaponBase[]
 }
 
 model WeaponCriticalSpecialization {
@@ -134,13 +138,59 @@ model WeaponCriticalSpecialization {
   updatedAt   DateTime      @updatedAt
   deletedAt   DateTime?
   name        String
+  description String
   weaponGroup WeaponGroup[]
 }
 
-// model itemPasiveBonus {
-//   id        String   @id @default(cuid())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   bonusTo   String
-//   bonusType String
-// }
+enum ItemRarity {
+  Common
+  Uncommon
+  Rare
+}
+
+enum ArmorCategory {
+  Unnarmored
+  Light
+  Medium
+  Heavy
+}
+
+model ArmorBase {
+  id            String        @id @default(cuid())
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  deletedAt     DateTime?
+  name          String
+  rarity        ItemRarity
+  armorTrait    ArmorTrait[]
+  armorCategory ArmorCategory
+  AC            Int
+  dexCap        Int
+  checkPenalty  Int
+  speedPenalty  Int
+  strengthReq   Int
+  price         Int
+  bulk          String
+  armorGroup    ArmorGroup    @relation(fields: [armorGroupId], references: [id])
+  armorGroupId  String
+}
+
+model ArmorTrait {
+  id          String      @id @default(cuid())
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  deletedAt   DateTime?
+  name        String
+  description String
+  armorBase   ArmorBase[]
+}
+
+model ArmorGroup {
+  id          String      @id @default(cuid())
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  deletedAt   DateTime?
+  name        String
+  description String
+  armorBase   ArmorBase[]
+}
