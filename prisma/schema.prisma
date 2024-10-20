@@ -68,7 +68,6 @@ enum WeaponCategory {
   Simple
   Martial
   Advanced
-  MataHombresDeArena
 }
 
 enum WeaponDamageType {
@@ -85,7 +84,6 @@ enum WeaponType {
 enum WeaponHands {
   One
   Two
-  Both
 }
 
 model WeaponBase {
@@ -96,7 +94,6 @@ model WeaponBase {
   name               String
   description        String
   category           WeaponCategory
-  ancestry           String? //Todo create Ancestry table
   damageTypes        WeaponDamageType[]
   diceAmount         Int
   diceSize           Int
@@ -105,7 +102,7 @@ model WeaponBase {
   weaponGroup        WeaponGroup        @relation(fields: [weaponGroupId], references: [id])
   weaponGroupId      String
   traits             Trait[]
-  hands              WeaponHands
+  hands              WeaponHands[]
   range              Int
   bulk               String
 }

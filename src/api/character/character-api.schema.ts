@@ -196,6 +196,7 @@ export const characterGetResponseSchema = {
   properties: {
     ...commonCharacterProperties,
   },
+  additionalProperties: false,
   required: [
     "id",
     "createdAt",
@@ -208,7 +209,6 @@ export const characterGetResponseSchema = {
     "characterClass",
     "background",
   ],
-  additionalProperties: false,
 } as const;
 
 export const characterPostRequestBodySchema = {

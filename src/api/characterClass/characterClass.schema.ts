@@ -93,6 +93,7 @@ export const characterClassSearchRequestQuerySchema = {
     },
     ...paginationRequestPropertySchema,
   },
+  additionalProperties: false,
 } as const;
 
 export const characterClassGetResponseSchema = {

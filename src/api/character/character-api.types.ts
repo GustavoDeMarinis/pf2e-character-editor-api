@@ -21,8 +21,7 @@ export type CharacterSearchResponse = FromSchema<
 >;
 
 export type CharacterRequestParams = FromSchema<
-  typeof characterRequestParamsSchema,
-  CommonDeserializationOptions
+  typeof characterRequestParamsSchema
 >;
 
 export type CharacterGetResponse = FromSchema<
