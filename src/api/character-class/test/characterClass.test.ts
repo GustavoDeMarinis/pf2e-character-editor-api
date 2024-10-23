@@ -9,7 +9,7 @@ import {
   insertCharacterClass,
   searchCharactersClass,
   updateCharacterClass,
-} from "../characterClass";
+} from "../character-class";
 
 describe("CharacterClass tests", () => {
   beforeEach(() => {

@@ -19,6 +19,9 @@ CREATE TYPE "ArmorCategory" AS ENUM ('Unnarmored', 'Light', 'Medium', 'Heavy');
 -- CreateEnum
 CREATE TYPE "RuneItemSubcategory" AS ENUM ('WeaponProperty', 'WeaponFundamental', 'ArmorProperty', 'ArmorFundamental', 'Shield', 'Accessory');
 
+-- AlterTable
+ALTER TABLE "CharacterClass" ALTER COLUMN "description" DROP NOT NULL;
+
 -- CreateTable
 CREATE TABLE "WeaponBase" (
     "id" TEXT NOT NULL,
@@ -26,7 +29,7 @@ CREATE TABLE "WeaponBase" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
     "name" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
+    "description" TEXT,
     "category" "WeaponCategory" NOT NULL,
     "damageTypes" "WeaponDamageType"[],
     "diceAmount" INTEGER NOT NULL,
@@ -35,8 +38,8 @@ CREATE TABLE "WeaponBase" (
     "criticalDiceSize" INTEGER,
     "weaponGroupId" TEXT NOT NULL,
     "hands" "WeaponHands"[],
-    "range" INTEGER NOT NULL,
-    "bulk" TEXT NOT NULL,
+    "range" INTEGER,
+    "bulk" TEXT,
 
     CONSTRAINT "WeaponBase_pkey" PRIMARY KEY ("id")
 );
@@ -48,7 +51,6 @@ CREATE TABLE "WeaponGroup" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
     "name" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
     "weaponCriticalSpecializationId" TEXT NOT NULL,
 
     CONSTRAINT "WeaponGroup_pkey" PRIMARY KEY ("id")
@@ -61,7 +63,7 @@ CREATE TABLE "Trait" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
     "name" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
+    "description" TEXT,
 
     CONSTRAINT "Trait_pkey" PRIMARY KEY ("id")
 );
@@ -73,7 +75,7 @@ CREATE TABLE "WeaponCriticalSpecialization" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
     "name" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
+    "description" TEXT,
 
     CONSTRAINT "WeaponCriticalSpecialization_pkey" PRIMARY KEY ("id")
 );
@@ -106,7 +108,7 @@ CREATE TABLE "ArmorGroup" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
     "name" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
+    "description" TEXT,
 
     CONSTRAINT "ArmorGroup_pkey" PRIMARY KEY ("id")
 );
@@ -118,7 +120,7 @@ CREATE TABLE "Rune" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
     "name" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
+    "description" TEXT,
     "rarity" "ItemRarity" NOT NULL,
     "runeItemSubcategory" "RuneItemSubcategory" NOT NULL,
     "level" INTEGER NOT NULL DEFAULT 1,

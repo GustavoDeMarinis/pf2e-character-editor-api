@@ -5,6 +5,7 @@ import {
   WeaponDamageType,
 } from "@prisma/client";
 import {
+  ErrorCode,
   ErrorResult,
   PaginationOptions,
   SearchResult,
@@ -59,7 +60,23 @@ export const weaponBaseArgs = Prisma.validator<Prisma.WeaponBaseDefaultArgs>()({
 export type WeaponBaseResult = Prisma.WeaponBaseGetPayload<
   typeof weaponBaseArgs
 >;
-
+type WeaponBaseToInsert = Pick<
+  Prisma.WeaponBaseUncheckedCreateInput,
+  | "name"
+  | "description"
+  | "category"
+  | "damageTypes"
+  | "diceAmount"
+  | "diceSize"
+  | "criticalDiceAmount"
+  | "criticalDiceSize"
+  | "hands"
+  | "range"
+  | "bulk"
+> & {
+  weaponGroupId: string;
+  traitIds: string[];
+};
 export const searchWeaponBase = async (
   search: {
     category?: WeaponCategory;
@@ -121,4 +138,103 @@ export const getWeaponBase = async ({
     });
   }
   return weaponBase;
+};
+
+export const insertWeaponBase = async (
+  weaponBaseToInsert: WeaponBaseToInsert
+): Promise<WeaponBaseResult | ErrorResult> => {
+  const existingWeaponBase = await prisma.weaponBase.findMany({
+    select: {
+      id: true,
+      deletedAt: true,
+      name: true,
+    },
+    where: {
+      name: weaponBaseToInsert.name,
+    },
+  });
+  const activeWeaponBaseClass = existingWeaponBase.find(
+    (weaponBase) => weaponBase.deletedAt === null
+  );
+
+  if (activeWeaponBaseClass) {
+    return {
+      code: ErrorCode.DataConflict,
+      message: "There is already a Weapon Base record with that name",
+    };
+  }
+
+  const createdWeaponBase = prisma.weaponBase.create({
+    select: weaponBaseSelect,
+    data: {
+      ...weaponBaseToInsert,
+    },
+  });
+
+  return createdWeaponBase;
+};
+
+export const updateWeaponBase = async (
+  { id }: Prisma.WeaponBaseWhereUniqueInput,
+  weaponBaseToUpdate: Pick<
+    Prisma.WeaponBaseUncheckedUpdateInput,
+    | "name"
+    | "description"
+    | "category"
+    | "damageTypes"
+    | "diceAmount"
+    | "diceSize"
+    | "criticalDiceAmount"
+    | "criticalDiceSize"
+    | "weaponGroupId"
+    | "hands"
+    | "range"
+    | "bulk"
+  > & { traitIds?: string[] | undefined },
+  reactivate?: false
+): Promise<WeaponBase | ErrorResult> => {
+  const data: Prisma.WeaponBaseUncheckedUpdateInput = {
+    ...weaponBaseToUpdate,
+  };
+  if (reactivate) {
+    data.deletedAt = null;
+  }
+
+  const updatedWeaponBase = await prisma.weaponBase.update({
+    where: { id },
+    data,
+  });
+
+  return updatedWeaponBase;
+};
+
+export const deleteWeaponBase = async ({
+  id,
+}: Prisma.WeaponBaseWhereUniqueInput): Promise<WeaponBase | ErrorResult> => {
+  const existingWeaponBase = await prisma.weaponBase.findUnique({
+    select: {
+      deletedAt: true,
+    },
+    where: {
+      id,
+    },
+  });
+  if (!existingWeaponBase || existingWeaponBase.deletedAt) {
+    return {
+      code: ErrorCode.NotFound,
+      message: `Weapon Base Not Found`,
+    };
+  }
+  const data = {
+    deletedAt: new Date(),
+  };
+
+  const deletedWeaponBase = await prisma.weaponBase.update({
+    data,
+    where: {
+      id,
+    },
+  });
+
+  return deletedWeaponBase;
 };

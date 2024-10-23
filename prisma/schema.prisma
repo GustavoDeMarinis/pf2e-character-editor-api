@@ -40,7 +40,7 @@ model CharacterClass {
   updatedAt     DateTime     @updatedAt
   deletedAt     DateTime?
   className     String
-  description   String
+  description   String?
   keyAttributes Attributes[]
   hitPoints     Int
   characters    Character[]
@@ -92,7 +92,7 @@ model WeaponBase {
   updatedAt          DateTime           @updatedAt
   deletedAt          DateTime?
   name               String
-  description        String
+  description        String?
   category           WeaponCategory
   damageTypes        WeaponDamageType[]
   diceAmount         Int
@@ -103,8 +103,8 @@ model WeaponBase {
   weaponGroupId      String
   traits             Trait[]
   hands              WeaponHands[]
-  range              Int
-  bulk               String
+  range              Int?
+  bulk               String?
 }
 
 model WeaponGroup {
@@ -113,7 +113,6 @@ model WeaponGroup {
   updatedAt                      DateTime                     @updatedAt
   deletedAt                      DateTime?
   name                           String
-  description                    String
   weaponBases                    WeaponBase[]
   criticalSpecialization         WeaponCriticalSpecialization @relation(fields: [weaponCriticalSpecializationId], references: [id])
   weaponCriticalSpecializationId String
@@ -125,7 +124,8 @@ model Trait {
   updatedAt   DateTime     @updatedAt
   deletedAt   DateTime?
   name        String
-  description String
+  description String?
+  //TODO add value property, this will set the amount of bonifier for traits like, deadly, Thrown etc. 
   weaponBases WeaponBase[]
   armorBases  ArmorBase[]
   runes       Rune[]
@@ -137,7 +137,7 @@ model WeaponCriticalSpecialization {
   updatedAt    DateTime      @updatedAt
   deletedAt    DateTime?
   name         String
-  description  String
+  description  String?
   weaponGroups WeaponGroup[]
 }
 
@@ -180,7 +180,7 @@ model ArmorGroup {
   updatedAt   DateTime    @updatedAt
   deletedAt   DateTime?
   name        String
-  description String
+  description String?
   armorBases  ArmorBase[]
 }
 
@@ -199,7 +199,7 @@ model Rune {
   updatedAt           DateTime            @updatedAt
   deletedAt           DateTime?
   name                String
-  description         String
+  description         String?
   rarity              ItemRarity
   traits              Trait[]
   runeItemSubcategory RuneItemSubcategory

@@ -110,7 +110,7 @@ const commonWeaponBaseProperties = {
     },
   },
   hands: {
-    description: "Weapon Hands Options",
+    description: "Weapon Base Hands Options",
     type: "array",
     items: {
       type: "string",
@@ -280,8 +280,36 @@ export const weaponBasePostRequestBodySchema = {
     weaponGroupId: {
       description: "Weapon Base Group Id",
       type: "string",
+      checkIdIsCuid: true,
+    },
+    traitIds: {
+      description: "Weapon Base Trait Ids",
+      type: "array",
+      items: {
+        type: "string",
+        checkIdIsCuid: true,
+      },
+    },
+    hands: {
+      description: "Weapon Base Hands Options",
+      type: "array",
+      items: {
+        type: "string",
+        enum: Object.values(WeaponHands),
+      },
+    },
+    range: {
+      description: "Weapon Range",
+      type: "integer",
+      nullable: true,
+    },
+    bulk: {
+      description: "Weapon Amount of Bulks To Carry",
+      type: "string",
+      nullable: true,
     },
   },
+  additionalProperties: false,
   required: [
     "name",
     "description",
@@ -292,5 +320,101 @@ export const weaponBasePostRequestBodySchema = {
     "criticalDiceAmount",
     "criticalDiceSize",
     "weaponGroupId",
+    "traitIds",
+    "hands",
+    "range",
+    "bulk",
+  ],
+} as const;
+
+export const weaponBasePatchRequestBodySchema = {
+  type: "object",
+  properties: {
+    name: {
+      description: "Weapon Base Name",
+      type: "string",
+    },
+    description: {
+      description: "Weapon Base Description",
+      type: "string",
+    },
+    category: {
+      description: "Weapon Base Category",
+      type: "string",
+      enum: Object.values(WeaponCategory),
+    },
+    damageTypes: {
+      description: "Weapon Base Damage Types",
+      type: "array",
+      items: {
+        types: "string",
+        enum: Object.values(WeaponDamageType),
+      },
+    },
+    diceAmount: {
+      description: "Number Of Damage Dice",
+      type: "integer",
+    },
+    diceSize: {
+      description: "Size of Damage Dice",
+      type: "integer",
+    },
+    criticalDiceAmount: {
+      description: "Number Of Damage Dice On A Critical Hit",
+      type: "integer",
+      nullable: true,
+    },
+    criticalDiceSize: {
+      description: "Size of Damage Dice On A Critical Hit",
+      type: "integer",
+      nullable: true,
+    },
+    weaponGroupId: {
+      description: "Weapon Base Group Id",
+      type: "string",
+      checkIdIsCuid: true,
+    },
+    traitIds: {
+      description: "Weapon Base Trait Ids",
+      type: "array",
+      items: {
+        type: "string",
+        checkIdIsCuid: true,
+      },
+    },
+    hands: {
+      description: "Weapon Base Hands Options",
+      type: "array",
+      items: {
+        type: "string",
+        enum: Object.values(WeaponHands),
+      },
+    },
+    range: {
+      description: "Weapon Range",
+      type: "integer",
+      nullable: true,
+    },
+    bulk: {
+      description: "Weapon Amount of Bulks To Carry",
+      type: "string",
+      nullable: true,
+    },
+  },
+  additionalProperties: false,
+  anyOf: [
+    { required: ["name"] },
+    { required: ["description"] },
+    { required: ["category"] },
+    { required: ["damageTypes"] },
+    { required: ["diceAmount"] },
+    { required: ["diceSize"] },
+    { required: ["criticalDiceAmount"] },
+    { required: ["criticalDiceSize"] },
+    { required: ["weaponGroupId"] },
+    { required: ["traitIds"] },
+    { required: ["hands"] },
+    { required: ["range"] },
+    { required: ["bulk"] },
   ],
 } as const;

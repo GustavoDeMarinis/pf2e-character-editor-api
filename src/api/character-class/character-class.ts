@@ -32,7 +32,7 @@ export type CharacterClassResult = Prisma.CharacterClassGetPayload<
   typeof characterClassArgs
 >;
 
-type CharacterClassForInsert = Pick<
+type CharacterClassToInsert = Pick<
   Prisma.CharacterClassUncheckedCreateInput,
   "className" | "description" | "keyAttributes" | "hitPoints"
 >;
@@ -96,7 +96,7 @@ export const getCharacterClass = async ({
 };
 
 export const insertCharacterClass = async (
-  characterClassForInsert: CharacterClassForInsert
+  characterClassToInsert: CharacterClassToInsert
 ): Promise<CharacterClassResult | ErrorResult> => {
   const existingCharactersClass = await prisma.characterClass.findMany({
     select: {
@@ -105,7 +105,7 @@ export const insertCharacterClass = async (
       className: true,
     },
     where: {
-      className: characterClassForInsert.className,
+      className: characterClassToInsert.className,
     },
   });
   const activeCharactersClass = existingCharactersClass.find(
@@ -122,7 +122,7 @@ export const insertCharacterClass = async (
   const createdCharacter = prisma.characterClass.create({
     select: characterClassSelect,
     data: {
-      ...characterClassForInsert,
+      ...characterClassToInsert,
     },
   });
 

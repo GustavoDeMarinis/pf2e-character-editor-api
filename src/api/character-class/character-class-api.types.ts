@@ -8,7 +8,7 @@ import {
   characterClassRequestParamsSchema,
   characterClassSearchRequestQuerySchema,
   characterClassSearchResponseSchema,
-} from "./characterClass.schema";
+} from "./character-class.schema";
 
 export type CharacterClassSearchRequestQuery = FromSchema<
   typeof characterClassSearchRequestQuerySchema,

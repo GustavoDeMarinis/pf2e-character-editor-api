@@ -9,7 +9,7 @@ import {
   CharacterClassRequestParams,
   CharacterClassSearchRequestQuery,
   CharacterClassSearchResponse,
-} from "./characterClass-api.types";
+} from "./character-class-api.types";
 import { validateJSONSchemaObject } from "../../middleware/validators/ajv-validator";
 import {
   createDeleteResponse,
@@ -25,13 +25,13 @@ import {
   insertCharacterClass,
   searchCharactersClass,
   updateCharacterClass,
-} from "./characterClass";
+} from "./character-class";
 import {
   characterClassPatchRequestBodySchema,
   characterClassPostRequestBodySchema,
   characterClassRequestParamsSchema,
   characterClassSearchRequestQuerySchema,
-} from "./characterClass.schema";
+} from "./character-class.schema";
 import { CharacterClass } from "@prisma/client";
 
 export const handleSearchCharacterClass = async (

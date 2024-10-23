@@ -2,7 +2,13 @@ import Router from "express-promise-router";
 
 import { authorize } from "../../middleware/security/authorization";
 import { UserRole } from "@prisma/client";
-import { handleGetWeaponBase, handleSearchWeaponBase } from "./weapon-base-api";
+import {
+  handleDeleteWeaponBase,
+  handleGetWeaponBase,
+  handlePatchWeaponBase,
+  handlePostWeaponBase,
+  handleSearchWeaponBase,
+} from "./weapon-base-api";
 
 const router = Router();
 
@@ -29,6 +35,7 @@ router.patch(
   authorize({ roles: [UserRole.Admin, UserRole.Player] }),
   handlePatchWeaponBase
 );
+
 router.delete(
   "/:weaponBaseId",
   authorize({ roles: [UserRole.Admin, UserRole.Player] }),

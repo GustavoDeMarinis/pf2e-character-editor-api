@@ -5,7 +5,7 @@ import {
   characterClassRequestParamsSchema,
   characterClassSearchRequestQuerySchema,
   characterClassSearchResponseSchema,
-} from "../../api/characterClass/characterClass.schema";
+} from "../../api/character-class/character-class.schema";
 import { commonErrorsResponseSchema } from "../error.swagger";
 import { securitySchema } from "../security.swagger";
 

@@ -3,12 +3,15 @@ import { ErrorResponse } from "../../utils/shared-types";
 import { validateJSONSchemaObject } from "../../middleware/validators/ajv-validator";
 import { getPaginationOptions } from "../../utils/pagination";
 import {
+  createDeleteResponse,
   createGetArrayResponse,
   createGetResponse,
+  createPatchResponse,
   createPostResponse,
 } from "../../utils/http-response-factory";
 import {
   WeaponBaseGetResponse,
+  WeaponBasePatchRequestBody,
   WeaponBasePostRequestBody,
   WeaponBasePostResponse,
   WeaponBaseRequestParams,
@@ -16,15 +19,20 @@ import {
   WeaponBaseSearchResponse,
 } from "./weapon-base-api.types";
 import {
+  weaponBasePatchRequestBodySchema,
   weaponBasePostRequestBodySchema,
   weaponBaseRequestParamsSchema,
   weaponBaseSearchRequestQuerySchema,
 } from "./weapon-base-api.schema";
 import {
   WeaponBaseResult,
+  deleteWeaponBase,
   getWeaponBase,
+  insertWeaponBase,
   searchWeaponBase,
+  updateWeaponBase,
 } from "./weapon-base";
+import { WeaponBase } from "@prisma/client";
 
 export const handleSearchWeaponBase = async (
   req: Request,
@@ -73,4 +81,33 @@ export const handlePostWeaponBase = async (
   const result = await insertWeaponBase(body);
 
   return createPostResponse<WeaponBaseResult>(req, res, result);
+};
+
+export const handlePatchWeaponBase = async (
+  req: Request,
+  res: Response
+): Promise<Response<void> | Response<ErrorResponse>> => {
+  const { weaponBaseId } = validateJSONSchemaObject<WeaponBaseRequestParams>(
+    weaponBaseRequestParamsSchema,
+    req.params
+  );
+  const body = validateJSONSchemaObject<WeaponBasePatchRequestBody>(
+    weaponBasePatchRequestBodySchema,
+    req.body
+  );
+  const result = await updateWeaponBase({ id: weaponBaseId }, body);
+  return createPatchResponse<WeaponBase>(res, result);
+};
+
+export const handleDeleteWeaponBase = async (
+  req: Request,
+  res: Response
+): Promise<Response<void> | Response<ErrorResponse>> => {
+  const { weaponBaseId } = validateJSONSchemaObject<WeaponBaseRequestParams>(
+    weaponBaseRequestParamsSchema,
+    req.params
+  );
+  const result = await deleteWeaponBase({ id: weaponBaseId });
+
+  return createDeleteResponse<WeaponBase>(res, result);
 };

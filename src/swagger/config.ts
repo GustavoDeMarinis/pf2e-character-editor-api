@@ -5,6 +5,7 @@ import { characterPaths } from "./character/character.swagger";
 import { authPaths } from "./auth/auth.swagger";
 import { userPaths } from "./user/user.swagger";
 import { characterClassPaths } from "./character-class/character-class.swagger";
+import { weaponBasePaths } from "./weapon-base/weapon-base.swagger";
 
 export const swaggerDocument = {
   openapi: "3.0.1",
@@ -29,6 +30,7 @@ export const swaggerDocument = {
     ...userPaths,
     ...characterPaths,
     ...characterClassPaths,
+    ...weaponBasePaths,
   },
 };
 

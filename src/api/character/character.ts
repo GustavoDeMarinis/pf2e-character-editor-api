@@ -41,7 +41,7 @@ export const characterArgs = Prisma.validator<Prisma.CharacterDefaultArgs>()({
 
 export type CharacterResult = Prisma.CharacterGetPayload<typeof characterArgs>;
 
-type CharacterForInsert = Pick<
+type CharacterToInsert = Pick<
   Prisma.CharacterUncheckedCreateInput,
   | "characterName"
   | "characterClassId"
@@ -127,7 +127,7 @@ export const getCharacter = async ({
 };
 
 export const insertCharacter = async (
-  characterForInsert: CharacterForInsert
+  characterToInsert: CharacterToInsert
 ): Promise<CharacterResult | ErrorResult> => {
   const existingCharacters = await prisma.character.findMany({
     select: {
@@ -139,10 +139,10 @@ export const insertCharacter = async (
     where: {
       AND: [
         {
-          characterName: characterForInsert.characterName,
+          characterName: characterToInsert.characterName,
         },
         {
-          createdByUserId: characterForInsert.createdByUserId,
+          createdByUserId: characterToInsert.createdByUserId,
         },
       ],
     },
@@ -161,7 +161,7 @@ export const insertCharacter = async (
   const createdCharacter = prisma.character.create({
     select: characterSelect,
     data: {
-      ...characterForInsert,
+      ...characterToInsert,
     },
   });
 

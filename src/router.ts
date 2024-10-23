@@ -3,7 +3,7 @@ import swaggerUi from "swagger-ui-express";
 import { router as characterRouter } from "./api/character";
 import { router as authRouter } from "./api/auth";
 import { router as userRouter } from "./api/user";
-import { router as characterClassRouter } from "./api/characterClass";
+import { router as characterClassRouter } from "./api/character-class";
 import { apiDocsMiddleware, swaggerDocument } from "./swagger/config";
 const router = Router();
 

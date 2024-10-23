@@ -8,7 +8,7 @@ import {
   handlePatchCharacterClass,
   handlePostCharacterClass,
   handleSearchCharacterClass,
-} from "./characterClass-api";
+} from "./character-class-api";
 
 const router = Router();
 

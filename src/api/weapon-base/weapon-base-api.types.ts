@@ -1,6 +1,7 @@
 import { FromSchema } from "json-schema-to-ts";
 import { CommonDeserializationOptions } from "../../utils/schema.types";
 import {
+  weaponBasePatchRequestBodySchema,
   weaponBasePostGetResponseSchema,
   weaponBasePostRequestBodySchema,
   weaponBaseRequestParamsSchema,
@@ -33,4 +34,8 @@ export type WeaponBasePostResponse = FromSchema<
 
 export type WeaponBasePostRequestBody = FromSchema<
   typeof weaponBasePostRequestBodySchema
+>;
+
+export type WeaponBasePatchRequestBody = FromSchema<
+  typeof weaponBasePatchRequestBodySchema
 >;

@@ -6,7 +6,6 @@ import { prismaMock } from "../../../testing/mock-prisma";
 import { getPaginationOptions } from "../../../utils/pagination";
 import { signIn, signUp } from "../auth";
 
-//TODO need to figure how to add a select, since the return should return user without password
 describe("Auth tests", () => {
   describe("Auth Sign Up", () => {
     test("Create a User succesfully", async () => {

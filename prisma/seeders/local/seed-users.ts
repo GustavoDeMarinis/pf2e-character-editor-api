@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import prisma from "../../../src/integrations/prisma/prisma-client";
 import { handlePasswordEncription } from "../../../src/api/auth/auth";
 import { config } from "../../../src/config";
+
 export const UserIds = {
   GustavoDm: "clyxamy1s00003wzugl1g7f98",
   adminUserRole: "clyxamy1t00013wzu79jl4lqd",
