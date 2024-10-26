@@ -5,10 +5,9 @@ import {
   WeaponHands,
 } from "@prisma/client";
 import prisma from "../../../src/integrations/prisma/prisma-client";
-import { traitIds } from "./seed-traits";
-import { weaponGroupIds } from "./seed-weapon-group";
+import { traitIds, weaponGroupIds } from "../../../src/utils/global-const";
 
-export const WeaponBaseIds = {
+export const weaponBaseIds = {
   dagger: "cm2igysu200009fzuciaaa2fj",
   longspear: "cm2igysu200019fzufncd0b0n",
   battleAxe: "cm2igysu200029fzu80kz6v8z",
@@ -19,7 +18,7 @@ export const WeaponBaseIds = {
 const buildLocalWeaponBases = (): Prisma.WeaponBaseUncheckedCreateInput[] => {
   const weaponBases: Prisma.WeaponBaseUncheckedCreateInput[] = [
     {
-      id: WeaponBaseIds.dagger,
+      id: weaponBaseIds.dagger,
       name: "Dagger",
       description:
         "This small, bladed weapon is held in one hand and used to stab a creature in close combat. It can also be thrown.",
@@ -42,7 +41,7 @@ const buildLocalWeaponBases = (): Prisma.WeaponBaseUncheckedCreateInput[] => {
       bulk: "L",
     },
     {
-      id: WeaponBaseIds.longspear,
+      id: weaponBaseIds.longspear,
       name: "Longspear",
       description:
         "This very long spear, sometimes called a pike, is purely for thrusting rather than throwing. Used by many soldiers and city watch for crowd control and defense against charging enemies, it must be wielded with two hands.",
@@ -61,7 +60,7 @@ const buildLocalWeaponBases = (): Prisma.WeaponBaseUncheckedCreateInput[] => {
       bulk: "2",
     },
     {
-      id: WeaponBaseIds.battleAxe,
+      id: weaponBaseIds.battleAxe,
       name: "Battle Axe",
       description:
         "This very long spear, sometimes called a pike, is purely for thrusting rather than throwing. Used by many soldiers and city watch for crowd control and defense against charging enemies, it must be wielded with two hands.",
@@ -80,7 +79,7 @@ const buildLocalWeaponBases = (): Prisma.WeaponBaseUncheckedCreateInput[] => {
       bulk: "2",
     },
     {
-      id: WeaponBaseIds.longbow,
+      id: weaponBaseIds.longbow,
       name: "Longbow",
       description:
         "This 5-foot-tall bow, usually made of a single piece of elm, hickory, or yew, has a powerful draw and is excellent at propelling arrows with great force and at an extreme distance. You must use two hands to fire a longbow, and it can't be used while mounted.",
@@ -99,7 +98,7 @@ const buildLocalWeaponBases = (): Prisma.WeaponBaseUncheckedCreateInput[] => {
       bulk: "2",
     },
     {
-      id: WeaponBaseIds.whip,
+      id: weaponBaseIds.whip,
       name: "Whip",
       description:
         "This long strand of thick leather, often braided, delivers a painful but nonlethal slash at a distance, usually accompanied by a distinctive cracking sound.",

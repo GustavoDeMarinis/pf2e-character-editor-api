@@ -33,7 +33,6 @@ export const weaponBaseSelect = {
   weaponGroup: {
     select: {
       name: true,
-      description: true,
       criticalSpecialization: {
         select: {
           name: true,

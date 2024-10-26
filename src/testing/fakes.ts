@@ -5,10 +5,16 @@ import {
   CharacterClass,
   User,
   UserRole,
+  WeaponBase,
+  WeaponCategory,
+  WeaponDamageType,
+  WeaponHands,
 } from "@prisma/client";
+
 import cuid from "cuid";
 import { CurrentUserAuthorization } from "../middleware/security/authorization";
 import { config } from "../config";
+import { weaponGroupIds } from "../utils/global-const";
 
 export function getFakeCurrentUserAuthorization(
   partialCurrentUserAuthorization?: Partial<CurrentUserAuthorization>
@@ -69,4 +75,31 @@ export const getFakeCharacterClass = (
     ],
   };
   return characterClass;
+};
+
+export const getFakeWeaponBase = (
+  partialWeaponBase?: Partial<WeaponBase>
+): WeaponBase => {
+  const weaponBase: WeaponBase = {
+    id: partialWeaponBase?.id ?? cuid(),
+    createdAt: partialWeaponBase?.createdAt ?? new Date(),
+    updatedAt: partialWeaponBase?.updatedAt ?? new Date(),
+    deletedAt: partialWeaponBase?.deletedAt ?? null,
+    name: partialWeaponBase?.name ?? faker.word.noun(),
+    description: partialWeaponBase?.description ?? "",
+    category: partialWeaponBase?.category ?? WeaponCategory.Simple,
+    damageTypes: partialWeaponBase?.damageTypes ?? [
+      WeaponDamageType.Bludgeoning,
+    ],
+    diceAmount: partialWeaponBase?.diceAmount ?? 1,
+    diceSize: partialWeaponBase?.diceSize ?? 8,
+    criticalDiceAmount: partialWeaponBase?.criticalDiceAmount ?? null,
+    criticalDiceSize: partialWeaponBase?.criticalDiceSize ?? null,
+    hands: partialWeaponBase?.hands ?? [WeaponHands.One],
+    range: partialWeaponBase?.range ?? null,
+    weaponGroupId: partialWeaponBase?.weaponGroupId ?? weaponGroupIds.flail,
+    bulk: partialWeaponBase?.bulk ?? "L",
+  };
+
+  return weaponBase;
 };

@@ -1,16 +1,6 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../../../src/integrations/prisma/prisma-client";
-
-export const traitIds = {
-  agile: "cm2l5tlrj000jmmzu1yaf8obw",
-  finesse: "cm2l5tlrj000immzu73oa5meb",
-  versatileSlashing: "cm2l5tlrj000hmmzu5my2gu6h",
-  reach: "cm2l5tlrj000gmmzuhp7f5p3h",
-  sweep: "cm2l5tlrj000fmmzub83lea8b",
-  disarm: "cm2l5tlrj000emmzu3rpc0dbj",
-  nonlethal: "cm2l5tlrj000dmmzu2uxmb53d",
-  trip: "cm2l5tlrj000cmmzu4fe2hdq1",
-};
+import { traitIds } from "../../../src/utils/global-const";
 
 const buildLocalTraits = (): Prisma.TraitUncheckedCreateInput[] => {
   const traits: Prisma.TraitUncheckedCreateInput[] = [
