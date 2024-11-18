@@ -28,7 +28,7 @@ const buildLocalUsers = async (): Promise<
     {
       id: UserIds.GustavoDm,
       userName: "GustavoDm",
-      userEmail: "gustadema@gmail.com",
+      userEmail: "gustavodm@gmail.com",
       password: await handlePasswordEncription(config.USER_DEFAULT_PASSWORD),
       role: "Admin",
     },

@@ -6,7 +6,7 @@ import {
   createPatchResponse,
   createPostResponse,
 } from "../../utils/http-response-factory";
-import { changePassword, signIn, signUp } from "./auth";
+import { changePassword, signIn, signOut, signUp } from "./auth";
 import {
   AuthPatchPasswordRequestBody,
   AuthSignInPostRequestBody,
@@ -22,6 +22,7 @@ import {
 } from "./auth-api.schema";
 import { userRequestParamsSchema } from "../user/user-api.schema";
 import { getCurrentUserAuthorization } from "../../middleware/security/authorization";
+import { createDeleteResponse } from "../../utils/http-response-factory";
 
 //TODO this should not accept role to be admin, but for now its ok...
 export const handleSignUp = async (
@@ -48,6 +49,14 @@ export const handleSignIn = async (
   const result = await signIn(res, body);
 
   return createPostResponse<Pick<User, "id" | "role">>(req, res, result);
+};
+
+export const handleSignOut = async (
+  req: Request,
+  res: Response
+): Promise<Response<void> | Response<ErrorResponse>> => {
+  const result = signOut(res);
+  return createDeleteResponse<void>(res, result);
 };
 
 export const handleChangePassword = async (

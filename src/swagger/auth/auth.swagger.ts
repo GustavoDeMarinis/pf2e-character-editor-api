@@ -62,6 +62,20 @@ export const AuthSignIn = {
     ...commonErrorsResponseSchema,
   },
 };
+export const AuthSignOut = {
+  tags: ["Auth"],
+  description:
+    "## SignOut a User\n" +
+    "**Postman:** [POST SignOut a User](https://web.postman.co/workspace/My-Workspace~cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-5011763f-06a4-43a4-9088-ef978a1a5c95)",
+  operationId: "signOut",
+  security: [],
+  responses: {
+    "201": {
+      description: "Successful User Sign Out",
+    },
+    ...commonErrorsResponseSchema,
+  },
+};
 
 const updatePassword = {
   tags: ["Auth"],
@@ -103,6 +117,9 @@ export const authPaths = {
   },
   "/auth/signUp": {
     post: AuthSignUp,
+  },
+  "/auth/signOut": {
+    post: AuthSignOut,
   },
   "/auth/password/{userId}": {
     patch: updatePassword,

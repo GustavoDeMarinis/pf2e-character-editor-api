@@ -6,7 +6,8 @@ import { ErrorCode, ErrorResult } from "../../utils/shared-types";
 import { checkInputPasswordFormat } from "../../utils/regexs";
 import {
   CurrentUserAuthorization,
-  jwtSign,
+  jwtSignIn,
+  jwtSignOut,
 } from "../../middleware/security/authorization";
 import { config } from "../../config";
 
@@ -117,9 +118,13 @@ export const signIn = async (
       message: "Forbidden",
     };
   }
-  const token = jwtSign(res, { userId: user.id, role: user.role });
+  const token = jwtSignIn(res, { userId: user.id, role: user.role });
   const { password, ...publicUser } = user;
   return { ...publicUser, token };
+};
+
+export const signOut = (res: Response): void => {
+  return jwtSignOut(res);
 };
 
 export const changePassword = async (

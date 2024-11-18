@@ -25,7 +25,7 @@ export const getCurrentUserAuthorization = (
   };
 };
 
-export const jwtSign = (res: Response, payload: PayloadType): string => {
+export const jwtSignIn = (res: Response, payload: PayloadType): string => {
   const token = jwt.sign(payload, config.JWT_SECRET_KEY, {
     expiresIn: config.JWT_EXPIRATION_PERIOD,
   });
@@ -36,6 +36,20 @@ export const jwtSign = (res: Response, payload: PayloadType): string => {
   });
   res.cookie("user", payload);
   return token;
+};
+
+export const jwtSignOut = (res: Response): void => {
+  res.clearCookie("access_token", {
+    httpOnly: true,
+    secure: false,
+    sameSite: true,
+  });
+  res.clearCookie("user", {
+    httpOnly: true,
+    secure: false,
+    sameSite: true,
+  });
+  return;
 };
 
 export const jwtVerify = (req: Request) => {
