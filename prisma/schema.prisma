@@ -155,23 +155,24 @@ enum ArmorCategory {
 }
 
 model ArmorBase {
-  id            String        @id @default(cuid())
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  deletedAt     DateTime?
-  name          String
-  rarity        ItemRarity
-  traits        Trait[]
-  armorCategory ArmorCategory
-  AC            Int
-  dexCap        Int
-  checkPenalty  Int
-  speedPenalty  Int
-  strengthReq   Int
-  price         Int
-  bulk          String
-  armorGroup    ArmorGroup    @relation(fields: [armorGroupId], references: [id])
-  armorGroupId  String
+  id           String        @id @default(cuid())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  deletedAt    DateTime?
+  name         String
+  description  String?
+  rarity       ItemRarity
+  traits       Trait[]
+  category     ArmorCategory
+  armorClass   Int
+  dexCap       Int
+  checkPenalty Int
+  speedPenalty Int
+  strengthReq  Int
+  price        Int
+  bulk         String
+  armorGroup   ArmorGroup    @relation(fields: [armorGroupId], references: [id])
+  armorGroupId String
 }
 
 model ArmorGroup {
