@@ -1,4 +1,4 @@
-import { ArmorCategory, ItemRarity, Prisma } from "@prisma/client";
+import { ArmorCategory, Rarity, Prisma } from "@prisma/client";
 import { armorGroupIds } from "../../../src/utils/global-const";
 import prisma from "../../../src/integrations/prisma/prisma-client";
 
@@ -21,7 +21,7 @@ const buildLocalArmorBases = (): Prisma.ArmorBaseUncheckedCreateInput[] => {
       strengthReq: 0,
       price: 0.1,
       category: ArmorCategory.Unarmored,
-      rarity: ItemRarity.Common,
+      rarity: Rarity.Common,
       armorGroupId: armorGroupIds.cloth,
       bulk: "L",
     },
@@ -35,7 +35,7 @@ const buildLocalArmorBases = (): Prisma.ArmorBaseUncheckedCreateInput[] => {
       strengthReq: 2,
       price: 2,
       category: ArmorCategory.Medium,
-      rarity: ItemRarity.Common,
+      rarity: Rarity.Common,
       armorGroupId: armorGroupIds.leather,
       bulk: "2",
     },
@@ -49,7 +49,7 @@ const buildLocalArmorBases = (): Prisma.ArmorBaseUncheckedCreateInput[] => {
       strengthReq: 0,
       price: 2,
       category: ArmorCategory.Light,
-      rarity: ItemRarity.Common,
+      rarity: Rarity.Common,
       armorGroupId: armorGroupIds.leather,
       bulk: "1",
     },
@@ -63,7 +63,7 @@ const buildLocalArmorBases = (): Prisma.ArmorBaseUncheckedCreateInput[] => {
       strengthReq: 4,
       price: 30,
       category: ArmorCategory.Medium,
-      rarity: ItemRarity.Common,
+      rarity: Rarity.Common,
       armorGroupId: armorGroupIds.leather,
       bulk: "4",
     },

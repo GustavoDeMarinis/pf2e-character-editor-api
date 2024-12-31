@@ -13,7 +13,8 @@ model Character {
   updatedAt        DateTime       @updatedAt
   deletedAt        DateTime?
   characterName    String
-  ancestry         String?
+  ancestry         Ancestry       @relation(fields: [ancestryId], references: [id])
+  ancestryId       String
   background       String?
   createdByUser    User           @relation("User_createdByUserId_fkey", fields: [createdByUserId], references: [id])
   createdByUserId  String
@@ -22,6 +23,45 @@ model Character {
   level            Int            @default(1)
   characterClass   CharacterClass @relation(fields: [characterClassId], references: [id])
   characterClassId String
+  ancestryBoost    Attributes[]
+  backgroundBoost  Attributes[]
+  classBoost       Attributes
+}
+
+model Ancestry {
+  id             String       @id @default(cuid())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+  name           String
+  description    String?
+  traits         Trait[]
+  hitPoints      Int
+  size           AncestrySize
+  speed          Int
+  attributeBoost Attributes[]
+  attributeFlaw  Attributes[]
+  languages      Languages[]
+  rarity         Rarity
+  Character      Character[]
+}
+
+model Languages {
+  id         String     @id @default(cuid())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  deletedAt  DateTime?
+  ancestries Ancestry[]
+  rarity     Rarity
+}
+
+enum AncestrySize {
+  Tiny
+  Small
+  Medium
+  Large
+  Huge
+  Gargantuan
 }
 
 enum Attributes {
@@ -31,7 +71,7 @@ enum Attributes {
   Intelligence
   Wisdom
   Charisma
-  Other
+  Free
 }
 
 model CharacterClass {
@@ -129,6 +169,7 @@ model Trait {
   //TODO add value property, this will set the amount of bonifier for traits like, deadly, Thrown etc. 
   weaponBases WeaponBase[]
   armorBases  ArmorBase[]
+  ancestries  Ancestry[]
   runes       Rune[]
 }
 
@@ -142,10 +183,11 @@ model WeaponCriticalSpecialization {
   weaponGroups WeaponGroup[]
 }
 
-enum ItemRarity {
+enum Rarity {
   Common
   Uncommon
   Rare
+  Secret
 }
 
 enum ArmorCategory {
@@ -162,7 +204,7 @@ model ArmorBase {
   deletedAt    DateTime?
   name         String
   description  String?
-  rarity       ItemRarity
+  rarity       Rarity
   traits       Trait[]
   category     ArmorCategory
   armorClass   Int
@@ -202,7 +244,7 @@ model Rune {
   deletedAt           DateTime?
   name                String
   description         String?
-  rarity              ItemRarity
+  rarity              Rarity
   traits              Trait[]
   runeItemSubcategory RuneItemSubcategory
   level               Int                 @default(1)

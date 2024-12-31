@@ -11,7 +11,7 @@ CREATE TYPE "WeaponType" AS ENUM ('Melee', 'Ranged');
 CREATE TYPE "WeaponHands" AS ENUM ('One', 'Two');
 
 -- CreateEnum
-CREATE TYPE "ItemRarity" AS ENUM ('Common', 'Uncommon', 'Rare');
+CREATE TYPE "Rarity" AS ENUM ('Common', 'Uncommon', 'Rare');
 
 -- CreateEnum
 CREATE TYPE "ArmorCategory" AS ENUM ('Unarmored', 'Light', 'Medium', 'Heavy');
@@ -88,7 +88,7 @@ CREATE TABLE "ArmorBase" (
     "deletedAt" TIMESTAMP(3),
     "name" TEXT NOT NULL,
     "description" TEXT,
-    "rarity" "ItemRarity" NOT NULL,
+    "rarity" "Rarity" NOT NULL,
     "category" "ArmorCategory" NOT NULL,
     "armorClass" INTEGER NOT NULL,
     "dexCap" INTEGER NOT NULL,
@@ -122,7 +122,7 @@ CREATE TABLE "Rune" (
     "deletedAt" TIMESTAMP(3),
     "name" TEXT NOT NULL,
     "description" TEXT,
-    "rarity" "ItemRarity" NOT NULL,
+    "rarity" "Rarity" NOT NULL,
     "runeItemSubcategory" "RuneItemSubcategory" NOT NULL,
     "level" INTEGER NOT NULL DEFAULT 1,
     "price" INTEGER NOT NULL,

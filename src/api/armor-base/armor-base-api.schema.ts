@@ -1,4 +1,4 @@
-import { ArmorCategory, ItemRarity } from "@prisma/client";
+import { ArmorCategory, Rarity } from "@prisma/client";
 import {
   paginationRequestPropertySchema,
   paginationRequiredPropertiesSchema,
@@ -17,7 +17,7 @@ const commonArmorBaseProperties = {
   rarity: {
     description: "Item Rarity",
     type: "string",
-    enum: Object.values(ItemRarity),
+    enum: Object.values(Rarity),
   },
   category: {
     description: "Armor Base Category",

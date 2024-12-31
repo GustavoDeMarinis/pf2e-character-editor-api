@@ -5,7 +5,7 @@ import {
   Attributes,
   Character,
   CharacterClass,
-  ItemRarity,
+  Rarity,
   User,
   UserRole,
   WeaponBase,
@@ -126,7 +126,7 @@ export const getFakeArmorBase = (
     category: partialArmorBase?.category ?? ArmorCategory.Light,
     price: 0,
     bulk: "1",
-    rarity: ItemRarity.Common,
+    rarity: Rarity.Common,
   };
   return armorBase;
 };
