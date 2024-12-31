@@ -14,7 +14,7 @@ CREATE TYPE "WeaponHands" AS ENUM ('One', 'Two');
 CREATE TYPE "ItemRarity" AS ENUM ('Common', 'Uncommon', 'Rare');
 
 -- CreateEnum
-CREATE TYPE "ArmorCategory" AS ENUM ('Unnarmored', 'Light', 'Medium', 'Heavy');
+CREATE TYPE "ArmorCategory" AS ENUM ('Unarmored', 'Light', 'Medium', 'Heavy');
 
 -- CreateEnum
 CREATE TYPE "RuneItemSubcategory" AS ENUM ('WeaponProperty', 'WeaponFundamental', 'ArmorProperty', 'ArmorFundamental', 'Shield', 'Accessory');

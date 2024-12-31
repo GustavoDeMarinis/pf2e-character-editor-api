@@ -28,39 +28,6 @@ const commonArmorBaseProperties = {
     description: "Amount Of Armor Class Bonus",
     type: "number",
   },
-  armorGroup: {
-    type: "object",
-    properties: {
-      name: {
-        description: "Armor Group Name",
-        type: "string",
-      },
-      description: {
-        description: "Armor Group Description",
-        type: "string",
-      },
-    },
-    additionalProperties: false,
-    required: ["name", "description"],
-  },
-  traits: {
-    type: "array",
-    items: {
-      type: "object",
-      properties: {
-        name: {
-          description: "Armor Trait Name",
-          type: "string",
-        },
-        description: {
-          description: "Armor Trait Description",
-          type: "string",
-        },
-      },
-      additionalProperties: false,
-      required: ["name", "description"],
-    },
-  },
   dexCap: {
     description:
       "Most AC Dexterity Can Grant To a Character While Using This Armor",
@@ -69,12 +36,12 @@ const commonArmorBaseProperties = {
   checkPenalty: {
     description:
       "Amount Of Penalty An Armor Gives To Strength & Skills If The Character Does Not Have The Required Strength",
-    type: "Number",
+    type: "number",
   },
   speedPenalty: {
     description:
       "Amount Of Penalty An Armor Gives To A Character Movement Speed",
-    type: "Number",
+    type: "number",
   },
   bulk: {
     description: "Amount of Bulks The Armor Weights",
@@ -113,6 +80,39 @@ export const armorBaseSearchResponseSchema = {
           deletedAt: {
             type: "string",
             format: "date-time-nullable",
+          },
+          armorGroup: {
+            type: "object",
+            properties: {
+              name: {
+                description: "Armor Group Name",
+                type: "string",
+              },
+              description: {
+                description: "Armor Group Description",
+                type: "string",
+              },
+            },
+            additionalProperties: false,
+            required: ["name", "description"],
+          },
+          traits: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                name: {
+                  description: "Armor Trait Name",
+                  type: "string",
+                },
+                description: {
+                  description: "Armor Trait Description",
+                  type: "string",
+                },
+              },
+              additionalProperties: false,
+              required: ["name", "description"],
+            },
           },
           ...commonArmorBaseProperties,
         },
@@ -182,6 +182,39 @@ export const armorBasePostGetResponseSchema = {
   type: "object",
   properties: {
     ...commonArmorBaseProperties,
+    armorGroup: {
+      type: "object",
+      properties: {
+        name: {
+          description: "Armor Group Name",
+          type: "string",
+        },
+        description: {
+          description: "Armor Group Description",
+          type: "string",
+        },
+      },
+      additionalProperties: false,
+      required: ["name", "description"],
+    },
+    traits: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          name: {
+            description: "Armor Trait Name",
+            type: "string",
+          },
+          description: {
+            description: "Armor Trait Description",
+            type: "string",
+          },
+        },
+        additionalProperties: false,
+        required: ["name", "description"],
+      },
+    },
   },
   required: [
     "id",
@@ -209,20 +242,29 @@ export const armorBasePostRequestBodySchema = {
   type: "object",
   properties: {
     ...commonArmorBaseProperties,
+    armorGroupId: {
+      description: "Armor Base Group Id",
+      type: "string",
+      checkIdIsCuid: true,
+    },
+    traitIds: {
+      description: "Armor Base Trait Ids",
+      type: "array",
+      items: {
+        type: "string",
+        checkIdIsCuid: true,
+      },
+    },
   },
   additionalProperties: false,
   required: [
-    "id",
-    "createdAt",
-    "updatedAt",
-    "deletedAt",
     "name",
     "description",
     "rarity",
     "category",
     "armorClass",
-    "armorGroup",
-    "traits",
+    "armorGroupId",
+    "traitIds",
     "dexCap",
     "checkPenalty",
     "speedPenalty",
@@ -236,6 +278,19 @@ export const armorBasePatchRequestBodySchema = {
   type: "object",
   properties: {
     ...commonArmorBaseProperties,
+    armorGroupId: {
+      description: "Armor Base Group Id",
+      type: "string",
+      checkIdIsCuid: true,
+    },
+    traitIds: {
+      description: "Armor Base Trait Ids",
+      type: "array",
+      items: {
+        type: "string",
+        checkIdIsCuid: true,
+      },
+    },
   },
   additionalProperties: false,
   anyOf: [
@@ -252,5 +307,7 @@ export const armorBasePatchRequestBodySchema = {
     { required: ["bulk"] },
     { required: ["strengthReq"] },
     { required: ["price"] },
+    { required: ["armorGroupId"] },
+    { required: ["traitIds"] },
   ],
 } as const;

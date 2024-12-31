@@ -37,13 +37,13 @@ const buildLocalWeaponGroup = (): Prisma.WeaponGroupCreateManyInput[] => {
 };
 
 export const seedLocalWeaponGroup = async (): Promise<{
-  weaponGroup: Prisma.WeaponGroupCreateManyInput[];
+  weaponGroups: Prisma.WeaponGroupCreateManyInput[];
 }> => {
-  const weaponGroup: Prisma.WeaponGroupCreateManyInput[] =
+  const weaponGroups: Prisma.WeaponGroupCreateManyInput[] =
     buildLocalWeaponGroup();
   await prisma.weaponGroup.createMany({
-    data: weaponGroup,
+    data: weaponGroups,
   });
 
-  return { weaponGroup };
+  return { weaponGroups };
 };

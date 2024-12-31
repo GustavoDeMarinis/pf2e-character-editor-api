@@ -171,11 +171,11 @@ const parameterId = {
 };
 
 export const characterClassPaths = {
-  "/characterClass": {
+  "/character-class": {
     post: insertCharacterClass,
     get: searchCharacterClass,
   },
-  "/characterClass/{characterClassId}": {
+  "/character-class/{characterClassId}": {
     get: getCharacterClass,
     patch: updateCharacterClass,
     delete: deleteCharacterClass,

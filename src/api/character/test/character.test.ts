@@ -78,7 +78,7 @@ describe("Character tests", () => {
   describe("Insert Character", () => {
     test("insertCharacter inserts and returns new Character", async () => {
       const fakeCharacter = getFakeCharacter();
-      prismaMock.character.findMany.mockResolvedValue([fakeCharacter]);
+      prismaMock.character.findMany.mockResolvedValue([]);
       prismaMock.character.create.mockResolvedValue(fakeCharacter);
       const result = await insertCharacter(fakeCharacter);
 

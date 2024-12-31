@@ -125,6 +125,7 @@ model Trait {
   deletedAt   DateTime?
   name        String
   description String?
+  //TODO add Type of Trait And add validation for type to be checked on adding trait to something
   //TODO add value property, this will set the amount of bonifier for traits like, deadly, Thrown etc. 
   weaponBases WeaponBase[]
   armorBases  ArmorBase[]
@@ -148,7 +149,7 @@ enum ItemRarity {
 }
 
 enum ArmorCategory {
-  Unnarmored
+  Unarmored
   Light
   Medium
   Heavy

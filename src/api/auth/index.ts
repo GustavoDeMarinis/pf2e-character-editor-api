@@ -7,7 +7,7 @@ import {
 } from "./auth-api";
 
 const router = Router();
-
+//TODO authorize
 router.post("/signIn", handleSignIn);
 router.post("/signUp", handleSignUp);
 router.post("/signOut", handleSignOut);

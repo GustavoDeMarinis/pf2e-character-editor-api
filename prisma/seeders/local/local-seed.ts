@@ -1,3 +1,5 @@
+import { seedLocalArmorBase } from "./seed-armor-base";
+import { seedLocalArmorGroup } from "./seed-armor-group";
 import { seedLocalCharacterClass } from "./seed-character-class";
 import { seedLocalCharacters } from "./seed-characters";
 import { seedLocalTraits } from "./seed-traits";
@@ -14,4 +16,6 @@ export const seedLocal = async () => {
   await seedLocalWeaponGroup();
   await seedLocalTraits();
   await seedLocalWeaponBase();
+  await seedLocalArmorGroup();
+  await seedLocalArmorBase();
 };

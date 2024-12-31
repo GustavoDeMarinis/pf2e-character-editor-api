@@ -88,11 +88,12 @@ export const searchWeaponBase = async (
   const { category, damageTypes, isActive, ...searchFilters } = search;
   const where: Prisma.WeaponBaseWhereInput = {
     category,
-    damageTypes: {
-      hasEvery: damageTypes,
-    },
   };
-
+  if (damageTypes) {
+    where.damageTypes = {
+      hasEvery: damageTypes,
+    };
+  }
   if (search.isActive !== undefined) {
     where.deletedAt = !isActive ? { not: null } : null;
   }
@@ -162,12 +163,16 @@ export const insertWeaponBase = async (
       message: "There is already a Weapon Base record with that name",
     };
   }
-
+  const { traitIds, ...rest } = weaponBaseToInsert;
+  const data: Prisma.WeaponBaseUncheckedCreateInput = {
+    ...rest,
+    traits: {
+      connect: traitIds.map((traitId) => ({ id: traitId })),
+    },
+  };
   const createdWeaponBase = prisma.weaponBase.create({
     select: weaponBaseSelect,
-    data: {
-      ...weaponBaseToInsert,
-    },
+    data,
   });
 
   return createdWeaponBase;
@@ -192,9 +197,14 @@ export const updateWeaponBase = async (
   > & { traitIds?: string[] | undefined },
   reactivate?: false
 ): Promise<WeaponBase | ErrorResult> => {
+  const { traitIds, ...rest } = weaponBaseToUpdate;
   const data: Prisma.WeaponBaseUncheckedUpdateInput = {
-    ...weaponBaseToUpdate,
+    ...rest,
+    traits: {
+      set: traitIds?.map((traitId) => ({ id: traitId })),
+    },
   };
+
   if (reactivate) {
     data.deletedAt = null;
   }

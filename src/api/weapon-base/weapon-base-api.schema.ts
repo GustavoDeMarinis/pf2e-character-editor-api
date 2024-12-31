@@ -255,7 +255,7 @@ export const weaponBasePostRequestBodySchema = {
       description: "Weapon Base Damage Types",
       type: "array",
       items: {
-        types: "string",
+        type: "string",
         enum: Object.values(WeaponDamageType),
       },
     },
@@ -347,7 +347,7 @@ export const weaponBasePatchRequestBodySchema = {
       description: "Weapon Base Damage Types",
       type: "array",
       items: {
-        types: "string",
+        type: "string",
         enum: Object.values(WeaponDamageType),
       },
     },

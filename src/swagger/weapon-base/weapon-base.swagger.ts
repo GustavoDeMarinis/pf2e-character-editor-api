@@ -12,7 +12,7 @@ const searchWeaponBase = {
   tags: ["Weapon Base"],
   description:
     "## Search Weapon Base\n" +
-    "**Postman:** [GET Search Weapon Base Class](https://web.postman.co/workspace/My-Workspace~cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-33effc6c-17ac-4f61-8eb1-af846a63c660)",
+    "**Postman:** [GET Search Weapon Base Class](https://go.postman.co/workspace/cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-eb8c6626-e34d-4d20-92f8-a45e963fa0e6)",
   operationId: "searchWeaponBase",
   security: [securitySchema],
   parameters: [
@@ -76,7 +76,7 @@ export const getWeaponBase = {
   tags: ["Weapon Base"],
   description:
     "## Get a Weapon Base\n" +
-    "**Postman:** [GET Get a Weapon Base record](https://web.postman.co/workspace/My-Workspace~cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-e22f2f5d-9719-40d8-98c8-e0a3058385f7)",
+    "**Postman:** [GET Get a Weapon Base record](https://go.postman.co/workspace/cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-eb322668-7bd8-4352-b727-79a2ccd9ea3a)",
   operationId: "getWeaponBase",
   security: [securitySchema],
   responses: {
@@ -96,7 +96,7 @@ export const insertWeaponBase = {
   tags: ["Weapon Base"],
   description:
     "## Create a Weapon Base record\n" +
-    "**Postman:** [POST Create a Weapon Base record](https://web.postman.co/workspace/My-Workspace~cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-474a9614-c2f7-4085-8613-cf6fcaf90586)",
+    "**Postman:** [POST Create a Weapon Base record](https://go.postman.co/workspace/cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-ae48adcb-f012-4bb9-83a8-d125bd7aae5a)",
   operationId: "insertWeaponBase",
   security: [securitySchema],
   requestBody: {
@@ -123,7 +123,7 @@ const updateWeaponBase = {
   tags: ["Weapon Base"],
   description:
     "## Update a Weapon Base record\n" +
-    "**Postman:** [PATCH Update a Weapon Base record](https://web.postman.co/workspace/My-Workspace~cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-ac57516d-37d3-4f12-892f-d01296d09e03)",
+    "**Postman:** [PATCH Update a Weapon Base record](https://go.postman.co/workspace/cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-83a75179-4633-400b-b1f2-15d5f001a1ff)",
   operationId: "updateWeaponBase",
   security: [securitySchema],
   requestBody: {
@@ -145,7 +145,7 @@ export const deleteWeaponBase = {
   tags: ["Weapon Base"],
   description:
     "## Delete a Weapon Base record\n" +
-    "**Postman:** [DELETE Delete a Weapon Base record](https://web.postman.co/workspace/My-Workspace~cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-ac1df5eb-731d-4ef1-94df-76d1dce43556)",
+    "**Postman:** [DELETE Delete a Weapon Base record](https://go.postman.co/workspace/cb7fd58f-a222-423d-805a-4c564f9d828a/request/16791664-20f07cf9-c79d-4b9b-b1a2-e77a565adae2)",
   operationId: "deleteWeaponBase",
   security: [securitySchema],
   responses: {
@@ -169,11 +169,11 @@ const parameterId = {
 };
 
 export const weaponBasePaths = {
-  "/weaponBase": {
+  "/weapon-base": {
     post: insertWeaponBase,
     get: searchWeaponBase,
   },
-  "/weaponBase/{weaponBaseId}": {
+  "/weapon-base/{weaponBaseId}": {
     get: getWeaponBase,
     patch: updateWeaponBase,
     delete: deleteWeaponBase,

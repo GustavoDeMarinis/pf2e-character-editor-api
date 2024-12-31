@@ -16,3 +16,9 @@ export const traitIds = {
   nonlethal: "cm2l5tlrj000dmmzu2uxmb53d",
   trip: "cm2l5tlrj000cmmzu4fe2hdq1",
 };
+
+export const armorGroupIds = {
+  cloth: "cm5acsikf000j0fzu96hh6c2c",
+  leather: "cm5acsike000h0fzu5qy79zql",
+  plate: "cm5acsike000d0fzu6o9b6whr",
+};

@@ -11,8 +11,6 @@ import {
 } from "../../middleware/security/authorization";
 import { config } from "../../config";
 
-//TODO pass this to config
-
 export const userSelect = {
   id: true,
   createdAt: true,

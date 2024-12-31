@@ -1,9 +1,4 @@
-import {
-  Prisma,
-  ArmorBase,
-  ArmorCategory,
-  ArmorDamageType,
-} from "@prisma/client";
+import { Prisma, ArmorBase, ArmorCategory } from "@prisma/client";
 import {
   ErrorCode,
   ErrorResult,
@@ -25,20 +20,16 @@ export const armorBaseSelect = {
   name: true,
   description: true,
   category: true,
-  damageTypes: true,
-  diceAmount: true,
-  diceSize: true,
-  criticalDiceAmount: true,
-  criticalDiceSize: true,
+  rarity: true,
+  armorClass: true,
+  dexCap: true,
+  checkPenalty: true,
+  speedPenalty: true,
+  strengthReq: true,
   armorGroup: {
     select: {
       name: true,
-      criticalSpecialization: {
-        select: {
-          name: true,
-          description: true,
-        },
-      },
+      description: true,
     },
   },
   traits: {
@@ -47,8 +38,7 @@ export const armorBaseSelect = {
       description: true,
     },
   },
-  hands: true,
-  range: true,
+  price: true,
   bulk: true,
 };
 
@@ -57,38 +47,36 @@ export const armorBaseArgs = Prisma.validator<Prisma.ArmorBaseDefaultArgs>()({
 });
 
 export type ArmorBaseResult = Prisma.ArmorBaseGetPayload<typeof armorBaseArgs>;
+
 type ArmorBaseToInsert = Pick<
   Prisma.ArmorBaseUncheckedCreateInput,
   | "name"
   | "description"
   | "category"
-  | "damageTypes"
-  | "diceAmount"
-  | "diceSize"
-  | "criticalDiceAmount"
-  | "criticalDiceSize"
-  | "hands"
-  | "range"
+  | "rarity"
+  | "armorClass"
+  | "dexCap"
+  | "checkPenalty"
+  | "speedPenalty"
+  | "strengthReq"
+  | "price"
   | "bulk"
 > & {
   armorGroupId: string;
   traitIds: string[];
 };
+
 export const searchArmorBase = async (
   search: {
     category?: ArmorCategory;
-    damageTypes?: ArmorDamageType[];
     isActive?: boolean;
   },
   { skip, take }: PaginationOptions,
   sort?: string
 ): Promise<SearchResult<ArmorBaseResult> | ErrorResult> => {
-  const { category, damageTypes, isActive, ...searchFilters } = search;
+  const { category, isActive, ...searchFilters } = search;
   const where: Prisma.ArmorBaseWhereInput = {
     category,
-    damageTypes: {
-      hasEvery: damageTypes,
-    },
   };
 
   if (search.isActive !== undefined) {
@@ -161,11 +149,16 @@ export const insertArmorBase = async (
     };
   }
 
+  const { traitIds, ...rest } = armorBaseToInsert;
+  const data: Prisma.ArmorBaseUncheckedCreateInput = {
+    ...rest,
+    traits: {
+      connect: traitIds.map((traitId) => ({ id: traitId })),
+    },
+  };
   const createdArmorBase = prisma.armorBase.create({
     select: armorBaseSelect,
-    data: {
-      ...armorBaseToInsert,
-    },
+    data,
   });
 
   return createdArmorBase;
@@ -178,20 +171,24 @@ export const updateArmorBase = async (
     | "name"
     | "description"
     | "category"
-    | "damageTypes"
-    | "diceAmount"
-    | "diceSize"
-    | "criticalDiceAmount"
-    | "criticalDiceSize"
-    | "armorGroupId"
-    | "hands"
-    | "range"
+    | "rarity"
+    | "armorClass"
+    | "dexCap"
+    | "checkPenalty"
+    | "speedPenalty"
+    | "strengthReq"
+    | "price"
     | "bulk"
+    | "armorGroupId"
   > & { traitIds?: string[] | undefined },
   reactivate?: false
 ): Promise<ArmorBase | ErrorResult> => {
+  const { traitIds, ...rest } = armorBaseToUpdate;
   const data: Prisma.ArmorBaseUncheckedUpdateInput = {
-    ...armorBaseToUpdate,
+    ...rest,
+    traits: {
+      set: traitIds?.map((traitId) => ({ id: traitId })),
+    },
   };
   if (reactivate) {
     data.deletedAt = null;

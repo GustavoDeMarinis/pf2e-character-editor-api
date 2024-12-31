@@ -1,8 +1,11 @@
 import { faker } from "@faker-js/faker";
 import {
+  ArmorBase,
+  ArmorCategory,
   Attributes,
   Character,
   CharacterClass,
+  ItemRarity,
   User,
   UserRole,
   WeaponBase,
@@ -14,7 +17,7 @@ import {
 import cuid from "cuid";
 import { CurrentUserAuthorization } from "../middleware/security/authorization";
 import { config } from "../config";
-import { weaponGroupIds } from "../utils/global-const";
+import { armorGroupIds, weaponGroupIds } from "../utils/global-const";
 
 export function getFakeCurrentUserAuthorization(
   partialCurrentUserAuthorization?: Partial<CurrentUserAuthorization>
@@ -102,4 +105,28 @@ export const getFakeWeaponBase = (
   };
 
   return weaponBase;
+};
+
+export const getFakeArmorBase = (
+  partialArmorBase?: Partial<ArmorBase>
+): ArmorBase => {
+  const armorBase: ArmorBase = {
+    id: partialArmorBase?.id ?? cuid(),
+    createdAt: partialArmorBase?.createdAt ?? new Date(),
+    updatedAt: partialArmorBase?.updatedAt ?? new Date(),
+    deletedAt: partialArmorBase?.deletedAt ?? null,
+    name: partialArmorBase?.name ?? faker.word.noun(),
+    description: partialArmorBase?.description ?? "",
+    armorClass: partialArmorBase?.armorClass ?? 0,
+    dexCap: partialArmorBase?.dexCap ?? 0,
+    checkPenalty: partialArmorBase?.checkPenalty ?? 0,
+    speedPenalty: partialArmorBase?.speedPenalty ?? 0,
+    strengthReq: partialArmorBase?.strengthReq ?? 0,
+    armorGroupId: partialArmorBase?.armorGroupId ?? armorGroupIds.cloth,
+    category: partialArmorBase?.category ?? ArmorCategory.Light,
+    price: 0,
+    bulk: "1",
+    rarity: ItemRarity.Common,
+  };
+  return armorBase;
 };
