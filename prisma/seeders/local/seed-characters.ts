@@ -1,7 +1,8 @@
-import { Prisma } from "@prisma/client";
+import { Attribute, Prisma } from "@prisma/client";
 import prisma from "../../../src/integrations/prisma/prisma-client";
 import { UserIds } from "./seed-users";
 import { ClassIds } from "./seed-character-class";
+import { ancestryIds } from "./seed-ancestry";
 
 const buildLocalCharacters = (): Prisma.CharacterUncheckedCreateInput[] => {
   const characters: Prisma.CharacterUncheckedCreateInput[] = [
@@ -11,6 +12,10 @@ const buildLocalCharacters = (): Prisma.CharacterUncheckedCreateInput[] => {
       assignedUserId: UserIds.GustavoDm,
       createdByUserId: UserIds.GustavoDm,
       level: 14,
+      ancestryId: ancestryIds.orc,
+      classBoost: Attribute.Strength,
+      ancestryBoost: [Attribute.Strength, Attribute.Constitution],
+      backgroundBoost: [Attribute.Strength, Attribute.Constitution],
     },
     {
       characterName: "Boro",
@@ -18,6 +23,10 @@ const buildLocalCharacters = (): Prisma.CharacterUncheckedCreateInput[] => {
       assignedUserId: UserIds.GustavoDm,
       createdByUserId: UserIds.GustavoDm,
       level: 14,
+      ancestryId: ancestryIds.human,
+      classBoost: Attribute.Strength,
+      ancestryBoost: [Attribute.Dexterity, Attribute.Constitution],
+      backgroundBoost: [Attribute.Strength, Attribute.Constitution],
     },
     {
       characterName: "Harumi",
@@ -25,6 +34,10 @@ const buildLocalCharacters = (): Prisma.CharacterUncheckedCreateInput[] => {
       assignedUserId: UserIds.GustavoDm,
       createdByUserId: UserIds.GustavoDm,
       level: 14,
+      ancestryId: ancestryIds.kitsune,
+      classBoost: Attribute.Wisdom,
+      ancestryBoost: [Attribute.Wisdom, Attribute.Intelligence],
+      backgroundBoost: [Attribute.Wisdom, Attribute.Dexterity],
     },
     {
       characterName: "Dunah",
@@ -32,6 +45,10 @@ const buildLocalCharacters = (): Prisma.CharacterUncheckedCreateInput[] => {
       assignedUserId: UserIds.GustavoDm,
       createdByUserId: UserIds.GustavoDm,
       level: 14,
+      ancestryId: ancestryIds.drow,
+      classBoost: Attribute.Wisdom,
+      ancestryBoost: [Attribute.Wisdom, Attribute.Constitution],
+      backgroundBoost: [Attribute.Wisdom, Attribute.Dexterity],
     },
     {
       characterName: "Ithrael",
@@ -39,6 +56,10 @@ const buildLocalCharacters = (): Prisma.CharacterUncheckedCreateInput[] => {
       assignedUserId: UserIds.GustavoDm,
       createdByUserId: UserIds.GustavoDm,
       level: 14,
+      ancestryId: ancestryIds.aasimar,
+      classBoost: Attribute.Strength,
+      ancestryBoost: [Attribute.Strength, Attribute.Intelligence],
+      backgroundBoost: [Attribute.Strength, Attribute.Dexterity],
     },
   ];
 

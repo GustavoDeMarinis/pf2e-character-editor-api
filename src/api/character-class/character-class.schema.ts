@@ -1,4 +1,4 @@
-import { Attributes } from "@prisma/client";
+import { Attribute } from "@prisma/client";
 import {
   paginationRequestPropertySchema,
   paginationRequiredPropertiesSchema,
@@ -35,7 +35,7 @@ const commonCharacterClassProperties = {
     type: "array",
     items: {
       type: "string",
-      enum: Object.values(Attributes),
+      enum: Object.values(Attribute),
     },
   },
   hitPoints: {
@@ -143,7 +143,7 @@ export const characterClassPostRequestBodySchema = {
       type: "array",
       items: {
         type: "string",
-        enum: Object.values(Attributes),
+        enum: Object.values(Attribute),
       },
     },
     hitPoints: {
@@ -189,7 +189,7 @@ export const characterClassPatchRequestBodySchema = {
       type: "array",
       items: {
         type: "string",
-        enum: Object.values(Attributes),
+        enum: Object.values(Attribute),
       },
     },
     hitPoints: {

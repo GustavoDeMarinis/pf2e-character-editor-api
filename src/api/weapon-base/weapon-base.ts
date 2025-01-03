@@ -85,7 +85,7 @@ export const searchWeaponBase = async (
   { skip, take }: PaginationOptions,
   sort?: string
 ): Promise<SearchResult<WeaponBaseResult> | ErrorResult> => {
-  const { category, damageTypes, isActive, ...searchFilters } = search;
+  const { category, damageTypes, isActive } = search;
   const where: Prisma.WeaponBaseWhereInput = {
     category,
   };
@@ -94,7 +94,7 @@ export const searchWeaponBase = async (
       hasEvery: damageTypes,
     };
   }
-  if (search.isActive !== undefined) {
+  if (isActive !== undefined) {
     where.deletedAt = !isActive ? { not: null } : null;
   }
   const orderBy = handleSort(sort);

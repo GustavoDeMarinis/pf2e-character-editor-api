@@ -23,9 +23,46 @@ model Character {
   level            Int            @default(1)
   characterClass   CharacterClass @relation(fields: [characterClassId], references: [id])
   characterClassId String
-  ancestryBoost    Attributes[]
-  backgroundBoost  Attributes[]
-  classBoost       Attributes
+  ancestryBoost    Attribute[]
+  backgroundBoost  Attribute[]
+  classBoost       Attribute
+  languages        Language[]
+}
+
+model ClassLevelingMap {
+  id                        String         @id @default(cuid())
+  createdAt                 DateTime       @default(now())
+  updatedAt                 DateTime       @updatedAt
+  deletedAt                 DateTime?
+  characterClass            CharacterClass @relation(fields: [characterClassId], references: [id])
+  characterClassId          String
+  level                     Int
+  abilitiesIncrease         Boolean
+  skillIncrease             Boolean
+  skillTraining             Boolean
+  ancestryFeat              Boolean
+  classFeat                 Boolean
+  skillFeat                 Boolean
+  unarmoredArmorProficiency Proficiency?
+  lightArmorProficiency     Proficiency?
+  mediumArmorProficiency    Proficiency?
+  heavyArmorProficiency     Proficiency?
+  unarmedProficiency        Proficiency?
+  simpleWeaponProficiency   Proficiency?
+  martialWeaponProficiency  Proficiency?
+  advancedWeaponProficiency Proficiency?
+  perceptionProficiency     Proficiency?
+  fortitudeProficiency      Proficiency?
+  reflexProficiency         Proficiency?
+  willProficiency           Proficiency?
+}
+
+enum Proficiency {
+  Untrained
+  Trained
+  Expert
+  Master
+  Legendary
 }
 
 model Ancestry {
@@ -39,20 +76,23 @@ model Ancestry {
   hitPoints      Int
   size           AncestrySize
   speed          Int
-  attributeBoost Attributes[]
-  attributeFlaw  Attributes[]
-  languages      Languages[]
+  attributeBoost Attribute[]
+  attributeFlaw  Attribute[]
+  languages      Language[]
   rarity         Rarity
-  Character      Character[]
+  characters     Character[]
 }
 
-model Languages {
-  id         String     @id @default(cuid())
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  deletedAt  DateTime?
-  ancestries Ancestry[]
-  rarity     Rarity
+model Language {
+  id          String      @id @default(cuid())
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  deletedAt   DateTime?
+  name        String
+  description String?
+  ancestries  Ancestry[]
+  rarity      Rarity
+  Character   Character[]
 }
 
 enum AncestrySize {
@@ -64,7 +104,7 @@ enum AncestrySize {
   Gargantuan
 }
 
-enum Attributes {
+enum Attribute {
   Strength
   Dexterity
   Constitution
@@ -75,15 +115,16 @@ enum Attributes {
 }
 
 model CharacterClass {
-  id            String       @id @default(cuid())
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  deletedAt     DateTime?
-  className     String
-  description   String?
-  keyAttributes Attributes[]
-  hitPoints     Int
-  characters    Character[]
+  id               String             @id @default(cuid())
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  deletedAt        DateTime?
+  className        String
+  description      String?
+  keyAttributes    Attribute[]
+  hitPoints        Int
+  characters       Character[]
+  classLevelingMap ClassLevelingMap[]
 }
 
 enum UserRole {

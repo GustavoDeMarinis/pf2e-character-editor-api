@@ -6,7 +6,7 @@
 
 */
 -- CreateEnum
-CREATE TYPE "Attributes" AS ENUM ('Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma', 'Other');
+CREATE TYPE "Attribute" AS ENUM ('Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma', 'Free');
 
 -- AlterTable
 ALTER TABLE "Character" DROP COLUMN "characterClass",
@@ -21,7 +21,7 @@ CREATE TABLE "CharacterClass" (
     "deletedAt" TIMESTAMP(3),
     "className" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "keyAttributes" "Attributes"[],
+    "keyAttributes" "Attribute"[],
     "hitPoints" INTEGER NOT NULL,
 
     CONSTRAINT "CharacterClass_pkey" PRIMARY KEY ("id")

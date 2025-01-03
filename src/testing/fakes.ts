@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import {
   ArmorBase,
   ArmorCategory,
-  Attributes,
+  Attribute,
   Character,
   CharacterClass,
   Rarity,
@@ -39,7 +39,7 @@ export const getFakeCharacter = (
     deletedAt: partialCharacter?.createdAt ?? null,
     characterName: partialCharacter?.characterName ?? faker.internet.userName(),
     characterClassId: partialCharacter?.characterClassId ?? cuid(),
-    ancestry: partialCharacter?.ancestry ?? faker.hacker.verb(),
+    ancestryId: partialCharacter?.ancestryId ?? cuid(),
     background: partialCharacter?.background ?? faker.hacker.verb(),
     createdByUserId: partialCharacter?.createdByUserId ?? cuid(),
     assignedUserId: partialCharacter?.assignedUserId ?? cuid(),
@@ -73,9 +73,7 @@ export const getFakeCharacterClass = (
     className: partialCharacterClass?.className ?? faker.internet.userName(),
     description: partialCharacterClass?.description ?? "",
     hitPoints: partialCharacterClass?.hitPoints ?? 8,
-    keyAttributes: partialCharacterClass?.keyAttributes ?? [
-      Attributes.Strength,
-    ],
+    keyAttributes: partialCharacterClass?.keyAttributes ?? [Attribute.Strength],
   };
   return characterClass;
 };
