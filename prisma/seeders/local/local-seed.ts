@@ -12,13 +12,13 @@ import { seedLocalWeaponGroup } from "./seed-weapon-group";
 
 export const seedLocal = async () => {
   await seedLocalUsers();
+  await seedLocalTraits();
   await seedLocalLanguages();
   await seedLocalAncestries();
   await seedLocalCharacterClass();
   await seedLocalCharacters();
   await seedLocalWeaponCriticalSpecialization();
   await seedLocalWeaponGroup();
-  await seedLocalTraits();
   await seedLocalWeaponBase();
   await seedLocalArmorGroup();
   await seedLocalArmorBase();

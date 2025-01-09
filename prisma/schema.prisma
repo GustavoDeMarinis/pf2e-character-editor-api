@@ -24,20 +24,22 @@ model Character {
   characterClass   CharacterClass @relation(fields: [characterClassId], references: [id])
   characterClassId String
   ancestryBoost    Attribute[]
+  ancestryFlaw     Attribute[]
   backgroundBoost  Attribute[]
   classBoost       Attribute
   languages        Language[]
+  classDc          Int
 }
 
 model ClassLevelingMap {
-  id                        String         @id @default(cuid())
-  createdAt                 DateTime       @default(now())
-  updatedAt                 DateTime       @updatedAt
+  id                        String            @id @default(cuid())
+  createdAt                 DateTime          @default(now())
+  updatedAt                 DateTime          @updatedAt
   deletedAt                 DateTime?
-  characterClass            CharacterClass @relation(fields: [characterClassId], references: [id])
+  characterClass            CharacterClass    @relation(fields: [characterClassId], references: [id])
   characterClassId          String
   level                     Int
-  abilitiesIncrease         Boolean
+  attributeIncrease         Boolean
   skillIncrease             Boolean
   skillTraining             Boolean
   ancestryFeat              Boolean
@@ -55,6 +57,21 @@ model ClassLevelingMap {
   fortitudeProficiency      Proficiency?
   reflexProficiency         Proficiency?
   willProficiency           Proficiency?
+  specialHabilities         SpecialHability[]
+}
+
+model SpecialHability {
+  id                 String            @id @default(cuid())
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  deletedAt          DateTime?
+  name               String
+  description        String
+  type               String
+  characterClass     CharacterClass    @relation(fields: [characterClassId], references: [id])
+  characterClassId   String
+  classLevelingMap   ClassLevelingMap? @relation(fields: [classLevelingMapId], references: [id])
+  classLevelingMapId String?
 }
 
 enum Proficiency {
@@ -115,16 +132,17 @@ enum Attribute {
 }
 
 model CharacterClass {
-  id               String             @id @default(cuid())
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  deletedAt        DateTime?
-  className        String
-  description      String?
-  keyAttributes    Attribute[]
-  hitPoints        Int
-  characters       Character[]
-  classLevelingMap ClassLevelingMap[]
+  id                String             @id @default(cuid())
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  deletedAt         DateTime?
+  className         String
+  description       String?
+  keyAttributes     Attribute[]
+  hitPoints         Int
+  characters        Character[]
+  classLevelingMap  ClassLevelingMap[]
+  specialHabilities SpecialHability[]
 }
 
 enum UserRole {

@@ -1,11 +1,15 @@
 import { faker } from "@faker-js/faker";
 import {
+  Ancestry,
+  AncestrySize,
   ArmorBase,
   ArmorCategory,
   Attribute,
   Character,
   CharacterClass,
+  Language,
   Rarity,
+  Trait,
   User,
   UserRole,
   WeaponBase,
@@ -32,6 +36,7 @@ export function getFakeCurrentUserAuthorization(
 export const getFakeCharacter = (
   partialCharacter?: Partial<Character>
 ): Character => {
+  const LEVEL = Math.floor(Math.random() * 20);
   const character: Character = {
     id: partialCharacter?.id ?? cuid(),
     createdAt: partialCharacter?.createdAt ?? new Date(),
@@ -43,7 +48,12 @@ export const getFakeCharacter = (
     background: partialCharacter?.background ?? faker.hacker.verb(),
     createdByUserId: partialCharacter?.createdByUserId ?? cuid(),
     assignedUserId: partialCharacter?.assignedUserId ?? cuid(),
-    level: partialCharacter?.level ?? Math.floor(Math.random() * 20),
+    level: partialCharacter?.level ?? LEVEL,
+    ancestryBoost: partialCharacter?.ancestryBoost ?? [Attribute.Strength],
+    ancestryFlaw: partialCharacter?.ancestryFlaw ?? [Attribute.Strength],
+    backgroundBoost: partialCharacter?.backgroundBoost ?? [Attribute.Strength],
+    classBoost: partialCharacter?.classBoost ?? Attribute.Strength,
+    classDc: partialCharacter?.classDc ?? LEVEL + 10 + 3 + 4,
   };
   return character;
 };
@@ -127,4 +137,53 @@ export const getFakeArmorBase = (
     rarity: Rarity.Common,
   };
   return armorBase;
+};
+
+export const getFakeAncestry = (
+  partialAncestry?: Partial<Ancestry>
+): Ancestry => {
+  const ancestry: Ancestry = {
+    id: partialAncestry?.id ?? cuid(),
+    createdAt: partialAncestry?.createdAt ?? new Date(),
+    updatedAt: partialAncestry?.updatedAt ?? new Date(),
+    deletedAt: partialAncestry?.deletedAt ?? null,
+    name: partialAncestry?.name ?? faker.word.noun(),
+    attributeBoost: partialAncestry?.attributeBoost ?? [Attribute.Charisma],
+    attributeFlaw: partialAncestry?.attributeFlaw ?? [Attribute.Strength],
+    description: partialAncestry?.description ?? "",
+    hitPoints:
+      partialAncestry?.hitPoints ?? faker.number.int({ min: 6, max: 12 }),
+    rarity: partialAncestry?.rarity ?? Rarity.Common,
+    size: partialAncestry?.size ?? AncestrySize.Medium,
+    speed: partialAncestry?.speed ?? 25,
+  };
+
+  return ancestry;
+};
+
+export const getFakeTrait = (partialTrait?: Partial<Trait>): Trait => {
+  const trait: Trait = {
+    id: partialTrait?.id ?? cuid(),
+    createdAt: partialTrait?.createdAt ?? new Date(),
+    updatedAt: partialTrait?.updatedAt ?? new Date(),
+    deletedAt: partialTrait?.deletedAt ?? null,
+    name: partialTrait?.name ?? faker.word.noun(),
+    description: partialTrait?.description ?? "",
+  };
+  return trait;
+};
+
+export const getFakeLanguange = (
+  partialLanguage?: Partial<Language>
+): Language => {
+  const language: Language = {
+    id: partialLanguage?.id ?? cuid(),
+    createdAt: partialLanguage?.createdAt ?? new Date(),
+    updatedAt: partialLanguage?.updatedAt ?? new Date(),
+    deletedAt: partialLanguage?.deletedAt ?? null,
+    name: partialLanguage?.name ?? faker.word.noun(),
+    description: partialLanguage?.description ?? "",
+    rarity: partialLanguage?.rarity ?? Rarity.Common,
+  };
+  return language;
 };

@@ -2,7 +2,13 @@ import Router from "express-promise-router";
 
 import { authorize } from "../../middleware/security/authorization";
 import { UserRole } from "@prisma/client";
-import { handleSearchAncestry } from "./ancestry-api";
+import {
+  handleDeleteAncestry,
+  handleGetAncestry,
+  handlePatchAncestry,
+  handlePostAncestry,
+  handleSearchAncestry,
+} from "./ancestry-api";
 
 const router = Router();
 

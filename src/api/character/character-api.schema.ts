@@ -85,9 +85,15 @@ const commonCharacterProperties = {
     required: ["id", "userName"],
   },
   ancestry: {
-    description: "Character Ancestry",
-    type: "string",
-    nullable: true,
+    type: "object",
+    properties: {
+      name: {
+        type: "string",
+        description: "Character Ancestry Name",
+      },
+    },
+    required: ["name"],
+    additionalProperties: false,
   },
   characterClass: {
     type: "object",
@@ -95,18 +101,6 @@ const commonCharacterProperties = {
       id: {
         description: "Character Id",
         type: "string",
-      },
-      createdAt: {
-        type: "string",
-        format: "date-time",
-      },
-      updatedAt: {
-        type: "string",
-        format: "date-time",
-      },
-      deletedAt: {
-        type: "string",
-        format: "date-time-nullable",
       },
       className: {
         description: "Character Class Name",
@@ -226,10 +220,10 @@ export const characterPostRequestBodySchema = {
       description: "User Assigned Id",
       type: "string",
     },
-    ancestry: {
+    ancestryId: {
       description: "Character Ancestry",
       type: "string",
-      nullable: true,
+      checkIdIsCuid: true,
     },
     characterClassId: {
       description: "Character Class Id",
@@ -240,15 +234,63 @@ export const characterPostRequestBodySchema = {
       type: "string",
       nullable: true,
     },
+    level: {
+      description: "Character Level",
+      type: "number",
+    },
+    ancestryBoost: {
+      description: "Selected Ancestry Bonus To Attributes",
+      type: "array",
+      items: {
+        type: "string",
+        enum: Object.values(Attribute),
+      },
+    },
+    ancestryFlaw: {
+      description: "Selected Ancestry Penalties To Attributes",
+      type: "array",
+      items: {
+        type: "string",
+        enum: Object.values(Attribute),
+      },
+    },
+    backgroundBoost: {
+      description: "Selected Background Bonus To Attributes",
+      type: "array",
+      items: {
+        type: "string",
+        enum: Object.values(Attribute),
+      },
+    },
+    classBoost: {
+      description: "Selected Class Bonus To Attributes",
+      type: "string",
+      enum: Object.values(Attribute),
+    },
+    languageIds: {
+      type: "array",
+      description: "Character Known Languages",
+      items: {
+        type: "string",
+        checkIdIsCuid: true,
+      },
+    },
   },
   additionalProperties: false,
   required: [
     "characterName",
     "createdByUserId",
     "assignedUserId",
-    "ancestry",
-    "characterClassId",
+    "ancestryId",
     "background",
+    "characterClassId",
+    "level",
+    "ancestryBoost",
+    "ancestryFlaw",
+    "backgroundBoost",
+    "classBoost",
+    "languageIds",
+    "classDc",
   ],
 } as const;
 
@@ -263,11 +305,11 @@ export const characterPostResponseSchema = {
     "updatedAt",
     "deletedAt",
     "characterName",
+    "ancestry",
+    "background",
     "createdUserId",
     "assignedUserId",
-    "ancestry",
     "characterClass",
-    "background",
   ],
   additionalProperties: false,
 } as const;

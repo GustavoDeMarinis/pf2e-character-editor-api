@@ -1,7 +1,9 @@
 import { FromSchema } from "json-schema-to-ts";
 import { CommonDeserializationOptions } from "../../utils/schema.types";
 import {
-  ancestryGetResponseSchema,
+  ancestryGetPostResponseSchema,
+  ancestryPatchRequestBodySchema,
+  ancestryPostRequestBodySchema,
   ancestryRequestParamsSchema,
   ancestrySearchRequestQuerySchema,
   ancestrySearchResponseSchema,
@@ -22,6 +24,21 @@ export type AncestryRequestParams = FromSchema<
 >;
 
 export type AncestryGetResponse = FromSchema<
-  typeof ancestryGetResponseSchema,
+  typeof ancestryGetPostResponseSchema,
+  CommonDeserializationOptions
+>;
+
+export type AncestryPostRequestBody = FromSchema<
+  typeof ancestryPostRequestBodySchema,
+  CommonDeserializationOptions
+>;
+
+export type AncestryPostResponse = FromSchema<
+  typeof ancestryGetPostResponseSchema,
+  CommonDeserializationOptions
+>;
+
+export type AncestryPatchRequestBody = FromSchema<
+  typeof ancestryPatchRequestBodySchema,
   CommonDeserializationOptions
 >;

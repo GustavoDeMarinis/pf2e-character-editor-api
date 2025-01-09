@@ -59,6 +59,7 @@ export const weaponBaseArgs = Prisma.validator<Prisma.WeaponBaseDefaultArgs>()({
 export type WeaponBaseResult = Prisma.WeaponBaseGetPayload<
   typeof weaponBaseArgs
 >;
+
 type WeaponBaseToInsert = Pick<
   Prisma.WeaponBaseUncheckedCreateInput,
   | "name"
@@ -76,6 +77,7 @@ type WeaponBaseToInsert = Pick<
   weaponGroupId: string;
   traitIds: string[];
 };
+
 export const searchWeaponBase = async (
   search: {
     category?: WeaponCategory;

@@ -30,9 +30,24 @@ export const characterSelect = {
       userName: true,
     },
   },
-  ancestry: true,
-  characterClass: true,
+  ancestry: {
+    select: {
+      name: true,
+    },
+  },
+  characterClass: {
+    select: {
+      className: true,
+      keyAttributes: true,
+      hitpoints: true,
+    },
+  },
   background: true,
+  ancestryBoost: true,
+  ancestryFlaw: true,
+  backgroundBoost: true,
+  classBoost: true,
+  level: true,
 };
 
 export const characterArgs = Prisma.validator<Prisma.CharacterDefaultArgs>()({
@@ -44,11 +59,18 @@ export type CharacterResult = Prisma.CharacterGetPayload<typeof characterArgs>;
 type CharacterToInsert = Pick<
   Prisma.CharacterUncheckedCreateInput,
   | "characterName"
-  | "characterClassId"
-  | "ancestry"
+  | "ancestryId"
   | "background"
   | "createdByUserId"
   | "assignedUserId"
+  | "level"
+  | "characterClassId"
+  | "ancestryBoost"
+  | "ancestryFlaw"
+  | "backgroundBoost"
+  | "classBoost"
+  | "languages"
+  | "classDc"
 >;
 
 export const searchCharacters = async (
@@ -173,10 +195,18 @@ export const updateCharacter = async (
   characterToUpdate: Pick<
     Prisma.CharacterUncheckedUpdateInput,
     | "characterName"
-    | "characterClassId"
-    | "assignedUserId"
-    | "ancestry"
+    | "ancestryId"
     | "background"
+    | "createdByUserId"
+    | "assignedUserId"
+    | "level"
+    | "characterClassId"
+    | "ancestryBoost"
+    | "ancestryFlaw"
+    | "backgroundBoost"
+    | "classBoost"
+    | "languages"
+    | "classDc"
   >,
   reactivate?: false
 ) => {

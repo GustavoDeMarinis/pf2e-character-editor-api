@@ -1,6 +1,13 @@
-import { AncestrySize, Attribute, Prisma, Rarity } from "@prisma/client";
+import {
+  Ancestry,
+  AncestrySize,
+  Attribute,
+  Prisma,
+  Rarity,
+} from "@prisma/client";
 import prisma from "../../integrations/prisma/prisma-client";
 import {
+  ErrorCode,
   ErrorResult,
   PaginationOptions,
   SearchResult,
@@ -41,6 +48,21 @@ export const ancestryArgs = Prisma.validator<Prisma.AncestryDefaultArgs>()({
 });
 
 export type AncestryResult = Prisma.AncestryGetPayload<typeof ancestryArgs>;
+
+type AncestryToInsert = Pick<
+  Prisma.AncestryUncheckedCreateInput,
+  | "name"
+  | "description"
+  | "attributeBoost"
+  | "attributeFlaw"
+  | "hitPoints"
+  | "rarity"
+  | "size"
+  | "speed"
+> & {
+  traitIds: string[];
+  languageIds: string[];
+};
 
 export const searchAncestries = async (
   search: {
@@ -85,7 +107,7 @@ export const searchAncestries = async (
     orderBy,
     where,
   });
-  const count = await getQueryCount(prisma.character, where);
+  const count = await getQueryCount(prisma.ancestry, where);
 
   logDebug({
     subService,
@@ -113,9 +135,119 @@ export const getAncestry = async ({
   if (ancestry) {
     logDebug({
       subService,
-      message: "Weapon Base Retrieved by Id",
+      message: "Ancestry Retrieved by Id",
       details: { ancestry },
     });
   }
   return ancestry;
+};
+
+export const insertAncestry = async (
+  ancestryToInsert: AncestryToInsert
+): Promise<AncestryResult | ErrorResult> => {
+  const existingAncestry = await prisma.ancestry.findMany({
+    select: {
+      id: true,
+      deletedAt: true,
+      name: true,
+    },
+    where: {
+      name: ancestryToInsert.name,
+    },
+  });
+  const activeAncestryClass = existingAncestry.find(
+    (ancestry) => ancestry.deletedAt === null
+  );
+
+  if (activeAncestryClass) {
+    return {
+      code: ErrorCode.DataConflict,
+      message: "There is already an Ancestry record with that name",
+    };
+  }
+  const { traitIds, languageIds, ...rest } = ancestryToInsert;
+  const data: Prisma.AncestryUncheckedCreateInput = {
+    ...rest,
+    traits: {
+      connect: traitIds.map((traitId) => ({ id: traitId })),
+    },
+    languages: {
+      connect: languageIds.map((languageId) => ({ id: languageId })),
+    },
+  };
+  const createdAncestry = prisma.ancestry.create({
+    select: ancestrySelect,
+    data,
+  });
+
+  return createdAncestry;
+};
+
+export const updateAncestry = async (
+  { id }: Prisma.AncestryWhereUniqueInput,
+  ancestryToUpdate: Pick<
+    Prisma.AncestryUncheckedUpdateInput,
+    | "name"
+    | "description"
+    | "attributeBoost"
+    | "attributeFlaw"
+    | "hitPoints"
+    | "rarity"
+    | "size"
+    | "speed"
+  > & { traitIds?: string[] | undefined; languageIds?: string[] | undefined },
+  reactivate?: false
+): Promise<Ancestry | ErrorResult> => {
+  const { traitIds, languageIds, ...rest } = ancestryToUpdate;
+  const data: Prisma.AncestryUncheckedUpdateInput = {
+    ...rest,
+    traits: {
+      set: traitIds?.map((traitId) => ({ id: traitId })),
+    },
+    languages: {
+      set: languageIds?.map((languageId) => ({ id: languageId })),
+    },
+  };
+
+  if (reactivate) {
+    data.deletedAt = null;
+  }
+
+  const updatedAncestry = await prisma.ancestry.update({
+    where: { id },
+    data,
+  });
+
+  return updatedAncestry;
+};
+
+export const deleteAncestry = async ({
+  id,
+}: Prisma.AncestryWhereUniqueInput): Promise<Ancestry | ErrorResult> => {
+  const existingAncestry = await prisma.ancestry.findUnique({
+    select: {
+      deletedAt: true,
+    },
+    where: {
+      id,
+    },
+  });
+  if (!existingAncestry || existingAncestry.deletedAt) {
+    return {
+      code: ErrorCode.NotFound,
+      message: `Ancestry Not Found`,
+    };
+  }
+  const data = {
+    deletedAt: new Date(),
+  };
+
+  const deletedAncestry = await prisma.ancestry.update({
+    data,
+    where: {
+      id,
+    },
+  });
+
+  return deletedAncestry;
 };

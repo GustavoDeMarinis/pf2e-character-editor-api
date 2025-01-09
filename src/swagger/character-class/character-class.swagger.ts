@@ -1,5 +1,6 @@
 import {
   characterClassGetResponseSchema,
+  characterClassPatchRequestBodySchema,
   characterClassPostRequestBodySchema,
   characterClassPostResponseSchema,
   characterClassRequestParamsSchema,
@@ -131,7 +132,7 @@ const updateCharacterClass = {
   requestBody: {
     content: {
       "application/json": {
-        schema: characterClassRequestParamsSchema,
+        schema: characterClassPatchRequestBodySchema,
       },
     },
   },

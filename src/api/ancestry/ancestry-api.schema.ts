@@ -135,11 +135,14 @@ const commonAncestryProperties = {
     },
   },
   languages: {
-    type: "object",
-    properties: {
-      name: {
-        type: "string",
-        description: "Ancestry Initial Known Languages",
+    type: "array",
+    description: "Ancestry Initial Known Languages",
+    items: {
+      type: "object",
+      properties: {
+        name: {
+          type: "string",
+        },
       },
     },
   },
@@ -187,15 +190,17 @@ export const ancestrySearchResponseSchema = {
 export const ancestryRequestParamsSchema = {
   type: "object",
   properties: {
-    id: {
+    ancestryId: {
       type: "string",
       description: "Ancestry Id",
-      checkidIsCuid: true,
+      checkIdIsCuid: true,
     },
   },
+  required: ["ancestryId"],
+  additionalProperties: false,
 } as const;
 
-export const ancestryGetResponseSchema = {
+export const ancestryGetPostResponseSchema = {
   type: "object",
   properties: {
     ...commonAncestryProperties,
@@ -214,6 +219,160 @@ export const ancestryGetResponseSchema = {
     "attributeBoost",
     "attributeFlaw",
     "languages",
+    "rarity",
+  ],
+  additionalProperties: false,
+} as const;
+
+export const ancestryPostRequestBodySchema = {
+  type: "object",
+  properties: {
+    name: {
+      type: "string",
+      description: "Ancestry Name",
+    },
+    description: {
+      type: "string",
+      description: "Ancestry Description",
+    },
+    traitIds: {
+      description: "Ancestry Trait Ids",
+      type: "array",
+      items: {
+        type: "string",
+        checkIdIsCuid: true,
+      },
+    },
+    hitPoints: {
+      type: "number",
+      description: "Ancestry Base HitPoints",
+    },
+    size: {
+      type: "string",
+      description: "Ancestry Size",
+      enum: Object.values(AncestrySize),
+    },
+    speed: {
+      type: "number",
+      description: "Ancestry Base Speed",
+    },
+    attributeBoost: {
+      type: "array",
+      description: "Ancestry Attribute Boosts",
+      items: {
+        type: "string",
+        enum: Object.values(Attribute),
+      },
+    },
+    attributeFlaw: {
+      type: "array",
+      description: "Ancestry Attribute Flaws",
+      items: {
+        type: "string",
+        enum: Object.values(Attribute),
+      },
+    },
+    languageIds: {
+      type: "array",
+      description: "Ancestry Initial Known Languages",
+      items: {
+        type: "string",
+        checkIdIsCuid: true,
+      },
+    },
+    rarity: {
+      type: "string",
+      description: "Ancestry Rarity",
+      enum: Object.values(Rarity),
+    },
+  },
+  required: [
+    "name",
+    "description",
+    "traitIds",
+    "hitPoints",
+    "size",
+    "speed",
+    "attributeBoost",
+    "attributeFlaw",
+    "languageIds",
+    "rarity",
+  ],
+  additionalProperties: false,
+} as const;
+
+export const ancestryPatchRequestBodySchema = {
+  type: "object",
+  properties: {
+    name: {
+      type: "string",
+      description: "Ancestry Name",
+    },
+    description: {
+      type: "string",
+      description: "Ancestry Description",
+    },
+    traitIds: {
+      description: "Ancestry Trait Ids",
+      type: "array",
+      items: {
+        type: "string",
+        checkIdIsCuid: true,
+      },
+    },
+    hitPoints: {
+      type: "number",
+      description: "Ancestry Base HitPoints",
+    },
+    size: {
+      type: "string",
+      description: "Ancestry Size",
+      enum: Object.values(AncestrySize),
+    },
+    speed: {
+      type: "number",
+      description: "Ancestry Base Speed",
+    },
+    attributeBoost: {
+      type: "array",
+      description: "Ancestry Attribute Boosts",
+      items: {
+        type: "string",
+        enum: Object.values(Attribute),
+      },
+    },
+    attributeFlaw: {
+      type: "array",
+      description: "Ancestry Attribute Flaws",
+      items: {
+        type: "string",
+        enum: Object.values(Attribute),
+      },
+    },
+    languageIds: {
+      type: "array",
+      description: "Ancestry Initial Known Languages",
+      items: {
+        type: "string",
+        checkIdIsCuid: true,
+      },
+    },
+    rarity: {
+      type: "string",
+      description: "Ancestry Rarity",
+      enum: Object.values(Rarity),
+    },
+  },
+  required: [
+    "name",
+    "description",
+    "traitIds",
+    "hitPoints",
+    "size",
+    "speed",
+    "attributeBoost",
+    "attributeFlaw",
+    "languageIds",
     "rarity",
   ],
   additionalProperties: false,
