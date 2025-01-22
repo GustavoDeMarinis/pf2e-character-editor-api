@@ -10,12 +10,6 @@ const ajv = new Ajv({
 });
 addFormats(ajv);
 
-export enum ValidatorData {
-  body = "body",
-  params = "params",
-  query = "query",
-}
-
 export const validateJSONSchemaObject = <ObjectType>(
   schema: Schema,
   object: unknown

@@ -1,6 +1,6 @@
 import {
   getFakeAncestry,
-  getFakeLanguange,
+  getFakeLanguage,
   getFakeTrait,
 } from "../../../testing/fakes";
 import { mockCount } from "../../../testing/mock-pagination";
@@ -71,7 +71,7 @@ describe("Ancestry tests", () => {
   describe("Insert Ancestry", () => {
     test("insertAncestry inserts and returns new Ancestry", async () => {
       const fakeAncestry = getFakeAncestry();
-      const fakeLanguage = getFakeLanguange();
+      const fakeLanguage = getFakeLanguage();
       const fakeTrait = getFakeTrait();
       const { id, createdAt, updatedAt, deletedAt, ...fakeAncestryToInsert } =
         fakeAncestry;
@@ -90,7 +90,7 @@ describe("Ancestry tests", () => {
 
     test("insertAncestry handles ancestry conflict", async () => {
       const fakeAncestry = getFakeAncestry();
-      const fakeLanguage = getFakeLanguange();
+      const fakeLanguage = getFakeLanguage();
       const fakeTrait = getFakeTrait();
       const { id, createdAt, updatedAt, deletedAt, ...fakeAncestryToInsert } =
         fakeAncestry;

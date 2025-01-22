@@ -155,11 +155,11 @@ export const insertAncestry = async (
       name: ancestryToInsert.name,
     },
   });
-  const activeAncestryClass = existingAncestry.find(
+  const activeAncestry = existingAncestry.find(
     (ancestry) => ancestry.deletedAt === null
   );
 
-  if (activeAncestryClass) {
+  if (activeAncestry) {
     return {
       code: ErrorCode.DataConflict,
       message: "There is already an Ancestry record with that name",
@@ -195,7 +195,7 @@ export const updateAncestry = async (
     | "rarity"
     | "size"
     | "speed"
-  > & { traitIds?: string[] | undefined; languageIds?: string[] | undefined },
+  > & { traitIds?: string[]; languageIds?: string[] },
   reactivate?: false
 ): Promise<Ancestry | ErrorResult> => {
   const { traitIds, languageIds, ...rest } = ancestryToUpdate;

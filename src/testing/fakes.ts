@@ -173,7 +173,7 @@ export const getFakeTrait = (partialTrait?: Partial<Trait>): Trait => {
   return trait;
 };
 
-export const getFakeLanguange = (
+export const getFakeLanguage = (
   partialLanguage?: Partial<Language>
 ): Language => {
   const language: Language = {

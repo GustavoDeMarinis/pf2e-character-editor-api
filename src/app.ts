@@ -5,16 +5,6 @@ import cors from "cors";
 const app = express();
 app.use(cookieParser());
 
-// app.use((req, res, next) => {
-//   if (req.cookies.user) {
-//     try {
-//       req.cookies.user = JSON.parse(JSON.stringify(req.cookies.user));
-//     } catch (err) {
-//       console.error("Failed to parse user cookie", err);
-//     }
-//   }
-//   next();
-// });
 app.use((req, res, next) => {
   console.log(`Received request for ${req.url}`);
   next();
