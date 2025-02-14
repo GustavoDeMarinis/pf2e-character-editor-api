@@ -25,7 +25,7 @@ git clone <repo-url>
 cd pathfinder-2e-character-editor
 npm install
 docker-compose up
-npx prisma init
+npx prisma generate
 npx prisma migrate reset
 npm start
 ```
