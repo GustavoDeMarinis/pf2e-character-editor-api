@@ -30,24 +30,28 @@ export const jwtSignIn = (res: Response, payload: PayloadType): string => {
     expiresIn: config.JWT_EXPIRATION_PERIOD,
   });
   res.cookie("access_token", token, {
-    httpOnly: false, //Cookie can only be access by server
-    secure: false, // Cookie can only be access by https
-    sameSite: true,
+    httpOnly: true, //Cookie can only be access by server
+    secure: process.env.ENV !== "local", // Use HTTPS in non-local environments
+    sameSite: "strict", // Prevent CSRF attacks
   });
-  res.cookie("user", payload);
+  res.cookie("user", payload),{
+    httpOnly: false, // Allow frontend access
+    secure: process.env.ENV !== "local",
+    sameSite: "strict", 
+  };
   return token;
 };
 
 export const jwtSignOut = (res: Response): void => {
   res.clearCookie("access_token", {
     httpOnly: true,
-    secure: false,
-    sameSite: true,
+    secure: process.env.ENV !== "local",
+    sameSite: "strict",
   });
   res.clearCookie("user", {
-    httpOnly: true,
-    secure: false,
-    sameSite: true,
+    httpOnly: false,
+    secure: process.env.ENV !== "local",
+    sameSite: "strict",
   });
   return;
 };
