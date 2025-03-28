@@ -15,14 +15,9 @@ export const authSignUpPostRequestBodySchema = {
       description: "User Password",
       type: "string",
     },
-    role: {
-      description: "User Role",
-      type: "string",
-      enum: Object.values(UserRole),
-    },
   },
   additionalProperties: false,
-  required: ["userName", "userEmail", "password", "role"],
+  required: ["userName", "userEmail", "password"],
 } as const;
 
 export const authSignUpResponseSchema = {
@@ -55,7 +50,7 @@ export const authSignUpResponseSchema = {
     role: {
       description: "User Role",
       type: "string",
-      enum: Object.values(UserRole),
+      enum: Object.values(UserRole)
     },
   },
   additionalProperties: false,

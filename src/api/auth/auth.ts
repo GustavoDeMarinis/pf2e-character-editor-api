@@ -33,7 +33,7 @@ type AuthUsingUserNameParams = Pick<
 
 type SignUpParams = Pick<
   Prisma.UserUncheckedCreateInput,
-  "userName" | "userEmail" | "password" | "role"
+  "userName" | "userEmail" | "password"
 >;
 
 export const signUp = async (
@@ -69,7 +69,7 @@ export const signUp = async (
     data: {
       userName: userToInsert.userName,
       userEmail: userToInsert.userEmail,
-      role: userToInsert.role,
+      role: UserRole.Player,
       password: hashedPassword,
     },
   });

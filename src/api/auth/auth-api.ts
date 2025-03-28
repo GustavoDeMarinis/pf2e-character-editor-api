@@ -24,7 +24,6 @@ import { userRequestParamsSchema } from "../user/user-api.schema";
 import { getCurrentUserAuthorization } from "../../middleware/security/authorization";
 import { createDeleteResponse } from "../../utils/http-response-factory";
 
-//TODO this should not accept role to be admin, but for now its ok...
 export const handleSignUp = async (
   req: Request,
   res: Response
