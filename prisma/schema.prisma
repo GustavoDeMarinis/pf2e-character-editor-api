@@ -8,20 +8,20 @@ datasource db {
 }
 
 model Character {
-  id               String         @id @default(cuid())
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  id               String                @id @default(cuid())
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
   deletedAt        DateTime?
   characterName    String
-  ancestry         Ancestry       @relation(fields: [ancestryId], references: [id])
+  ancestry         Ancestry              @relation(fields: [ancestryId], references: [id])
   ancestryId       String
   background       String?
-  createdByUser    User           @relation("User_createdByUserId_fkey", fields: [createdByUserId], references: [id])
+  createdByUser    User                  @relation("User_createdByUserId_fkey", fields: [createdByUserId], references: [id])
   createdByUserId  String
-  assignedUser     User           @relation("User_assignedUserId_fkey", fields: [assignedUserId], references: [id])
+  assignedUser     User                  @relation("User_assignedUserId_fkey", fields: [assignedUserId], references: [id])
   assignedUserId   String
-  level            Int            @default(1)
-  characterClass   CharacterClass @relation(fields: [characterClassId], references: [id])
+  level            Int                   @default(1)
+  characterClass   CharacterClass        @relation(fields: [characterClassId], references: [id])
   characterClassId String
   ancestryBoost    Attribute[]
   ancestryFlaw     Attribute[]
@@ -29,6 +29,7 @@ model Character {
   classBoost       Attribute
   languages        Language[]
   classDc          Int
+  skills           CharacterSkillLevel[]
 }
 
 model ClassLevelingMap {
@@ -163,6 +164,49 @@ model User {
   charactersCreated Character[] @relation("User_createdByUserId_fkey")
 }
 
+model Skill {
+  id                  String                @id @default(cuid())
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  deletedAt           DateTime?
+  name                String
+  description         String?
+  associatedAttribute Attribute
+  actions             Action[]
+  characterSkillLevel CharacterSkillLevel[]
+}
+
+model Action {
+  id              String    @id @default(cuid())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+  name            String
+  description     String?
+  traits          Trait[]
+  skill           Skill     @relation(fields: [skillId], references: [id])
+  skillId         String
+  combatActions   Int?
+  criticalSuccess String?
+  success         String?
+  failure         String?
+  criticalFailure String?
+  isUntrained     Boolean
+}
+
+model CharacterSkillLevel {
+  id              String      @id @default(cuid())
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  deletedAt       DateTime?
+  character       Character   @relation(fields: [characterId], references: [id])
+  characterId     String
+  skill           Skill       @relation(fields: [skillId], references: [id])
+  skillId         String
+  proficiency     Proficiency
+  levelItWasTaken Int?
+}
+
 enum WeaponCategory {
   Simple
   Martial
@@ -230,6 +274,7 @@ model Trait {
   armorBases  ArmorBase[]
   ancestries  Ancestry[]
   runes       Rune[]
+  actions     Action[]
 }
 
 model WeaponCriticalSpecialization {
