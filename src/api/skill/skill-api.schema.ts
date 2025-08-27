@@ -34,6 +34,7 @@ const commonSkillProperties = {
   description: {
     description: "Skill Description",
     type: "string",
+    nullable: true,
   },
   associatedAttribute: {
     description: "Associated Attribute",
@@ -123,40 +124,35 @@ export const skillSearchResponseSchema = {
 export const skillGetResponseSchema = {
   type: "object",
   properties: {
-    result: {
-      type: "object",
-      properties: {
-        id: {
-          description: "Character Id",
-          type: "string",
-        },
-        createdAt: {
-          type: "string",
-          format: "date-time",
-        },
-        updatedAt: {
-          type: "string",
-          format: "date-time",
-        },
-        deletedAt: {
-          type: "string",
-          format: "date-time-nullable",
-        },
-        ...commonSkillProperties,
-      },
-      required: [
-        "id",
-        "createdAt",
-        "updatedAt",
-        "deletedAt",
-        "name",
-        "description",
-        "associatedAttribute",
-        "actions",
-      ],
-      additionalProperties: false,
+    id: {
+      description: "Skill Id",
+      type: "string",
     },
+    createdAt: {
+      type: "string",
+      format: "date-time",
+    },
+    updatedAt: {
+      type: "string",
+      format: "date-time",
+    },
+    deletedAt: {
+      type: "string",
+      format: "date-time-nullable",
+    },
+    ...commonSkillProperties,
   },
+  required: [
+    "id",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "name",
+    "description",
+    "associatedAttribute",
+    "actions",
+  ],
+  additionalProperties: false,
 } as const;
 
 export const skillRequestParamsSchema = {
@@ -183,9 +179,6 @@ export const skillPostRequestBodySchema = {
 export const skillPostResponseSchema = {
   type: "object",
   properties: {
-    result: {
-      type: "object",
-      properties: {
         id: {
           description: "Character Id",
           type: "string",
@@ -203,20 +196,19 @@ export const skillPostResponseSchema = {
           format: "date-time-nullable",
         },
         ...commonSkillProperties,
-      },
-      required: [
-        "id",
-        "createdAt",
-        "updatedAt",
-        "deletedAt",
-        "name",
-        "description",
-        "associatedAttribute",
-        "actions",
-      ],
-      additionalProperties: false,
+   
     },
-  },
+    required: [
+      "id",
+      "createdAt",
+      "updatedAt",
+      "deletedAt",
+      "name",
+      "description",
+      "associatedAttribute",
+      "actions",
+    ],
+    additionalProperties: false,
 } as const;
 
 export const skillPatchRequestBodySchema = {

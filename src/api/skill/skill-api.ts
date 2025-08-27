@@ -25,7 +25,7 @@ import {
   SkillSearchRequestQuery,
   SkillSearchResponse,
 } from "./skill-api.types";
-import { getSkill, insertSkill, searchSkill, SkillResult } from "./skill";
+import { deleteSkill, getSkill, insertSkill, searchSkill, SkillResult, updateSkill } from "./skill";
 
 export const handleSearchSkill = async (
   req: Request,
