@@ -97,7 +97,7 @@ export const authorize = (roleAuthOptions?: { roles: UserRole[] }) => {
           });
           break;
       }
-      res.status(401).json({ error: { message: error.message } });
+      return res.status(401).json({ error: { message: error.message } });
     }
 
     next();
