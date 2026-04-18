@@ -23,6 +23,7 @@ To run the project locally:
 ```sh
 git clone <repo-url>
 cd pathfinder-2e-character-editor
+ask gustadema@gmail.com for .env file or generate your own credentials.
 npm install
 docker-compose up
 npx prisma generate
