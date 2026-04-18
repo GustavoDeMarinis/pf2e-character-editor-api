@@ -1,18 +1,32 @@
-import app  from "./app";
-import { PrismaClient } from "@prisma/client";
+import app from "./app";
+import prisma from "./integrations/prisma/prisma-client";
 
 const port = process.env.PORT || 5000;
-const prisma = new PrismaClient();
 
 const server = app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
+
+// Memory usage logging
+const logMemoryUsage = () => {
+  const used = process.memoryUsage();
+  console.log(`Memory Usage:
+    rss: ${Math.round((used.rss / 1024 / 1024) * 100) / 100} MB
+    heapTotal: ${Math.round((used.heapTotal / 1024 / 1024) * 100) / 100} MB
+    heapUsed: ${Math.round((used.heapUsed / 1024 / 1024) * 100) / 100} MB
+    external: ${Math.round((used.external / 1024 / 1024) * 100) / 100} MB
+  `);
+};
+
+// Log memory usage every 5 minutes
+const memoryInterval = setInterval(logMemoryUsage, 5 * 60 * 1000);
 
 // Graceful shutdown function
 const gracefulShutdown = async () => {
   console.log("\n Shutting down gracefully...");
 
   try {
+    clearInterval(memoryInterval);
     console.log("Closing database connection...");
     await prisma.$disconnect();
 
@@ -28,7 +42,7 @@ const gracefulShutdown = async () => {
       process.exit(0);
     });
 
- 
+
   } catch (err) {
     console.error("Error during shutdown:", err);
     process.exit(1);

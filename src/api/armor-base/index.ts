@@ -13,7 +13,7 @@ const router = Router();
 
 router.get(
   "/",
-  authorize({ roles: [UserRole.Admin, UserRole.Player] }),
+  authorize({ roles: [UserRole.Admin, UserRole.Player]}),
   handleSearchArmorBase
 );
 

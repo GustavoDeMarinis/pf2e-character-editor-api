@@ -8,3 +8,7 @@ info.log
 debug.log
 error.log
 combined.log
+.vscode
+
+# Local planning / issue tracking (not for git)
+issues
