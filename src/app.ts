@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
 import helmet from "helmet";
 import { csrfMiddleware } from "./middleware/security/csrf";
+import { globalErrorHandler } from "./middleware/error-handler";
 const app = express();
 
 app.use(helmet());
@@ -40,5 +41,6 @@ app.use(csrfMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(router);
+app.use(globalErrorHandler);
 
 export default app;

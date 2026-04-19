@@ -11,7 +11,7 @@ export const csrfMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
-): void => {
+): Response | void => {
   const existingToken = req.cookies.csrf_token;
   const token = existingToken || crypto.randomBytes(32).toString("hex");
 
