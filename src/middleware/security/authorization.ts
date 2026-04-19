@@ -12,6 +12,12 @@ export type AuthPayload = {
   sessionId: string;
 };
 
+export const isOwner = (
+  entity: { createdByUserId?: string | null; assignedUserId?: string | null },
+  userId: string
+): boolean =>
+  entity.createdByUserId === userId || entity.assignedUserId === userId;
+
 export const getCurrentUserAuthorization = (req: Request): AuthPayload => {
   if (!req.auth) {
     throw new Error("Request is missing auth payload");
