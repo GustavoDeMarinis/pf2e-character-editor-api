@@ -5,8 +5,10 @@ import cors, { CorsOptions } from "cors";
 import helmet from "helmet";
 import { csrfMiddleware } from "./middleware/security/csrf";
 import { globalErrorHandler } from "./middleware/error-handler";
+import { requestIdMiddleware } from "./middleware/request-id";
 const app = express();
 
+app.use(requestIdMiddleware);
 app.use(helmet());
 app.use(cookieParser());
 

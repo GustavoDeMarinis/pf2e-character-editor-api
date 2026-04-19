@@ -31,7 +31,7 @@ export const globalErrorHandler = (
   res: Response,
   _next: NextFunction
 ): Response => {
-  const requestId: string = (req as any).id ?? crypto.randomUUID();
+  const requestId: string = req.id ?? crypto.randomUUID();
 
   if (err instanceof AjvValidationsError) {
     const validationDetails = err.errors?.reduce(
