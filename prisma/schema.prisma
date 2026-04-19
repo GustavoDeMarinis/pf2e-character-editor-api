@@ -159,10 +159,12 @@ model User {
   userEmail         String      @unique
   userName          String      @unique
   password          String
-  role              UserRole    @default(Player)
-  characters        Character[] @relation("User_assignedUserId_fkey")
-  charactersCreated Character[] @relation("User_createdByUserId_fkey")
-  sessions          Session[]
+  role                  UserRole    @default(Player)
+  failedLoginAttempts   Int         @default(0)
+  lockedUntil           DateTime?
+  characters            Character[] @relation("User_assignedUserId_fkey")
+  charactersCreated     Character[] @relation("User_createdByUserId_fkey")
+  sessions              Session[]
 }
 
 model Session {

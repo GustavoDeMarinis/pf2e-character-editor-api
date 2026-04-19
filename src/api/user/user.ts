@@ -76,7 +76,7 @@ export const searchUser = async (
 export const getUser = async ({
   id,
 }: Prisma.UserWhereUniqueInput): Promise<
-  Omit<User, "password"> | ErrorResult
+  UserSearchResult | ErrorResult
 > => {
   const where: Prisma.UserWhereUniqueInput = {
     id,
@@ -98,7 +98,7 @@ export const getUser = async ({
 export const updateUser = async (
   { id }: Prisma.UserWhereUniqueInput,
   { userName, userEmail, role }: UserToUpdate
-): Promise<Omit<User, "password"> | ErrorResult> => {
+): Promise<UserSearchResult | ErrorResult> => {
   const user = await prisma.user.findUnique({
     where: {
       id,

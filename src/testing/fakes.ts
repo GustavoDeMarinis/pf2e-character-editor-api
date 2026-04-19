@@ -69,6 +69,8 @@ export const getFakeUser = (partialUser?: Partial<User>): User => {
     userName: partialUser?.userName ?? faker.internet.userName(),
     password: partialUser?.password ?? config.USER_DEFAULT_PASSWORD,
     role: partialUser?.role ?? UserRole.Player,
+    failedLoginAttempts: partialUser?.failedLoginAttempts ?? 0,
+    lockedUntil: partialUser?.lockedUntil ?? null,
   };
   return user;
 };

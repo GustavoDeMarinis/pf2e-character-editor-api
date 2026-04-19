@@ -5,6 +5,7 @@ import { Request, Response } from "express";
 import prisma from "../../integrations/prisma/prisma-client";
 import { ErrorCode, ErrorResult } from "../../utils/shared-types";
 import { checkInputPasswordFormat } from "../../utils/regexs";
+import { UserSearchResult } from "../user/user";
 import {
   AuthPayload,
   jwtSignIn,
@@ -21,6 +22,10 @@ const INVALID_CREDENTIALS: ErrorResult = {
   code: ErrorCode.Forbidden,
   message: "Invalid credentials",
 };
+
+const MAX_FAILED_ATTEMPTS = 10;
+const LOCKOUT_DURATION_MS = 30 * 60 * 1000; // 30 minutes
+const FAILED_ATTEMPT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
 
 export const userSelect = {
   id: true,
@@ -49,7 +54,7 @@ type SignUpParams = Pick<
 
 export const signUp = async (
   userToInsert: SignUpParams
-): Promise<Omit<User, "password"> | ErrorResult> => {
+): Promise<UserSearchResult | ErrorResult> => {
   if (!checkInputPasswordFormat(userToInsert.password)) {
     return {
       code: ErrorCode.BadRequest,
@@ -99,6 +104,8 @@ export const signIn = async (
       id: true,
       role: true,
       password: true,
+      failedLoginAttempts: true,
+      lockedUntil: true,
     },
     where: {
       OR: [
@@ -115,6 +122,28 @@ export const signIn = async (
   );
 
   if (!user || !isValidPassword) {
+    if (user) {
+      const now = Date.now();
+      const isWithinWindow =
+        !user.lockedUntil ||
+        user.lockedUntil.getTime() - LOCKOUT_DURATION_MS + FAILED_ATTEMPT_WINDOW_MS > now;
+
+      const newAttempts = isWithinWindow ? user.failedLoginAttempts + 1 : 1;
+      const lockedUntil =
+        newAttempts >= MAX_FAILED_ATTEMPTS
+          ? new Date(now + LOCKOUT_DURATION_MS)
+          : null;
+
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { failedLoginAttempts: newAttempts, lockedUntil },
+      });
+    }
+    return INVALID_CREDENTIALS;
+  }
+
+  // Check lockout — return same message to not reveal lockout state
+  if (user.lockedUntil && user.lockedUntil > new Date()) {
     return INVALID_CREDENTIALS;
   }
 
@@ -141,7 +170,12 @@ export const signIn = async (
   });
   setRefreshTokenCookie(res, `${session.id}:${rawRefreshToken}`);
 
-  const { password, ...publicUser } = user;
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { failedLoginAttempts: 0, lockedUntil: null },
+  });
+
+  const { password, failedLoginAttempts, lockedUntil, ...publicUser } = user;
   return { ...publicUser, token };
 };
 

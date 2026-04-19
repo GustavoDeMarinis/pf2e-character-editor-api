@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { validateJSONSchemaObject } from "../../middleware/validators/ajv-validator";
 import { ErrorResponse } from "../../utils/shared-types";
 import { User } from "@prisma/client";
+import { UserSearchResult } from "../user/user";
 import {
   createDeleteResponse,
   createGetArrayResponse,
@@ -45,7 +46,7 @@ export const handleSignUp = async (
   );
   const result = await signUp(body);
 
-  return createPostResponse<Omit<User, "password">>(req, res, result);
+  return createPostResponse<UserSearchResult>(req, res, result);
 };
 
 export const handleSignIn = async (

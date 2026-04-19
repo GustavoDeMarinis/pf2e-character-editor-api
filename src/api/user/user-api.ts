@@ -60,7 +60,7 @@ export const handleGetUser = async (
   );
 
   const result = await getUser({ id: userId });
-  return createGetResponse<Omit<User, "password">>(res, result);
+  return createGetResponse<UserSearchResult>(res, result);
 };
 
 export const handlePatchUser = async (
@@ -77,7 +77,7 @@ export const handlePatchUser = async (
   );
   const result = await updateUser({ id: userId }, body);
 
-  return createPatchResponse<Omit<User, "password">>(res, result);
+  return createPatchResponse<UserSearchResult>(res, result);
 };
 
 export const handleDeleteUser = async (
