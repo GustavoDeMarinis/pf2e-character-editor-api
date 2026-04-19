@@ -18,7 +18,7 @@ router.get(
   handleSearchSkill
 );
 router.get(
-  "/:characterId",
+  "/:skillId",
   authorize({ roles: [UserRole.Admin, UserRole.Player] }),
   handleGetSkill
 );
@@ -28,12 +28,12 @@ router.post(
   handlePostSkill
 );
 router.patch(
-  "/:characterId",
+  "/:skillId",
   authorize({ roles: [UserRole.Admin, UserRole.Player] }),
   handlePatchSkill
 );
 router.delete(
-  "/:characterId",
+  "/:skillId",
   authorize({ roles: [UserRole.Admin, UserRole.Player] }),
   handleDeleteSkill
 );
