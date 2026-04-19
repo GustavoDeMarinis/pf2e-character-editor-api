@@ -5,7 +5,7 @@ import prisma from "../../integrations/prisma/prisma-client";
 import { ErrorCode, ErrorResult } from "../../utils/shared-types";
 import { checkInputPasswordFormat } from "../../utils/regexs";
 import {
-  CurrentUserAuthorization,
+  AuthPayload,
   jwtSignIn,
   jwtSignOut,
 } from "../../middleware/security/authorization";
@@ -128,7 +128,7 @@ export const signOut = (res: Response): void => {
 
 export const changePassword = async (
   { id }: Prisma.UserWhereUniqueInput,
-  currentUser: CurrentUserAuthorization,
+  currentUser: AuthPayload,
   {
     currentPassword,
     newPassword,

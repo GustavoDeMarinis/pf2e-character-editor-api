@@ -7,7 +7,6 @@ import { config } from "../../../config";
 const makeReq = (cookie?: string): Partial<Request> => ({
   cookies: {
     access_token: cookie ?? "",
-    user: { userId: "user-1", role: UserRole.Player },
   },
 });
 
@@ -18,8 +17,8 @@ const makeRes = (): Partial<Response> => {
   return res;
 };
 
-const validToken = () =>
-  jwt.sign({ userId: "user-1", role: UserRole.Player }, config.JWT_SECRET_KEY, {
+const validToken = (role: UserRole = UserRole.Player) =>
+  jwt.sign({ userId: "user-1", role }, config.JWT_SECRET_KEY, {
     expiresIn: "1h",
   });
 
@@ -66,8 +65,20 @@ describe("authorize middleware", () => {
 
   describe("role mismatch", () => {
     test("returns 403 and does NOT call next when role is not allowed", async () => {
-      const token = validToken();
+      const token = validToken(UserRole.Player);
       const req = makeReq(token) as Request;
+      const res = makeRes() as Response;
+      const next: NextFunction = jest.fn();
+
+      await authorize({ roles: [UserRole.Admin] })(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(next).not.toHaveBeenCalled();
+    });
+
+    test("does NOT grant access even if req.cookies.user.role is Admin but token says Player", async () => {
+      const token = validToken(UserRole.Player);
+      const req = { cookies: { access_token: token, user: { userId: "user-1", role: UserRole.Admin } } } as unknown as Request;
       const res = makeRes() as Response;
       const next: NextFunction = jest.fn();
 
@@ -101,6 +112,17 @@ describe("authorize middleware", () => {
 
       expect(next).toHaveBeenCalledTimes(1);
       expect(res.status).not.toHaveBeenCalled();
+    });
+
+    test("attaches decoded payload to req.auth", async () => {
+      const token = validToken(UserRole.Admin);
+      const req = makeReq(token) as Request;
+      const res = makeRes() as Response;
+      const next: NextFunction = jest.fn();
+
+      await authorize()(req, res, next);
+
+      expect(req.auth).toMatchObject({ userId: "user-1", role: UserRole.Admin });
     });
   });
 });

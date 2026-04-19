@@ -6,39 +6,32 @@ import { UserRole } from "@prisma/client";
 import { ReasonPhrases, StatusCodes } from "http-status-codes";
 const subService = "security/authorization";
 
-type PayloadType = {
-  userId: string;
-  role: UserRole;
-};
-
-export type CurrentUserAuthorization = {
+export type AuthPayload = {
   userId: string;
   role: UserRole;
 };
 
 export const getCurrentUserAuthorization = (
   req: Request
-): CurrentUserAuthorization => {
+): AuthPayload => {
+  if (!req.auth) {
+    throw new Error("Request is missing auth payload");
+  }
   return {
-    userId: req.cookies.user.userId,
-    role: req.cookies.user.role,
+    userId: req.auth.userId,
+    role: req.auth.role,
   };
 };
 
-export const jwtSignIn = (res: Response, payload: PayloadType): string => {
+export const jwtSignIn = (res: Response, payload: AuthPayload): string => {
   const token = jwt.sign(payload, config.JWT_SECRET_KEY, {
     expiresIn: config.JWT_EXPIRATION_PERIOD,
   });
   res.cookie("access_token", token, {
-    httpOnly: true, //Cookie can only be access by server
-    secure: process.env.ENV !== "local", // Use HTTPS in non-local environments
-    sameSite: "strict", // Prevent CSRF attacks
-  });
-  res.cookie("user", payload),{
-    httpOnly: false, // Allow frontend access
+    httpOnly: true,
     secure: process.env.ENV !== "local",
-    sameSite: "strict", 
-  };
+    sameSite: "strict",
+  });
   return token;
 };
 
@@ -48,17 +41,12 @@ export const jwtSignOut = (res: Response): void => {
     secure: process.env.ENV !== "local",
     sameSite: "strict",
   });
-  res.clearCookie("user", {
-    httpOnly: false,
-    secure: process.env.ENV !== "local",
-    sameSite: "strict",
-  });
   return;
 };
 
-export const jwtVerify = (req: Request) => {
+export const jwtVerify = (req: Request): AuthPayload => {
   const authHeader = req.cookies.access_token ?? "";
-  return jwt.verify(authHeader, config.JWT_SECRET_KEY);
+  return jwt.verify(authHeader, config.JWT_SECRET_KEY) as AuthPayload;
 };
 
 export const authorize = (roleAuthOptions?: { roles: UserRole[] }) => {
@@ -68,11 +56,10 @@ export const authorize = (roleAuthOptions?: { roles: UserRole[] }) => {
     next: NextFunction
   ): Promise<Response | void> {
     try {
-      jwtVerify(req);
+      const payload = jwtVerify(req);
+      req.auth = payload;
       if (roleAuthOptions?.roles) {
-        const roleAuthorized = roleAuthOptions.roles.includes(
-          req.cookies.user.role
-        );
+        const roleAuthorized = roleAuthOptions.roles.includes(payload.role);
         if (!roleAuthorized) {
           return res.status(StatusCodes.FORBIDDEN).json({
             error: { message: ReasonPhrases.FORBIDDEN },

@@ -19,14 +19,14 @@ import {
 } from "@prisma/client";
 
 import cuid from "cuid";
-import { CurrentUserAuthorization } from "../middleware/security/authorization";
+import { AuthPayload } from "../middleware/security/authorization";
 import { config } from "../config";
 import { armorGroupIds, weaponGroupIds } from "../utils/global-const";
 
 export function getFakeCurrentUserAuthorization(
-  partialCurrentUserAuthorization?: Partial<CurrentUserAuthorization>
-): CurrentUserAuthorization {
-  const currentUserAuthorization: CurrentUserAuthorization = {
+  partialCurrentUserAuthorization?: Partial<AuthPayload>
+): AuthPayload {
+  const currentUserAuthorization: AuthPayload = {
     userId: partialCurrentUserAuthorization?.userId ?? cuid(),
     role: partialCurrentUserAuthorization?.role ?? UserRole.Admin,
   };
