@@ -3,6 +3,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
 import helmet from "helmet";
+import { csrfMiddleware } from "./middleware/security/csrf";
 const app = express();
 
 app.use(helmet());
@@ -28,12 +29,13 @@ const corsOptions: CorsOptions = {
     }
     return callback(new Error("CORS policy violation: Origin not allowed"));
   },
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 };
 
 app.use(cors(corsOptions));
+app.use(csrfMiddleware);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
