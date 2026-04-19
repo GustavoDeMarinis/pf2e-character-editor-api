@@ -6,16 +6,14 @@ import helmet from "helmet";
 import { csrfMiddleware } from "./middleware/security/csrf";
 import { globalErrorHandler } from "./middleware/error-handler";
 import { requestIdMiddleware } from "./middleware/request-id";
+import { requestLogger } from "./middleware/request-logger";
 const app = express();
 
 app.use(requestIdMiddleware);
 app.use(helmet());
 app.use(cookieParser());
 
-app.use((req, res, next) => {
-  console.log(`Received request for ${req.url}`);
-  next();
-});
+app.use(requestLogger);
 
 const allowedOrigins: string[] = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(",")
@@ -23,7 +21,6 @@ const allowedOrigins: string[] = process.env.CORS_ORIGIN
 
 const corsOptions: CorsOptions = {
   origin: (origin: string | undefined, callback) => {
-    console.log("process.env.ENV", process.env.ENV)
     if (!origin && process.env.ENV === "local") {
       return callback(null, true);  // Allow missing origin in development
     }
