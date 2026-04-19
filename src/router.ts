@@ -7,6 +7,8 @@ import { router as weaponBaseRouter } from "./api/weapon-base";
 import { router as armorBaseRouter } from "./api/armor-base";
 import { router as characterClassRouter } from "./api/character-class";
 import { router as languageRouter } from "./api/language";
+import { router as skillRouter } from "./api/skill";
+import { router as ancestryRouter } from "./api/ancestry";
 
 import { apiDocsMiddleware, swaggerDocument } from "./swagger/config";
 const router = Router();
@@ -21,4 +23,6 @@ router.use("/armor-base", armorBaseRouter);
 router.use("/auth", authRouter);
 router.use("/user", userRouter);
 router.use("/language", languageRouter);
+router.use("/skill", skillRouter);
+router.use("/ancestry", ancestryRouter);
 export default router;
