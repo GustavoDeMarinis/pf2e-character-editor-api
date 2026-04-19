@@ -7,9 +7,11 @@ import { csrfMiddleware } from "./middleware/security/csrf";
 import { globalErrorHandler } from "./middleware/error-handler";
 import { requestIdMiddleware } from "./middleware/request-id";
 import { requestLogger } from "./middleware/request-logger";
+import { globalLimiter } from "./middleware/security/rate-limit";
 const app = express();
 
 app.use(requestIdMiddleware);
+app.use(globalLimiter);
 app.use(helmet());
 app.use(cookieParser());
 
