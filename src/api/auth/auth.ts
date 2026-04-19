@@ -13,6 +13,15 @@ import {
 } from "../../middleware/security/authorization";
 import { config } from "../../config";
 
+// Precomputed bcrypt hash used when a user is not found, to prevent timing-based
+// user enumeration (bcrypt.compare always runs, equalizing response time).
+const DUMMY_HASH = "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
+
+const INVALID_CREDENTIALS: ErrorResult = {
+  code: ErrorCode.Forbidden,
+  message: "Invalid credentials",
+};
+
 export const userSelect = {
   id: true,
   createdAt: true,
@@ -85,12 +94,6 @@ export const signIn = async (
   res: Response,
   userToAuthenticate: AuthUsingEmailParams | AuthUsingUserNameParams
 ): Promise<(Pick<User, "id" | "role"> & { token: string }) | ErrorResult> => {
-  if (!checkInputPasswordFormat(userToAuthenticate.password)) {
-    return {
-      code: ErrorCode.Forbidden,
-      message: "Forbidden",
-    };
-  }
   const user = await prisma.user.findFirst({
     select: {
       id: true,
@@ -104,21 +107,15 @@ export const signIn = async (
       ],
     },
   });
-  if (!user) {
-    return {
-      code: ErrorCode.Forbidden,
-      message: "Forbidden",
-    };
-  }
+
+  // Always run bcrypt.compare to prevent timing-based user enumeration
   const isValidPassword = await bcrypt.compare(
     userToAuthenticate.password,
-    user.password
+    user?.password ?? DUMMY_HASH
   );
-  if (!isValidPassword) {
-    return {
-      code: ErrorCode.Forbidden,
-      message: "Forbidden",
-    };
+
+  if (!user || !isValidPassword) {
+    return INVALID_CREDENTIALS;
   }
 
   const rawRefreshToken = crypto.randomBytes(32).toString("hex");
