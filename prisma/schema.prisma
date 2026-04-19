@@ -162,6 +162,22 @@ model User {
   role              UserRole    @default(Player)
   characters        Character[] @relation("User_assignedUserId_fkey")
   charactersCreated Character[] @relation("User_createdByUserId_fkey")
+  sessions          Session[]
+}
+
+model Session {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  refreshHash String
+  userAgent   String?
+  ipAddress   String?
+  createdAt   DateTime  @default(now())
+  lastUsedAt  DateTime  @default(now())
+  expiresAt   DateTime
+  revokedAt   DateTime?
+
+  @@index([userId])
 }
 
 model Skill {

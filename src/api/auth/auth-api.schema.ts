@@ -103,6 +103,15 @@ export const authSignInResponseSchema = {
   required: ["id", "role"],
 } as const;
 
+export const sessionIdParamsSchema = {
+  type: "object",
+  properties: {
+    sessionId: { type: "string" },
+  },
+  additionalProperties: false,
+  required: ["sessionId"],
+} as const;
+
 export const authPatchPasswordRequestBodySchema = {
   type: "object",
   properties: {

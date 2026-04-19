@@ -44,6 +44,7 @@ export enum ErrorCode {
   DataNotProcessable,
   BadRequest, // Should be reserved for request validation errors that cannot be included in ajv
   Forbidden,
+  Unauthorized,
   Unknown,
   SeeOther,
 }

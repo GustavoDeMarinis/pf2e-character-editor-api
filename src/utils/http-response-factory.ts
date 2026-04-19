@@ -27,6 +27,8 @@ export const createErrorResponse = (
       return createHttpErrorResponse(StatusCodes.CONFLICT, response, result);
     case ErrorCode.Forbidden:
       return createHttpErrorResponse(StatusCodes.FORBIDDEN, response, result);
+    case ErrorCode.Unauthorized:
+      return createHttpErrorResponse(StatusCodes.UNAUTHORIZED, response, result);
     case ErrorCode.DataNotProcessable:
       return createHttpErrorResponse(
         StatusCodes.UNPROCESSABLE_ENTITY,

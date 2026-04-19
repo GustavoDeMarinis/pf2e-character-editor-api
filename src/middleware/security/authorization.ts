@@ -9,39 +9,50 @@ const subService = "security/authorization";
 export type AuthPayload = {
   userId: string;
   role: UserRole;
+  sessionId: string;
 };
 
-export const getCurrentUserAuthorization = (
-  req: Request
-): AuthPayload => {
+export const getCurrentUserAuthorization = (req: Request): AuthPayload => {
   if (!req.auth) {
     throw new Error("Request is missing auth payload");
   }
-  return {
-    userId: req.auth.userId,
-    role: req.auth.role,
-  };
+  return req.auth;
 };
 
 export const jwtSignIn = (res: Response, payload: AuthPayload): string => {
   const token = jwt.sign(payload, config.JWT_SECRET_KEY, {
-    expiresIn: config.JWT_EXPIRATION_PERIOD,
+    expiresIn: config.JWT_ACCESS_TOKEN_EXPIRY,
   });
   res.cookie("access_token", token, {
     httpOnly: true,
-    secure: process.env.ENV !== "local",
+    secure: config.ENV !== "local",
     sameSite: "strict",
   });
   return token;
 };
 
+export const setRefreshTokenCookie = (res: Response, value: string): void => {
+  res.cookie("refresh_token", value, {
+    httpOnly: true,
+    secure: config.ENV !== "local",
+    sameSite: "strict",
+    path: "/auth/refresh",
+    maxAge: config.REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000,
+  });
+};
+
 export const jwtSignOut = (res: Response): void => {
   res.clearCookie("access_token", {
     httpOnly: true,
-    secure: process.env.ENV !== "local",
+    secure: config.ENV !== "local",
     sameSite: "strict",
   });
-  return;
+  res.clearCookie("refresh_token", {
+    httpOnly: true,
+    secure: config.ENV !== "local",
+    sameSite: "strict",
+    path: "/auth/refresh",
+  });
 };
 
 export const jwtVerify = (req: Request): AuthPayload => {

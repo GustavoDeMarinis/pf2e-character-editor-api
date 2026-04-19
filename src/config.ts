@@ -18,7 +18,8 @@ if (process.env.ENV === "prod" && !process.env.CORS_ORIGIN) {
 
 export const config = {
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY!,
-  JWT_EXPIRATION_PERIOD: process.env.JWT_EXPIRATION_PERIOD ?? "1d",
+  JWT_ACCESS_TOKEN_EXPIRY: process.env.JWT_ACCESS_TOKEN_EXPIRY ?? "15m",
+  REFRESH_TOKEN_EXPIRY_DAYS: parseInt(process.env.REFRESH_TOKEN_EXPIRY_DAYS ?? "30"),
   LOCAL_SALT_ROUNDS: process.env.ENV === "prod" ? 14 : 10,
   ENV: process.env.ENV ?? "local",
   USER_DEFAULT_PASSWORD: process.env.USER_DEFAULT_PASSWORD ?? "",

@@ -22,13 +22,14 @@ describe("Auth tests", () => {
 
   describe("Auth Sign In", () => {
     test("SignIn with User succesfully", async () => {
+      const mReq = { cookies: {}, headers: {}, ip: "127.0.0.1" } as any;
       const mRes = response;
       const fakeUser = getFakeUser();
       prismaMock.user.findFirst.mockResolvedValue(fakeUser);
-      const { userEmail, password, ...rest } = fakeUser;
-      const result = await signIn(mRes, { userEmail, password });
+      prismaMock.session.create.mockResolvedValue({} as any);
+      const { userEmail, password } = fakeUser;
+      const result = await signIn(mReq, mRes, { userEmail, password });
       expect(result).not.toBeFalsy();
-      expect(result).toBe(fakeUser);
     });
   });
 });

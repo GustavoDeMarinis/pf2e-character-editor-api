@@ -29,6 +29,7 @@ export function getFakeCurrentUserAuthorization(
   const currentUserAuthorization: AuthPayload = {
     userId: partialCurrentUserAuthorization?.userId ?? cuid(),
     role: partialCurrentUserAuthorization?.role ?? UserRole.Admin,
+    sessionId: partialCurrentUserAuthorization?.sessionId ?? cuid(),
   };
   return currentUserAuthorization;
 }

@@ -1,6 +1,7 @@
-import { Prisma, User, UserRole } from "@prisma/client";
+import { Prisma, Session, User, UserRole } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { Response } from "express";
+import crypto from "crypto";
+import { Request, Response } from "express";
 import prisma from "../../integrations/prisma/prisma-client";
 import { ErrorCode, ErrorResult } from "../../utils/shared-types";
 import { checkInputPasswordFormat } from "../../utils/regexs";
@@ -8,6 +9,7 @@ import {
   AuthPayload,
   jwtSignIn,
   jwtSignOut,
+  setRefreshTokenCookie,
 } from "../../middleware/security/authorization";
 import { config } from "../../config";
 
@@ -79,13 +81,14 @@ export const signUp = async (
 };
 
 export const signIn = async (
+  req: Request,
   res: Response,
   userToAuthenticate: AuthUsingEmailParams | AuthUsingUserNameParams
 ): Promise<(Pick<User, "id" | "role"> & { token: string }) | ErrorResult> => {
   if (!checkInputPasswordFormat(userToAuthenticate.password)) {
     return {
       code: ErrorCode.Forbidden,
-      message: "Forbidden", //Improve message
+      message: "Forbidden",
     };
   }
   const user = await prisma.user.findFirst({
@@ -117,13 +120,163 @@ export const signIn = async (
       message: "Forbidden",
     };
   }
-  const token = jwtSignIn(res, { userId: user.id, role: user.role });
+
+  const rawRefreshToken = crypto.randomBytes(32).toString("hex");
+  const refreshHash = await bcrypt.hash(rawRefreshToken, config.LOCAL_SALT_ROUNDS);
+  const expiresAt = new Date(
+    Date.now() + config.REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000
+  );
+
+  const session = await prisma.session.create({
+    data: {
+      userId: user.id,
+      refreshHash,
+      userAgent: req.headers["user-agent"],
+      ipAddress: req.ip,
+      expiresAt,
+    },
+  });
+
+  const token = jwtSignIn(res, {
+    userId: user.id,
+    role: user.role,
+    sessionId: session.id,
+  });
+  setRefreshTokenCookie(res, `${session.id}:${rawRefreshToken}`);
+
   const { password, ...publicUser } = user;
   return { ...publicUser, token };
 };
 
-export const signOut = (res: Response): void => {
-  return jwtSignOut(res);
+export const signOut = async (req: Request, res: Response): Promise<void> => {
+  if (req.auth?.sessionId) {
+    await prisma.session.update({
+      where: { id: req.auth.sessionId },
+      data: { revokedAt: new Date() },
+    });
+  }
+  jwtSignOut(res);
+};
+
+export const refreshSession = async (
+  req: Request,
+  res: Response
+): Promise<{ token: string } | ErrorResult> => {
+  const rawCookie: string | undefined = req.cookies.refresh_token;
+  if (!rawCookie) {
+    return { code: ErrorCode.Unauthorized, message: "Missing refresh token" };
+  }
+
+  const colonIndex = rawCookie.indexOf(":");
+  if (colonIndex === -1) {
+    return { code: ErrorCode.Unauthorized, message: "Invalid refresh token" };
+  }
+  const sessionId = rawCookie.slice(0, colonIndex);
+  const rawToken = rawCookie.slice(colonIndex + 1);
+
+  const session = await prisma.session.findUnique({
+    where: { id: sessionId },
+    include: { user: { select: { role: true } } },
+  });
+
+  if (!session) {
+    return { code: ErrorCode.Unauthorized, message: "Invalid refresh token" };
+  }
+
+  // Reuse detected: a revoked token is being replayed — revoke entire session family
+  if (session.revokedAt !== null) {
+    await prisma.session.updateMany({
+      where: { userId: session.userId, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+    jwtSignOut(res);
+    return { code: ErrorCode.Unauthorized, message: "Invalid refresh token" };
+  }
+
+  if (session.expiresAt < new Date()) {
+    return { code: ErrorCode.Unauthorized, message: "Refresh token expired" };
+  }
+
+  const isValid = await bcrypt.compare(rawToken, session.refreshHash);
+  if (!isValid) {
+    return { code: ErrorCode.Unauthorized, message: "Invalid refresh token" };
+  }
+
+  const rawRefreshToken = crypto.randomBytes(32).toString("hex");
+  const refreshHash = await bcrypt.hash(rawRefreshToken, config.LOCAL_SALT_ROUNDS);
+  const expiresAt = new Date(
+    Date.now() + config.REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000
+  );
+
+  const [newSession] = await prisma.$transaction([
+    prisma.session.create({
+      data: {
+        userId: session.userId,
+        refreshHash,
+        userAgent: session.userAgent,
+        ipAddress: session.ipAddress,
+        expiresAt,
+      },
+    }),
+    prisma.session.update({
+      where: { id: session.id },
+      data: { revokedAt: new Date() },
+    }),
+  ]);
+
+  const token = jwtSignIn(res, {
+    userId: session.userId,
+    role: session.user.role,
+    sessionId: newSession.id,
+  });
+  setRefreshTokenCookie(res, `${newSession.id}:${rawRefreshToken}`);
+
+  return { token };
+};
+
+export const getSessions = async (
+  userId: string
+): Promise<Pick<Session, "id" | "userAgent" | "ipAddress" | "createdAt" | "lastUsedAt" | "expiresAt">[]> => {
+  return prisma.session.findMany({
+    where: {
+      userId,
+      revokedAt: null,
+      expiresAt: { gt: new Date() },
+    },
+    select: {
+      id: true,
+      userAgent: true,
+      ipAddress: true,
+      createdAt: true,
+      lastUsedAt: true,
+      expiresAt: true,
+    },
+  });
+};
+
+export const revokeSession = async (
+  sessionId: string,
+  requestingUser: AuthPayload
+): Promise<void | ErrorResult> => {
+  const session = await prisma.session.findUnique({
+    where: { id: sessionId },
+  });
+
+  if (!session) {
+    return { code: ErrorCode.NotFound, message: "Session not found" };
+  }
+
+  if (
+    session.userId !== requestingUser.userId &&
+    requestingUser.role !== UserRole.Admin
+  ) {
+    return { code: ErrorCode.Forbidden, message: "Forbidden" };
+  }
+
+  await prisma.session.update({
+    where: { id: sessionId },
+    data: { revokedAt: new Date() },
+  });
 };
 
 export const changePassword = async (
@@ -138,7 +291,7 @@ export const changePassword = async (
     return {
       code: ErrorCode.BadRequest,
       message:
-        "Password must have at least one special character, one number and be 8 character long.", //Improve message
+        "Password must have at least one special character, one number and be 8 character long.",
     };
   }
 
@@ -176,14 +329,21 @@ export const changePassword = async (
       };
     }
   }
+
   const hashedPassword = await handlePasswordEncription(newPassword);
   await prisma.user.update({
+    where: { id },
+    data: { password: hashedPassword },
+  });
+
+  // Revoke all sessions except the current one
+  await prisma.session.updateMany({
     where: {
-      id,
+      userId: user.id,
+      revokedAt: null,
+      id: { not: currentUser.sessionId },
     },
-    data: {
-      password: hashedPassword,
-    },
+    data: { revokedAt: new Date() },
   });
 };
 
