@@ -3,15 +3,24 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
 import helmet from "helmet";
+import { csrfMiddleware } from "./middleware/security/csrf";
+import { globalErrorHandler } from "./middleware/error-handler";
+import { requestIdMiddleware } from "./middleware/request-id";
+import { requestLogger } from "./middleware/request-logger";
+import { globalLimiter } from "./middleware/security/rate-limit";
 const app = express();
 
-app.use(helmet());
+app.use(requestIdMiddleware);
+app.use(globalLimiter);
+app.use(
+  helmet({
+    contentSecurityPolicy: false, // API only — no HTML served outside /api-docs
+    hsts: { maxAge: 15552000, includeSubDomains: true }, // 6 months
+  })
+);
 app.use(cookieParser());
 
-app.use((req, res, next) => {
-  console.log(`Received request for ${req.url}`);
-  next();
-});
+app.use(requestLogger);
 
 const allowedOrigins: string[] = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(",")
@@ -19,7 +28,6 @@ const allowedOrigins: string[] = process.env.CORS_ORIGIN
 
 const corsOptions: CorsOptions = {
   origin: (origin: string | undefined, callback) => {
-    console.log("process.env.ENV", process.env.ENV)
     if (!origin && process.env.ENV === "local") {
       return callback(null, true);  // Allow missing origin in development
     }
@@ -28,15 +36,17 @@ const corsOptions: CorsOptions = {
     }
     return callback(new Error("CORS policy violation: Origin not allowed"));
   },
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 };
 
 app.use(cors(corsOptions));
+app.use(csrfMiddleware);
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "100kb" }));
+app.use(express.urlencoded({ extended: true, limit: "100kb" }));
 app.use(router);
+app.use(globalErrorHandler);
 
 export default app;

@@ -7,6 +7,7 @@ import {
   authSignInResponseSchema,
   authSignUpPostRequestBodySchema,
   authSignUpResponseSchema,
+  sessionIdParamsSchema,
 } from "./auth-api.schema";
 
 export type AuthSignUpPostRequestBody = FromSchema<
@@ -28,3 +29,5 @@ export type AuthSignInResponse = FromSchema<typeof authSignInResponseSchema>;
 export type AuthPatchPasswordRequestBody = FromSchema<
   typeof authPatchPasswordRequestBodySchema
 >;
+
+export type SessionIdParams = FromSchema<typeof sessionIdParamsSchema>;

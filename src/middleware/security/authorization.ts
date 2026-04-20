@@ -6,59 +6,64 @@ import { UserRole } from "@prisma/client";
 import { ReasonPhrases, StatusCodes } from "http-status-codes";
 const subService = "security/authorization";
 
-type PayloadType = {
+export type AuthPayload = {
   userId: string;
   role: UserRole;
+  sessionId: string;
 };
 
-export type CurrentUserAuthorization = {
-  userId: string;
-  role: UserRole;
+export const isOwner = (
+  entity: { createdByUserId?: string | null; assignedUserId?: string | null },
+  userId: string
+): boolean =>
+  entity.createdByUserId === userId || entity.assignedUserId === userId;
+
+export const getCurrentUserAuthorization = (req: Request): AuthPayload => {
+  if (!req.auth) {
+    throw new Error("Request is missing auth payload");
+  }
+  return req.auth;
 };
 
-export const getCurrentUserAuthorization = (
-  req: Request
-): CurrentUserAuthorization => {
-  return {
-    userId: req.cookies.user.userId,
-    role: req.cookies.user.role,
-  };
-};
-
-export const jwtSignIn = (res: Response, payload: PayloadType): string => {
+export const jwtSignIn = (res: Response, payload: AuthPayload): string => {
   const token = jwt.sign(payload, config.JWT_SECRET_KEY, {
-    expiresIn: config.JWT_EXPIRATION_PERIOD,
+    expiresIn: config.JWT_ACCESS_TOKEN_EXPIRY,
   });
   res.cookie("access_token", token, {
-    httpOnly: true, //Cookie can only be access by server
-    secure: process.env.ENV !== "local", // Use HTTPS in non-local environments
-    sameSite: "strict", // Prevent CSRF attacks
+    httpOnly: true,
+    secure: config.ENV !== "local",
+    sameSite: "strict",
   });
-  res.cookie("user", payload),{
-    httpOnly: false, // Allow frontend access
-    secure: process.env.ENV !== "local",
-    sameSite: "strict", 
-  };
   return token;
+};
+
+export const setRefreshTokenCookie = (res: Response, value: string): void => {
+  res.cookie("refresh_token", value, {
+    httpOnly: true,
+    secure: config.ENV !== "local",
+    sameSite: "strict",
+    path: "/auth/refresh",
+    maxAge: config.REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000,
+  });
 };
 
 export const jwtSignOut = (res: Response): void => {
   res.clearCookie("access_token", {
     httpOnly: true,
-    secure: process.env.ENV !== "local",
+    secure: config.ENV !== "local",
     sameSite: "strict",
   });
-  res.clearCookie("user", {
-    httpOnly: false,
-    secure: process.env.ENV !== "local",
+  res.clearCookie("refresh_token", {
+    httpOnly: true,
+    secure: config.ENV !== "local",
     sameSite: "strict",
+    path: "/auth/refresh",
   });
-  return;
 };
 
-export const jwtVerify = (req: Request) => {
+export const jwtVerify = (req: Request): AuthPayload => {
   const authHeader = req.cookies.access_token ?? "";
-  return jwt.verify(authHeader, config.JWT_SECRET_KEY);
+  return jwt.verify(authHeader, config.JWT_SECRET_KEY) as AuthPayload;
 };
 
 export const authorize = (roleAuthOptions?: { roles: UserRole[] }) => {
@@ -68,11 +73,10 @@ export const authorize = (roleAuthOptions?: { roles: UserRole[] }) => {
     next: NextFunction
   ): Promise<Response | void> {
     try {
-      jwtVerify(req);
+      const payload = jwtVerify(req);
+      req.auth = payload;
       if (roleAuthOptions?.roles) {
-        const roleAuthorized = roleAuthOptions.roles.includes(
-          req.cookies.user.role
-        );
+        const roleAuthorized = roleAuthOptions.roles.includes(payload.role);
         if (!roleAuthorized) {
           return res.status(StatusCodes.FORBIDDEN).json({
             error: { message: ReasonPhrases.FORBIDDEN },
@@ -97,7 +101,7 @@ export const authorize = (roleAuthOptions?: { roles: UserRole[] }) => {
           });
           break;
       }
-      res.status(401).json({ error: { message: error.message } });
+      return res.status(401).json({ error: { message: error.message } });
     }
 
     next();

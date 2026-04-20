@@ -6,10 +6,13 @@ export const authSignUpPostRequestBodySchema = {
     userName: {
       description: "User UserName",
       type: "string",
+      minLength: 2,
+      maxLength: 64,
     },
     userEmail: {
       description: "User Email",
       type: "string",
+      format: "email",
     },
     password: {
       description: "User Password",
@@ -101,6 +104,15 @@ export const authSignInResponseSchema = {
   },
   additionalProperties: false,
   required: ["id", "role"],
+} as const;
+
+export const sessionIdParamsSchema = {
+  type: "object",
+  properties: {
+    sessionId: { type: "string" },
+  },
+  additionalProperties: false,
+  required: ["sessionId"],
 } as const;
 
 export const authPatchPasswordRequestBodySchema = {

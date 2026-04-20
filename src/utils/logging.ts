@@ -69,7 +69,7 @@ export const logInfo = async (
     redactionLevel: RedactionLevel;
   }
 ): Promise<void> => {
-  await logger.log(LogLevel.Error, formatMessage(logInput), options);
+  await logger.log(LogLevel.Info, formatMessage(logInput), options);
 };
 export const logVerbose = async (
   logInput: LogInput,

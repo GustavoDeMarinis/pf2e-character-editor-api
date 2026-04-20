@@ -49,7 +49,7 @@ export const handleSearchCharacter = async (
     pageOffset: pageOffset,
   });
 
-  const results = await searchCharacters(query, pagination, sort);
+  const results = await searchCharacters(query, pagination, sort, req.auth);
   return createGetArrayResponse<CharacterResult>(res, results, {
     pagination,
   });
@@ -63,7 +63,7 @@ export const handleGetCharacter = async (
     characterRequestParamsSchema,
     req.params
   );
-  const result = await getCharacter({ id: characterId });
+  const result = await getCharacter({ id: characterId }, req.auth);
 
   return createGetResponse<CharacterResult>(res, result);
 };
@@ -76,7 +76,7 @@ export const handlePostCharacter = async (
     characterPostRequestBodySchema,
     req.body
   );
-  const result = await insertCharacter(body);
+  const result = await insertCharacter(body, req.auth);
 
   return createPostResponse<CharacterResult>(req, res, result);
 };
@@ -93,7 +93,7 @@ export const handlePatchCharacter = async (
     characterPatchRequestBodySchema,
     req.body
   );
-  const result = await updateCharacter({ id: characterId }, body);
+  const result = await updateCharacter({ id: characterId }, body, undefined, req.auth);
   return createPatchResponse<Character>(res, result);
 };
 
@@ -105,7 +105,7 @@ export const handleDeleteCharacter = async (
     characterRequestParamsSchema,
     req.params
   );
-  const result = await deleteCharacter({ id: characterId });
+  const result = await deleteCharacter({ id: characterId }, req.auth);
 
   return createDeleteResponse<Character>(res, result);
 };

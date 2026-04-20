@@ -1,4 +1,4 @@
-import { Character, Prisma } from "@prisma/client";
+import { Character, Prisma, UserRole } from "@prisma/client";
 import prisma from "../../integrations/prisma/prisma-client";
 import {
   ErrorCode,
@@ -9,6 +9,12 @@ import {
 import { handleSort } from "../../utils/sorting";
 import { getQueryCount } from "../../utils/pagination";
 import { logDebug } from "../../utils/logging";
+import { isOwner } from "../../middleware/security/authorization";
+
+type CallerAuth = {
+  userId: string;
+  role: UserRole;
+};
 
 const subService = "character/service";
 
@@ -81,7 +87,8 @@ export const searchCharacters = async (
     isActive?: boolean;
   },
   { skip, take }: PaginationOptions,
-  sort?: string
+  sort?: string,
+  callerAuth?: CallerAuth
 ): Promise<SearchResult<CharacterResult> | ErrorResult> => {
   const {
     isActive,
@@ -105,6 +112,14 @@ export const searchCharacters = async (
   if (search.isActive !== undefined) {
     where.deletedAt = !isActive ? { not: null } : null;
   }
+
+  if (callerAuth && callerAuth.role !== UserRole.Admin) {
+    where.OR = [
+      { createdByUserId: callerAuth!.userId },
+      { assignedUserId: callerAuth!.userId },
+    ];
+  }
+
   const orderBy = handleSort(sort);
   const items = await prisma.character.findMany({
     select: characterSelect,
@@ -126,31 +141,47 @@ export const searchCharacters = async (
   return { items, count };
 };
 
-export const getCharacter = async ({
-  id,
-}: Required<Pick<Prisma.CharacterWhereUniqueInput, "id">>): Promise<
-  CharacterResult | ErrorResult
-> => {
-  const where: Prisma.CharacterWhereUniqueInput = {
-    id,
-  };
+export const getCharacter = async (
+  { id }: Required<Pick<Prisma.CharacterWhereUniqueInput, "id">>,
+  callerAuth?: CallerAuth
+): Promise<CharacterResult | ErrorResult> => {
+  if (callerAuth && callerAuth.role !== UserRole.Admin) {
+    const ownership = await prisma.character.findUnique({
+      select: { createdByUserId: true, assignedUserId: true },
+      where: { id },
+    });
+    if (!ownership || !isOwner(ownership, callerAuth.userId)) {
+      return {
+        code: ErrorCode.Forbidden,
+        message: "Access denied",
+      }
+    }
+  }
+
   const character = await prisma.character.findUniqueOrThrow({
-    where,
+    where: { id },
     select: characterSelect,
   });
-  if (character) {
-    logDebug({
-      subService,
-      message: "Character Retrieved by Id",
-      details: { character },
-    });
-  }
+
+  logDebug({
+    subService,
+    message: "Character Retrieved by Id",
+    details: { character },
+  });
   return character;
 };
 
 export const insertCharacter = async (
-  characterToInsert: CharacterToInsert
+  characterToInsert: CharacterToInsert,
+  callerAuth?: CallerAuth
 ): Promise<CharacterResult | ErrorResult> => {
+  if (callerAuth && callerAuth.role !== UserRole.Admin) {
+    characterToInsert = {
+      ...characterToInsert,
+      createdByUserId: callerAuth!.userId,
+      assignedUserId: callerAuth!.userId,
+    };
+  }
   const existingCharacters = await prisma.character.findMany({
     select: {
       id: true,
@@ -208,11 +239,28 @@ export const updateCharacter = async (
     | "languages"
     | "classDc"
   >,
-  reactivate?: false
+  reactivate?: false,
+  callerAuth?: CallerAuth
 ) => {
-  const data: Prisma.CharacterUncheckedUpdateInput = {
-    ...characterToUpdate,
-  };
+  if (callerAuth && callerAuth.role !== UserRole.Admin) {
+    const existing = await prisma.character.findUnique({
+      select: { createdByUserId: true, assignedUserId: true },
+      where: { id },
+    });
+    if (!existing) {
+      return { code: ErrorCode.NotFound, message: "Character not found" };
+    }
+    if (!isOwner(existing, callerAuth.userId)) {
+      return {
+        code: ErrorCode.Forbidden,
+        message: "Access denied",
+      }
+    }
+    delete characterToUpdate.createdByUserId;
+    delete characterToUpdate.assignedUserId;
+  }
+
+  const data: Prisma.CharacterUncheckedUpdateInput = { ...characterToUpdate };
   if (reactivate) {
     data.deletedAt = null;
   }
@@ -225,22 +273,23 @@ export const updateCharacter = async (
   return updatedCharacter;
 };
 
-export const deleteCharacter = async ({
-  id,
-}: Required<Pick<Prisma.CharacterWhereUniqueInput, "id">>) => {
+export const deleteCharacter = async (
+  { id }: Required<Pick<Prisma.CharacterWhereUniqueInput, "id">>,
+  callerAuth?: CallerAuth
+) => {
   const existingCharacter = await prisma.character.findUnique({
-    select: {
-      deletedAt: true,
-    },
-    where: {
-      id,
-    },
+    select: { deletedAt: true, createdByUserId: true, assignedUserId: true },
+    where: { id },
   });
   if (!existingCharacter || existingCharacter.deletedAt) {
-    return {
-      code: ErrorCode.NotFound,
-      message: `Character Not Found`,
-    };
+    return { code: ErrorCode.NotFound, message: "Character Not Found" };
+  }
+
+  if (callerAuth && callerAuth.role !== UserRole.Admin && !isOwner(existingCharacter, callerAuth.userId)) {
+    return  {
+        code: ErrorCode.Forbidden,
+        message: "Access denied",
+      };
   }
   const data = {
     deletedAt: new Date(),

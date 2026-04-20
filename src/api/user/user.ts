@@ -9,7 +9,7 @@ import {
 import { handleSort } from "../../utils/sorting";
 import { getQueryCount } from "../../utils/pagination";
 import { logDebug } from "../../utils/logging";
-import { CurrentUserAuthorization } from "../../middleware/security/authorization";
+import { AuthPayload } from "../../middleware/security/authorization";
 const subService = "user/service";
 
 export const userSelect = {
@@ -76,7 +76,7 @@ export const searchUser = async (
 export const getUser = async ({
   id,
 }: Prisma.UserWhereUniqueInput): Promise<
-  Omit<User, "password"> | ErrorResult
+  UserSearchResult | ErrorResult
 > => {
   const where: Prisma.UserWhereUniqueInput = {
     id,
@@ -98,7 +98,7 @@ export const getUser = async ({
 export const updateUser = async (
   { id }: Prisma.UserWhereUniqueInput,
   { userName, userEmail, role }: UserToUpdate
-): Promise<Omit<User, "password"> | ErrorResult> => {
+): Promise<UserSearchResult | ErrorResult> => {
   const user = await prisma.user.findUnique({
     where: {
       id,
@@ -126,7 +126,7 @@ export const updateUser = async (
 
 export const deleteUser = async (
   { id }: Required<Pick<Prisma.UserWhereUniqueInput, "id">>,
-  currentUser: CurrentUserAuthorization
+  currentUser: AuthPayload
 ) => {
   if (currentUser.role !== UserRole.Admin) {
     if (id !== currentUser.userId) {
