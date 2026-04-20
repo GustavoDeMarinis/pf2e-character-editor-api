@@ -2,6 +2,7 @@ import Router from "express-promise-router";
 import {
   handleChangePassword,
   handleGetSessions,
+  handleMe,
   handleRefresh,
   handleRevokeSession,
   handleSignIn,
@@ -25,6 +26,7 @@ router.post("/signOut", authorize(), handleSignOut);
 router.post("/refresh", refreshLimiter, handleRefresh);
 router.get("/sessions", authorize(), handleGetSessions);
 router.delete("/sessions/:sessionId", authorize(), handleRevokeSession);
+router.get("/me", authorize(), handleMe);
 router.patch("/password/:userId", authorize({ roles: [UserRole.Admin, UserRole.Player] }), passwordChangeLimiter, handleChangePassword);
 
 export { router };

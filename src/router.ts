@@ -11,10 +11,19 @@ import { router as skillRouter } from "./api/skill";
 import { router as ancestryRouter } from "./api/ancestry";
 
 import { apiDocsMiddleware, swaggerDocument } from "./swagger/config";
+import { Request, Response, NextFunction } from "express";
+
 const router = Router();
 
-router.use("/api-docs", apiDocsMiddleware, swaggerUi.serve);
-router.get("/api-docs", apiDocsMiddleware, swaggerUi.setup(swaggerDocument));
+const rejectDocsInProd = (_req: Request, res: Response, next: NextFunction) => {
+  if (process.env.ENV === "prod" && process.env.DOCS_ENABLED !== "true") {
+    return res.status(404).end();
+  }
+  return next();
+};
+
+router.use("/api-docs", rejectDocsInProd, apiDocsMiddleware, swaggerUi.serve);
+router.get("/api-docs", rejectDocsInProd, apiDocsMiddleware, swaggerUi.setup(swaggerDocument));
 
 router.use("/character-class", characterClassRouter);
 router.use("/character", characterRouter);

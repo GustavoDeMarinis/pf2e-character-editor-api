@@ -100,6 +100,14 @@ export const handleRevokeSession = async (
   return createDeleteResponse<void>(res, result);
 };
 
+export const handleMe = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const { userId, role, sessionId } = getCurrentUserAuthorization(req);
+  return res.status(200).json({ userId, role, sessionId });
+};
+
 export const handleChangePassword = async (
   req: Request,
   res: Response

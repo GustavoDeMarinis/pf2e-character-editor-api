@@ -62,7 +62,6 @@ export const signUp = async (
         "Password should have at least one special character, one number and be at least 8 character long",
     };
   }
-  //TODO VERIFY BY REGEX email & userName
   const user = await prisma.user.findFirst({
     where: {
       OR: [

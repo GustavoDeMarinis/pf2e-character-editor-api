@@ -12,7 +12,12 @@ const app = express();
 
 app.use(requestIdMiddleware);
 app.use(globalLimiter);
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false, // API only — no HTML served outside /api-docs
+    hsts: { maxAge: 15552000, includeSubDomains: true }, // 6 months
+  })
+);
 app.use(cookieParser());
 
 app.use(requestLogger);
@@ -39,8 +44,8 @@ const corsOptions: CorsOptions = {
 app.use(cors(corsOptions));
 app.use(csrfMiddleware);
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "100kb" }));
+app.use(express.urlencoded({ extended: true, limit: "100kb" }));
 app.use(router);
 app.use(globalErrorHandler);
 

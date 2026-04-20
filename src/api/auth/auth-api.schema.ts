@@ -6,10 +6,13 @@ export const authSignUpPostRequestBodySchema = {
     userName: {
       description: "User UserName",
       type: "string",
+      minLength: 2,
+      maxLength: 64,
     },
     userEmail: {
       description: "User Email",
       type: "string",
+      format: "email",
     },
     password: {
       description: "User Password",
