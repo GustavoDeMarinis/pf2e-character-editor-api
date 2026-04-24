@@ -140,6 +140,17 @@ const commonCharacterProperties = {
     type: "string",
     nullable: true,
   },
+  heritage: {
+    type: "object",
+    description: "Character Heritage",
+    nullable: true,
+    properties: {
+      id: { type: "string" },
+      name: { type: "string" },
+    },
+    required: ["id", "name"],
+    additionalProperties: false,
+  },
 } as const;
 
 export const characterSearchResponseSchema = {
@@ -275,6 +286,11 @@ export const characterPostRequestBodySchema = {
         checkIdIsCuid: true,
       },
     },
+    heritageId: {
+      description: "Character Heritage Id",
+      type: "string",
+      checkIdIsCuid: true,
+    },
   },
   additionalProperties: false,
   required: [
@@ -340,6 +356,11 @@ export const characterPatchRequestBodySchema = {
     background: {
       description: "Character Background",
       type: "string",
+    },
+    heritageId: {
+      description: "Character Heritage Id",
+      type: "string",
+      checkIdIsCuid: true,
     },
   },
   additionalProperties: false,

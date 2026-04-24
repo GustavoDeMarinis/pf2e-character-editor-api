@@ -79,6 +79,20 @@ const buildLocalAncestry = (): Prisma.AncestryUncheckedCreateInput[] => {
         connect: [{ id: languageIds.common }, { id: languageIds.aasimar }],
       },
     },
+    {
+      id: ancestryIds.goblin,
+      name: "Goblin",
+      hitPoints: 6,
+      size: AncestrySize.Small,
+      speed: 25,
+      attributeBoost: [Attribute.Dexterity, Attribute.Charisma],
+      attributeFlaw: [Attribute.Wisdom],
+      description: "Goblin Race",
+      rarity: Rarity.Common,
+      languages: {
+        connect: [{ id: languageIds.common }, { id: languageIds.goblin }],
+      },
+    },
   ];
   return ancestries;
 };
