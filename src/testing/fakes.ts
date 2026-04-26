@@ -47,7 +47,7 @@ export const getFakeCharacter = (
     characterName: partialCharacter?.characterName ?? faker.internet.userName(),
     characterClassId: partialCharacter?.characterClassId ?? cuid(),
     ancestryId: partialCharacter?.ancestryId ?? cuid(),
-    background: partialCharacter?.background ?? faker.hacker.verb(),
+    backgroundId: partialCharacter?.backgroundId ?? null,
     createdByUserId: partialCharacter?.createdByUserId ?? cuid(),
     assignedUserId: partialCharacter?.assignedUserId ?? cuid(),
     level: partialCharacter?.level ?? LEVEL,

@@ -87,6 +87,19 @@ describe("Character tests", () => {
       expect(result).toBe(fakeCharacter);
     });
 
+    test("insertCharacter returns 404 when backgroundId not found", async () => {
+      const backgroundId = "cl_background_missing";
+      const fakeCharacter = getFakeCharacter({ backgroundId });
+      prismaMock.background.findUnique.mockResolvedValue(null);
+
+      const result = await insertCharacter(fakeCharacter);
+
+      expect(result).toStrictEqual({
+        code: ErrorCode.NotFound,
+        message: "Background not found",
+      });
+    });
+
     test("insertCharacter handles character conflict", async () => {
       const fakeCharacter = getFakeCharacter();
       prismaMock.character.findMany.mockResolvedValue([fakeCharacter]);
