@@ -7,6 +7,7 @@ import {
   Attribute,
   Character,
   CharacterClass,
+  Heritage,
   Language,
   Rarity,
   Trait,
@@ -55,8 +56,25 @@ export const getFakeCharacter = (
     backgroundBoost: partialCharacter?.backgroundBoost ?? [Attribute.Strength],
     classBoost: partialCharacter?.classBoost ?? Attribute.Strength,
     classDc: partialCharacter?.classDc ?? LEVEL + 10 + 3 + 4,
+    heritageId: partialCharacter?.heritageId ?? null,
   };
   return character;
+};
+
+export const getFakeHeritage = (
+  partialHeritage?: Partial<Heritage>
+): Heritage => {
+  const heritage: Heritage = {
+    id: partialHeritage?.id ?? cuid(),
+    createdAt: partialHeritage?.createdAt ?? new Date(),
+    updatedAt: partialHeritage?.updatedAt ?? new Date(),
+    deletedAt: partialHeritage?.deletedAt ?? null,
+    name: partialHeritage?.name ?? faker.word.noun(),
+    description: partialHeritage?.description ?? "",
+    ancestryId: partialHeritage?.ancestryId ?? cuid(),
+    rarity: partialHeritage?.rarity ?? Rarity.Common,
+  };
+  return heritage;
 };
 
 export const getFakeUser = (partialUser?: Partial<User>): User => {

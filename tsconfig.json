@@ -18,5 +18,8 @@
     "rootDir": "./src",
     "noErrorTruncation": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "ts-node": {
+    "files": true
+  }
 }

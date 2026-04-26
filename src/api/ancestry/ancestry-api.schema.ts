@@ -151,6 +151,21 @@ const commonAncestryProperties = {
     description: "Ancestry Rarity",
     enum: Object.values(Rarity),
   },
+  heritages: {
+    type: "array",
+    description: "Ancestry Heritages",
+    items: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+        description: { type: "string" },
+        rarity: { type: "string", enum: Object.values(Rarity) },
+      },
+      required: ["id", "name", "rarity"],
+      additionalProperties: false,
+    },
+  },
 } as const;
 
 export const ancestrySearchResponseSchema = {

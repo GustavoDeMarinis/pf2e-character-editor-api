@@ -30,6 +30,8 @@ model Character {
   languages        Language[]
   classDc          Int
   skills           CharacterSkillLevel[]
+  heritage         Heritage?             @relation(fields: [heritageId], references: [id])
+  heritageId       String?
 }
 
 model ClassLevelingMap {
@@ -99,6 +101,7 @@ model Ancestry {
   languages      Language[]
   rarity         Rarity
   characters     Character[]
+  heritages      Heritage[]
 }
 
 model Language {
@@ -152,19 +155,19 @@ enum UserRole {
 }
 
 model User {
-  id                String      @id @default(cuid())
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
-  deletedAt         DateTime?
-  userEmail         String      @unique
-  userName          String      @unique
-  password          String
-  role                  UserRole    @default(Player)
-  failedLoginAttempts   Int         @default(0)
-  lockedUntil           DateTime?
-  characters            Character[] @relation("User_assignedUserId_fkey")
-  charactersCreated     Character[] @relation("User_createdByUserId_fkey")
-  sessions              Session[]
+  id                  String      @id @default(cuid())
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  deletedAt           DateTime?
+  userEmail           String      @unique
+  userName            String      @unique
+  password            String
+  role                UserRole    @default(Player)
+  failedLoginAttempts Int         @default(0)
+  lockedUntil         DateTime?
+  characters          Character[] @relation("User_assignedUserId_fkey")
+  charactersCreated   Character[] @relation("User_createdByUserId_fkey")
+  sessions            Session[]
 }
 
 model Session {
@@ -293,6 +296,7 @@ model Trait {
   ancestries  Ancestry[]
   runes       Rune[]
   actions     Action[]
+  heritages   Heritage[]
 }
 
 model WeaponCriticalSpecialization {
@@ -371,4 +375,20 @@ model Rune {
   runeItemSubcategory RuneItemSubcategory
   level               Int                 @default(1)
   price               Int
+}
+
+model Heritage {
+  id          String      @id @default(cuid())
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  deletedAt   DateTime?
+  name        String
+  description String?
+  ancestry    Ancestry    @relation(fields: [ancestryId], references: [id])
+  ancestryId  String
+  traits      Trait[]
+  rarity      Rarity
+  characters  Character[]
+
+  @@index([ancestryId])
 }

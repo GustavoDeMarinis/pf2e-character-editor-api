@@ -41,6 +41,14 @@ export const ancestrySelect = {
       name: true,
     },
   },
+  heritages: {
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      rarity: true,
+    },
+  },
 };
 
 export const ancestryArgs = Prisma.validator<Prisma.AncestryDefaultArgs>()({
