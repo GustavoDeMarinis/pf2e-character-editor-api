@@ -10,6 +10,7 @@ import { router as languageRouter } from "./api/language";
 import { router as skillRouter } from "./api/skill";
 import { router as ancestryRouter } from "./api/ancestry";
 import { router as heritageRouter } from "./api/heritage";
+import { router as backgroundRouter } from "./api/background";
 
 import { apiDocsMiddleware, swaggerDocument } from "./swagger/config";
 import { Request, Response, NextFunction } from "express";
@@ -36,4 +37,5 @@ router.use("/language", languageRouter);
 router.use("/skill", skillRouter);
 router.use("/ancestry", ancestryRouter);
 router.use("/heritage", heritageRouter);
+router.use("/background", backgroundRouter);
 export default router;
