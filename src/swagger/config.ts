@@ -10,6 +10,7 @@ import { armorBasePaths } from "./armor-base/armor-base.swagger";
 import { ancestryPaths } from "./ancestry/ancestry.swagger";
 import { languagePaths } from "./language/language.swagger";
 import { heritagePaths } from "./heritage/heritage.swagger";
+import { backgroundPaths } from "./background/background.swagger";
 
 export const swaggerDocument = {
   openapi: "3.0.1",
@@ -39,6 +40,7 @@ export const swaggerDocument = {
     ...ancestryPaths,
     ...languagePaths,
     ...heritagePaths,
+    ...backgroundPaths,
   },
 };
 
