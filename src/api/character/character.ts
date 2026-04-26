@@ -1,4 +1,4 @@
-import { Character, Prisma, UserRole } from "@prisma/client";
+import { Prisma, UserRole } from "@prisma/client";
 import prisma from "../../integrations/prisma/prisma-client";
 import {
   ErrorCode,
@@ -54,6 +54,12 @@ export const characterSelect = {
   backgroundBoost: true,
   classBoost: true,
   level: true,
+  heritage: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
 };
 
 export const characterArgs = Prisma.validator<Prisma.CharacterDefaultArgs>()({
@@ -77,6 +83,7 @@ type CharacterToInsert = Pick<
   | "classBoost"
   | "languages"
   | "classDc"
+  | "heritageId"
 >;
 
 export const searchCharacters = async (
@@ -90,13 +97,7 @@ export const searchCharacters = async (
   sort?: string,
   callerAuth?: CallerAuth
 ): Promise<SearchResult<CharacterResult> | ErrorResult> => {
-  const {
-    isActive,
-    userAssignedName,
-    userCreatorName,
-    characterClassName,
-    ...searchFilters
-  } = search;
+  const { isActive, userAssignedName, userCreatorName, characterClassName } = search;
   const where: Prisma.CharacterWhereInput = {
     assignedUser: {
       userName: userAssignedName,
@@ -182,6 +183,22 @@ export const insertCharacter = async (
       assignedUserId: callerAuth!.userId,
     };
   }
+  if (characterToInsert.heritageId) {
+    const heritage = await prisma.heritage.findUnique({
+      select: { ancestryId: true },
+      where: { id: characterToInsert.heritageId },
+    });
+    if (!heritage) {
+      return { code: ErrorCode.NotFound, message: "Heritage not found" };
+    }
+    if (heritage.ancestryId !== characterToInsert.ancestryId) {
+      return {
+        code: ErrorCode.BadRequest,
+        message: "Heritage does not belong to the selected ancestry",
+      };
+    }
+  }
+
   const existingCharacters = await prisma.character.findMany({
     select: {
       id: true,
@@ -238,6 +255,7 @@ export const updateCharacter = async (
     | "classBoost"
     | "languages"
     | "classDc"
+    | "heritageId"
   >,
   reactivate?: false,
   callerAuth?: CallerAuth
@@ -258,6 +276,31 @@ export const updateCharacter = async (
     }
     delete characterToUpdate.createdByUserId;
     delete characterToUpdate.assignedUserId;
+  }
+
+  if (characterToUpdate.heritageId) {
+    const heritageId = characterToUpdate.heritageId as string;
+    const current = await prisma.character.findUnique({
+      select: { ancestryId: true },
+      where: { id },
+    });
+    const targetAncestryId =
+      (characterToUpdate.ancestryId as string | undefined) ?? current?.ancestryId;
+    if (targetAncestryId) {
+      const heritage = await prisma.heritage.findUnique({
+        select: { ancestryId: true },
+        where: { id: heritageId },
+      });
+      if (!heritage) {
+        return { code: ErrorCode.NotFound, message: "Heritage not found" };
+      }
+      if (heritage.ancestryId !== targetAncestryId) {
+        return {
+          code: ErrorCode.BadRequest,
+          message: "Heritage does not belong to the selected ancestry",
+        };
+      }
+    }
   }
 
   const data: Prisma.CharacterUncheckedUpdateInput = { ...characterToUpdate };
