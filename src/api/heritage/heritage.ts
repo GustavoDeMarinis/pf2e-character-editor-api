@@ -103,7 +103,7 @@ export const insertHeritage = async (
   if (!ancestry) {
     return { code: ErrorCode.NotFound, message: "Ancestry not found" };
   }
-
+  
   const existing = await prisma.heritage.findFirst({
     select: { id: true, deletedAt: true },
     where: {

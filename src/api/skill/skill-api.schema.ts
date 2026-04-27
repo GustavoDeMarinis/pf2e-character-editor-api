@@ -1,4 +1,4 @@
-import { Attribute } from "@prisma/client";
+import { Attribute, Rarity } from "@prisma/client";
 import {
   paginationRequestPropertySchema,
   paginationRequiredPropertiesSchema,
@@ -54,6 +54,7 @@ const commonSkillProperties = {
         description: {
           description: "Action Description",
           type: "string",
+          nullable: true,
         },
         traits: {
           description: "Action Traits",
@@ -72,6 +73,20 @@ const commonSkillProperties = {
         },
       },
       required: ["name", "description", "traits"],
+      additionalProperties: false,
+    },
+  },
+  backgrounds: {
+    description: "Backgrounds That Train This Skill",
+    type: "array",
+    items: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+        rarity: { type: "string", enum: Object.values(Rarity) },
+      },
+      required: ["id", "name", "rarity"],
       additionalProperties: false,
     },
   },
@@ -112,6 +127,7 @@ export const skillSearchResponseSchema = {
           "description",
           "associatedAttribute",
           "actions",
+          "backgrounds",
         ],
         additionalProperties: false,
       },
@@ -151,6 +167,7 @@ export const skillGetResponseSchema = {
     "description",
     "associatedAttribute",
     "actions",
+    "backgrounds",
   ],
   additionalProperties: false,
 } as const;
@@ -207,6 +224,7 @@ export const skillPostResponseSchema = {
       "description",
       "associatedAttribute",
       "actions",
+      "backgrounds",
     ],
     additionalProperties: false,
 } as const;

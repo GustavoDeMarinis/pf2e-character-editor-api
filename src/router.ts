@@ -10,6 +10,7 @@ import { router as languageRouter } from "./api/language";
 import { router as skillRouter } from "./api/skill";
 import { router as ancestryRouter } from "./api/ancestry";
 import { router as heritageRouter } from "./api/heritage";
+import { router as backgroundRouter } from "./api/background";
 
 import { apiDocsMiddleware, swaggerDocument } from "./swagger/config";
 import { Request, Response, NextFunction } from "express";
@@ -24,7 +25,28 @@ const rejectDocsInProd = (_req: Request, res: Response, next: NextFunction) => {
 };
 
 router.use("/api-docs", rejectDocsInProd, apiDocsMiddleware, swaggerUi.serve);
-router.get("/api-docs", rejectDocsInProd, apiDocsMiddleware, swaggerUi.setup(swaggerDocument));
+const swaggerUiOptions = {
+  customJsStr: `
+    (function () {
+      var _fetch = window.fetch;
+      window.fetch = function (url, opts) {
+        opts = opts || {};
+        opts.headers = opts.headers || {};
+        var match = document.cookie.match(/(?:^|;\\s*)csrf_token=([^;]+)/);
+        if (match) {
+          if (opts.headers instanceof Headers) {
+            opts.headers.set('x-csrf-token', decodeURIComponent(match[1]));
+          } else {
+            opts.headers['x-csrf-token'] = decodeURIComponent(match[1]);
+          }
+        }
+        return _fetch(url, opts);
+      };
+    })();
+  `,
+} as swaggerUi.SwaggerUiOptions;
+
+router.get("/api-docs", rejectDocsInProd, apiDocsMiddleware, swaggerUi.setup(swaggerDocument, swaggerUiOptions));
 
 router.use("/character-class", characterClassRouter);
 router.use("/character", characterRouter);
@@ -36,4 +58,5 @@ router.use("/language", languageRouter);
 router.use("/skill", skillRouter);
 router.use("/ancestry", ancestryRouter);
 router.use("/heritage", heritageRouter);
+router.use("/background", backgroundRouter);
 export default router;

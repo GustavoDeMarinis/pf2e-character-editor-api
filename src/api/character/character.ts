@@ -45,10 +45,15 @@ export const characterSelect = {
     select: {
       className: true,
       keyAttributes: true,
-      hitpoints: true,
+      hitPoints: true,
     },
   },
-  background: true,
+  background: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
   ancestryBoost: true,
   ancestryFlaw: true,
   backgroundBoost: true,
@@ -72,7 +77,7 @@ type CharacterToInsert = Pick<
   Prisma.CharacterUncheckedCreateInput,
   | "characterName"
   | "ancestryId"
-  | "background"
+  | "backgroundId"
   | "createdByUserId"
   | "assignedUserId"
   | "level"
@@ -199,6 +204,16 @@ export const insertCharacter = async (
     }
   }
 
+  if (characterToInsert.backgroundId) {
+    const background = await prisma.background.findUnique({
+      select: { id: true },
+      where: { id: characterToInsert.backgroundId },
+    });
+    if (!background) {
+      return { code: ErrorCode.NotFound, message: "Background not found" };
+    }
+  }
+
   const existingCharacters = await prisma.character.findMany({
     select: {
       id: true,
@@ -244,7 +259,7 @@ export const updateCharacter = async (
     Prisma.CharacterUncheckedUpdateInput,
     | "characterName"
     | "ancestryId"
-    | "background"
+    | "backgroundId"
     | "createdByUserId"
     | "assignedUserId"
     | "level"
@@ -276,6 +291,16 @@ export const updateCharacter = async (
     }
     delete characterToUpdate.createdByUserId;
     delete characterToUpdate.assignedUserId;
+  }
+
+  if (characterToUpdate.backgroundId) {
+    const background = await prisma.background.findUnique({
+      select: { id: true },
+      where: { id: characterToUpdate.backgroundId as string },
+    });
+    if (!background) {
+      return { code: ErrorCode.NotFound, message: "Background not found" };
+    }
   }
 
   if (characterToUpdate.heritageId) {

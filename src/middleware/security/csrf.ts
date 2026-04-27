@@ -37,6 +37,10 @@ export const csrfMiddleware = (
   }
 
   const headerToken = req.headers["x-csrf-token"];
+  console.log("CSRF Token Validation:", {
+    headerToken,
+    cookieToken: token,
+  });
   if (headerToken !== token) {
     return res.status(StatusCodes.FORBIDDEN).json({
       error: { message: "CSRF token mismatch" },

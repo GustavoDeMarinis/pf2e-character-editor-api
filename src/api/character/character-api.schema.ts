@@ -136,9 +136,15 @@ const commonCharacterProperties = {
     additionalProperties: false,
   },
   background: {
+    type: "object",
     description: "Character Background",
-    type: "string",
     nullable: true,
+    properties: {
+      id: { type: "string" },
+      name: { type: "string" },
+    },
+    required: ["id", "name"],
+    additionalProperties: false,
   },
   heritage: {
     type: "object",
@@ -240,10 +246,10 @@ export const characterPostRequestBodySchema = {
       description: "Character Class Id",
       type: "string",
     },
-    background: {
-      description: "Character Background",
+    backgroundId: {
+      description: "Character Background Id",
       type: "string",
-      nullable: true,
+      checkIdIsCuid: true,
     },
     level: {
       description: "Character Level",
@@ -298,7 +304,6 @@ export const characterPostRequestBodySchema = {
     "createdByUserId",
     "assignedUserId",
     "ancestryId",
-    "background",
     "characterClassId",
     "level",
     "ancestryBoost",
@@ -353,9 +358,10 @@ export const characterPatchRequestBodySchema = {
       description: "Character Class",
       type: "string",
     },
-    background: {
-      description: "Character Background",
+    backgroundId: {
+      description: "Character Background Id",
       type: "string",
+      checkIdIsCuid: true,
     },
     heritageId: {
       description: "Character Heritage Id",
@@ -369,6 +375,7 @@ export const characterPatchRequestBodySchema = {
     { required: ["assignedUserId"] },
     { required: ["ancestry"] },
     { required: ["characterClass"] },
-    { required: ["background"] },
+    { required: ["backgroundId"] },
+    { required: ["heritageId"] },
   ],
 } as const;
