@@ -45,7 +45,7 @@ export const characterSelect = {
     select: {
       className: true,
       keyAttributes: true,
-      hitpoints: true,
+      hitPoints: true,
     },
   },
   background: {

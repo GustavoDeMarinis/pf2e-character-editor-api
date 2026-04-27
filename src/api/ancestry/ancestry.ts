@@ -25,7 +25,8 @@ export const ancestrySelect = {
   deletedAt: true,
   name: true,
   description: true,
-  hitpoints: true,
+  hitPoints: true,
+  rarity: true,
   size: true,
   speed: true,
   attributeBoost: true,
@@ -75,7 +76,7 @@ type AncestryToInsert = Pick<
 export const searchAncestries = async (
   search: {
     traits?: string[];
-    hitpoints?: number;
+    hitPoints?: number;
     size?: AncestrySize;
     speed?: number;
     attributeBoost?: Attribute[];
@@ -88,24 +89,18 @@ export const searchAncestries = async (
 ): Promise<SearchResult<AncestryResult> | ErrorResult> => {
   const { isActive, traits, attributeBoost, attributeFlaw, ...searchFilters } =
     search;
-  const where: Prisma.AncestryWhereInput = {
-    ...searchFilters,
-    traits: {
-      every: {
-        id: {
-          in: traits,
-        },
-      },
-    },
-    attributeBoost: {
-      hasEvery: attributeBoost,
-    },
-    attributeFlaw: {
-      hasEvery: attributeFlaw,
-    },
-  };
+  const where: Prisma.AncestryWhereInput = {...searchFilters};
   if (isActive !== undefined) {
     where.deletedAt = !isActive ? { not: null } : null;
+  }
+  if (traits !== undefined) {
+    where.traits = { every: { id: { in: traits } } };
+  }
+  if (attributeBoost !== undefined) {
+    where.attributeBoost = { hasEvery: attributeBoost };
+  }
+  if (attributeFlaw !== undefined) {
+    where.attributeFlaw = { hasEvery: attributeFlaw };
   }
   const orderBy = handleSort(sort);
   const items = await prisma.ancestry.findMany({

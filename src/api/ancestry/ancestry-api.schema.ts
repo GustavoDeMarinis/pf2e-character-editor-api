@@ -15,7 +15,7 @@ export const ancestrySearchRequestQuerySchema = {
         type: "string",
       },
     },
-    hitpoints: {
+    hitPoints: {
       description: "Ancestry HitPoints",
       type: "number",
     },
@@ -86,6 +86,7 @@ const commonAncestryProperties = {
   description: {
     type: "string",
     description: "Ancestry Description",
+    nullable: true,
   },
   traits: {
     type: "array",
@@ -99,6 +100,7 @@ const commonAncestryProperties = {
         description: {
           type: "string",
           description: "Ancestry Trait Description",
+          nullable: true,
         },
       },
       additionalProperties: false,
@@ -140,10 +142,10 @@ const commonAncestryProperties = {
     items: {
       type: "object",
       properties: {
-        name: {
-          type: "string",
-        },
+        name: { type: "string" },
       },
+      required: ["name"],
+      additionalProperties: false,
     },
   },
   rarity: {
@@ -159,10 +161,10 @@ const commonAncestryProperties = {
       properties: {
         id: { type: "string" },
         name: { type: "string" },
-        description: { type: "string" },
+        description: { type: "string", nullable: true },
         rarity: { type: "string", enum: Object.values(Rarity) },
       },
-      required: ["id", "name", "rarity"],
+      required: ["id", "name", "description", "rarity"],
       additionalProperties: false,
     },
   },
@@ -186,13 +188,14 @@ export const ancestrySearchResponseSchema = {
           "name",
           "description",
           "traits",
-          "hitpoints",
+          "hitPoints",
           "size",
           "speed",
           "attributeBoost",
           "attributeFlaw",
           "languages",
           "rarity",
+          "heritages",
         ],
         additionalProperties: false,
       },
@@ -228,13 +231,14 @@ export const ancestryGetPostResponseSchema = {
     "name",
     "description",
     "traits",
-    "hitpoints",
+    "hitPoints",
     "size",
     "speed",
     "attributeBoost",
     "attributeFlaw",
     "languages",
     "rarity",
+    "heritages",
   ],
   additionalProperties: false,
 } as const;

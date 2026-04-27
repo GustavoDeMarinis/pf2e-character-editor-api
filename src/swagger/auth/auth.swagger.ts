@@ -4,6 +4,7 @@ import {
   authSignInResponseSchema,
   authSignUpPostRequestBodySchema,
   authSignUpResponseSchema,
+  sessionIdParamsSchema,
 } from "../../api/auth/auth-api.schema";
 import { userRequestParamsSchema } from "../../api/user/user-api.schema";
 import { commonErrorsResponseSchema } from "../error.swagger";
@@ -111,6 +112,110 @@ const parameterId = {
   ],
 };
 
+const refresh = {
+  tags: ["Auth"],
+  description: "## Refresh access token\nUses the `refresh_token` cookie to issue a new `access_token` cookie. Rate-limited.",
+  operationId: "refresh",
+  security: [],
+  responses: {
+    "201": {
+      description: "Token refreshed — new `access_token` cookie set",
+    },
+    ...commonErrorsResponseSchema,
+  },
+};
+
+const me = {
+  tags: ["Auth"],
+  description: "## Get current user\nReturns the authenticated caller's userId, role, and sessionId decoded from the access token.",
+  operationId: "me",
+  security: [securitySchema],
+  responses: {
+    "200": {
+      description: "Current user info",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              userId: { type: "string" },
+              role: { type: "string" },
+              sessionId: { type: "string" },
+            },
+            required: ["userId", "role", "sessionId"],
+            additionalProperties: false,
+          },
+        },
+      },
+    },
+    ...commonErrorsResponseSchema,
+  },
+};
+
+const getSessions = {
+  tags: ["Auth"],
+  description: "## List active sessions\nReturns all non-revoked sessions for the authenticated user.",
+  operationId: "getSessions",
+  security: [securitySchema],
+  responses: {
+    "200": {
+      description: "Session list",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              items: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                    userAgent: { type: "string", nullable: true },
+                    ipAddress: { type: "string", nullable: true },
+                    createdAt: { type: "string", format: "date-time" },
+                    lastUsedAt: { type: "string", format: "date-time" },
+                    expiresAt: { type: "string", format: "date-time" },
+                  },
+                  required: ["id", "createdAt", "lastUsedAt", "expiresAt"],
+                  additionalProperties: false,
+                },
+              },
+            },
+            required: ["items"],
+          },
+        },
+      },
+    },
+    ...commonErrorsResponseSchema,
+  },
+};
+
+const revokeSession = {
+  tags: ["Auth"],
+  description: "## Revoke a session\nSoft-revokes the specified session. Authenticated user can only revoke their own sessions.",
+  operationId: "revokeSession",
+  security: [securitySchema],
+  responses: {
+    "204": {
+      description: "Session revoked",
+    },
+    ...commonErrorsResponseSchema,
+  },
+};
+
+const sessionParameterId = {
+  parameters: [
+    {
+      in: "path",
+      name: "sessionId",
+      required: true,
+      schema: sessionIdParamsSchema.properties.sessionId,
+      style: "simple",
+    },
+  ],
+};
+
 export const authPaths = {
   "/auth/signIn": {
     post: AuthSignIn,
@@ -120,6 +225,19 @@ export const authPaths = {
   },
   "/auth/signOut": {
     post: AuthSignOut,
+  },
+  "/auth/refresh": {
+    post: refresh,
+  },
+  "/auth/me": {
+    get: me,
+  },
+  "/auth/sessions": {
+    get: getSessions,
+  },
+  "/auth/sessions/{sessionId}": {
+    delete: revokeSession,
+    ...sessionParameterId,
   },
   "/auth/password/{userId}": {
     patch: updatePassword,

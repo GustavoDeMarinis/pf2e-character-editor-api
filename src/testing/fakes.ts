@@ -5,6 +5,7 @@ import {
   ArmorBase,
   ArmorCategory,
   Attribute,
+  Background,
   Character,
   CharacterClass,
   Heritage,
@@ -192,6 +193,24 @@ export const getFakeTrait = (partialTrait?: Partial<Trait>): Trait => {
     description: partialTrait?.description ?? "",
   };
   return trait;
+};
+
+export const getFakeBackground = (
+  partialBackground?: Partial<Background>
+): Background => {
+  const background: Background = {
+    id: partialBackground?.id ?? cuid(),
+    createdAt: partialBackground?.createdAt ?? new Date(),
+    updatedAt: partialBackground?.updatedAt ?? new Date(),
+    deletedAt: partialBackground?.deletedAt ?? null,
+    name: partialBackground?.name ?? faker.word.noun(),
+    description: partialBackground?.description ?? null,
+    rarity: partialBackground?.rarity ?? Rarity.Common,
+    attributeBoostOptions: partialBackground?.attributeBoostOptions ?? [Attribute.Wisdom],
+    trainedSkillId: partialBackground?.trainedSkillId ?? null,
+    trainedLoreName: partialBackground?.trainedLoreName ?? null,
+  };
+  return background;
 };
 
 export const getFakeLanguage = (
