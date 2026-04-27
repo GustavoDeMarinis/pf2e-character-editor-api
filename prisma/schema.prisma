@@ -33,6 +33,8 @@ model Character {
   skills           CharacterSkillLevel[]
   heritage         Heritage?             @relation(fields: [heritageId], references: [id])
   heritageId       String?
+  deity            Deity?                @relation(fields: [deityId], references: [id])
+  deityId          String?
 }
 
 model ClassLevelingMap {
@@ -197,6 +199,7 @@ model Skill {
   actions             Action[]
   characterSkillLevel CharacterSkillLevel[]
   backgrounds         Background[]
+  deities             Deity[]
 }
 
 model Action {
@@ -271,6 +274,7 @@ model WeaponBase {
   hands              WeaponHands[]
   range              Int?
   bulk               String?
+  deities            Deity[]
 }
 
 model WeaponGroup {
@@ -300,6 +304,7 @@ model Trait {
   actions     Action[]
   heritages   Heritage[]
   backgrounds Background[]
+  deities     Deity[]
 }
 
 model WeaponCriticalSpecialization {
@@ -412,4 +417,69 @@ model Background {
   characters            Character[]
 
   @@index([trainedSkillId])
+}
+
+enum DeitySanctification {
+  None
+  HolyOnly
+  UnholyOnly
+  HolyOrUnholy
+}
+
+enum DivineFont {
+  Harm
+  Heal
+  HarmOrHeal
+}
+
+model Domain {
+  id               String  @id @default(cuid())
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  deletedAt        DateTime?
+  name             String
+  description      String?
+  deities          Deity[]    @relation("Deity_domains")
+  alternateDeities Deity[]    @relation("Deity_alternate_domains")
+}
+
+model Deity {
+  id               String              @id @default(cuid())
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  deletedAt        DateTime?
+  name             String
+  description      String?
+  rarity           Rarity
+  edicts           String[]
+  anathema         String[]
+  divineAttributes Attribute[]
+  sanctification   DeitySanctification
+  divineFont       DivineFont
+  divineSkill      Skill?              @relation(fields: [divineSkillId], references: [id])
+  divineSkillId    String?
+  favoredWeapon    WeaponBase?         @relation(fields: [favoredWeaponId], references: [id])
+  favoredWeaponId  String?
+  domains          Domain[]            @relation("Deity_domains")
+  alternateDomains Domain[]            @relation("Deity_alternate_domains")
+  clericSpells     DeityClericSpell[]
+  traits           Trait[]
+  characters       Character[]
+
+  @@index([divineSkillId])
+  @@index([favoredWeaponId])
+}
+
+model DeityClericSpell {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deity     Deity     @relation(fields: [deityId], references: [id])
+  deityId   String
+  spellId   String
+  rank      Int
+
+  @@unique([deityId, rank])
+  @@index([deityId])
 }
