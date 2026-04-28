@@ -58,6 +58,7 @@ export const getFakeCharacter = (
     classBoost: partialCharacter?.classBoost ?? Attribute.Strength,
     classDc: partialCharacter?.classDc ?? LEVEL + 10 + 3 + 4,
     heritageId: partialCharacter?.heritageId ?? null,
+    deityId: partialCharacter?.deityId ?? null,
   };
   return character;
 };
