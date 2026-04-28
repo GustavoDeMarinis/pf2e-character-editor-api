@@ -1,5 +1,7 @@
 import { seedLocalActions } from "./seed-action";
 import { seedLocalAncestries } from "./seed-ancestry";
+import { seedLocalDomains } from "./seed-domain";
+import { seedLocalDeities } from "./seed-deity";
 import { seedLocalHeritages } from "./seed-heritage";
 import { seedLocalArmorBase } from "./seed-armor-base";
 import { seedLocalArmorGroup } from "./seed-armor-group";
@@ -30,4 +32,6 @@ export const seedLocal = async () => {
   await seedLocalSkills();
   await seedLocalBackgrounds();
   await seedLocalActions();
+  await seedLocalDomains();
+  await seedLocalDeities();
 };
