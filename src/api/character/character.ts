@@ -65,6 +65,12 @@ export const characterSelect = {
       name: true,
     },
   },
+  deity: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
 };
 
 export const characterArgs = Prisma.validator<Prisma.CharacterDefaultArgs>()({
@@ -89,6 +95,7 @@ type CharacterToInsert = Pick<
   | "languages"
   | "classDc"
   | "heritageId"
+  | "deityId"
 >;
 
 export const searchCharacters = async (
@@ -214,6 +221,16 @@ export const insertCharacter = async (
     }
   }
 
+  if (characterToInsert.deityId) {
+    const deity = await prisma.deity.findUnique({
+      select: { id: true },
+      where: { id: characterToInsert.deityId as string },
+    });
+    if (!deity) {
+      return { code: ErrorCode.NotFound, message: "Deity not found" };
+    }
+  }
+
   const existingCharacters = await prisma.character.findMany({
     select: {
       id: true,
@@ -271,6 +288,7 @@ export const updateCharacter = async (
     | "languages"
     | "classDc"
     | "heritageId"
+    | "deityId"
   >,
   reactivate?: false,
   callerAuth?: CallerAuth
@@ -300,6 +318,16 @@ export const updateCharacter = async (
     });
     if (!background) {
       return { code: ErrorCode.NotFound, message: "Background not found" };
+    }
+  }
+
+  if (characterToUpdate.deityId) {
+    const deity = await prisma.deity.findUnique({
+      select: { id: true },
+      where: { id: characterToUpdate.deityId as string },
+    });
+    if (!deity) {
+      return { code: ErrorCode.NotFound, message: "Deity not found" };
     }
   }
 
