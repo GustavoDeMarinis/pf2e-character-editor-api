@@ -12,6 +12,8 @@ import { languagePaths } from "./language/language.swagger";
 import { heritagePaths } from "./heritage/heritage.swagger";
 import { backgroundPaths } from "./background/background.swagger";
 import { skillPaths } from "./skill/skill.swagger";
+import { domainPaths } from "./domain/domain.swagger";
+import { deityPaths } from "./deity/deity.swagger";
 
 export const swaggerDocument = {
   openapi: "3.0.1",
@@ -43,6 +45,8 @@ export const swaggerDocument = {
     ...heritagePaths,
     ...backgroundPaths,
     ...skillPaths,
+    ...domainPaths,
+    ...deityPaths,
   },
 };
 
