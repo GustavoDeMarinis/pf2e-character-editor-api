@@ -50,6 +50,13 @@ export const weaponBaseSelect = {
   hands: true,
   range: true,
   bulk: true,
+  deities: {
+    select: {
+      id: true,
+      name: true,
+      rarity: true,
+    },
+  },
 };
 
 export const weaponBaseArgs = Prisma.validator<Prisma.WeaponBaseDefaultArgs>()({

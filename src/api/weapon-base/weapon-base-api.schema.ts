@@ -1,4 +1,4 @@
-import { WeaponCategory, WeaponDamageType, WeaponHands } from "@prisma/client";
+import { Rarity, WeaponCategory, WeaponDamageType, WeaponHands } from "@prisma/client";
 import {
   paginationRequestPropertySchema,
   paginationRequiredPropertiesSchema,
@@ -125,6 +125,20 @@ const commonWeaponBaseProperties = {
     description: "Weapon Amount of Bulks To Carry",
     type: "string",
   },
+  deities: {
+    description: "Deities That Use This Weapon As Their Favored Weapon",
+    type: "array",
+    items: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+        rarity: { type: "string", enum: Object.values(Rarity) },
+      },
+      required: ["id", "name", "rarity"],
+      additionalProperties: false,
+    },
+  },
 } as const;
 
 export const weaponBaseSearchResponseSchema = {
@@ -155,6 +169,7 @@ export const weaponBaseSearchResponseSchema = {
           "hands",
           "range",
           "bulk",
+          "deities",
         ],
         additionalProperties: false,
       },
@@ -230,6 +245,7 @@ export const weaponBasePostGetResponseSchema = {
     "hands",
     "range",
     "bulk",
+    "deities",
   ],
   additionalProperties: false,
 } as const;
