@@ -8,6 +8,10 @@ import {
   Background,
   Character,
   CharacterClass,
+  Deity,
+  DeitySanctification,
+  DivineFont,
+  Domain,
   Heritage,
   Language,
   Rarity,
@@ -212,6 +216,42 @@ export const getFakeBackground = (
     trainedLoreName: partialBackground?.trainedLoreName ?? null,
   };
   return background;
+};
+
+export const getFakeDomain = (
+  partialDomain?: Partial<Domain>
+): Domain => {
+  const domain: Domain = {
+    id: partialDomain?.id ?? cuid(),
+    createdAt: partialDomain?.createdAt ?? new Date(),
+    updatedAt: partialDomain?.updatedAt ?? new Date(),
+    deletedAt: partialDomain?.deletedAt ?? null,
+    name: partialDomain?.name ?? faker.word.noun(),
+    description: partialDomain?.description ?? null,
+  };
+  return domain;
+};
+
+export const getFakeDeity = (
+  partialDeity?: Partial<Deity>
+): Deity => {
+  const deity: Deity = {
+    id: partialDeity?.id ?? cuid(),
+    createdAt: partialDeity?.createdAt ?? new Date(),
+    updatedAt: partialDeity?.updatedAt ?? new Date(),
+    deletedAt: partialDeity?.deletedAt ?? null,
+    name: partialDeity?.name ?? faker.word.noun(),
+    description: partialDeity?.description ?? null,
+    rarity: partialDeity?.rarity ?? Rarity.Common,
+    edicts: partialDeity?.edicts ?? [],
+    anathema: partialDeity?.anathema ?? [],
+    divineAttributes: partialDeity?.divineAttributes ?? [Attribute.Wisdom],
+    sanctification: partialDeity?.sanctification ?? DeitySanctification.HolyOnly,
+    divineFont: partialDeity?.divineFont ?? DivineFont.Heal,
+    divineSkillId: partialDeity?.divineSkillId ?? null,
+    favoredWeaponId: partialDeity?.favoredWeaponId ?? null,
+  };
+  return deity;
 };
 
 export const getFakeLanguage = (
