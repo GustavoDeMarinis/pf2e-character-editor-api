@@ -100,6 +100,18 @@ describe("Character tests", () => {
       });
     });
 
+    test("insertCharacter returns 404 when deityId not found", async () => {
+      const fakeCharacter = getFakeCharacter({ deityId: "cl_deity_missing" });
+      prismaMock.deity.findUnique.mockResolvedValue(null);
+
+      const result = await insertCharacter(fakeCharacter);
+
+      expect(result).toStrictEqual({
+        code: ErrorCode.NotFound,
+        message: "Deity not found",
+      });
+    });
+
     test("insertCharacter handles character conflict", async () => {
       const fakeCharacter = getFakeCharacter();
       prismaMock.character.findMany.mockResolvedValue([fakeCharacter]);

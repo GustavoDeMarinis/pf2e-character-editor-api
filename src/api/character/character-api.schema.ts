@@ -157,6 +157,17 @@ const commonCharacterProperties = {
     required: ["id", "name"],
     additionalProperties: false,
   },
+  deity: {
+    type: "object",
+    description: "Character Deity",
+    nullable: true,
+    properties: {
+      id: { type: "string" },
+      name: { type: "string" },
+    },
+    required: ["id", "name"],
+    additionalProperties: false,
+  },
 } as const;
 
 export const characterSearchResponseSchema = {
@@ -180,6 +191,7 @@ export const characterSearchResponseSchema = {
           "ancestry",
           "characterClass",
           "background",
+          "deity",
         ],
         additionalProperties: false,
       },
@@ -219,6 +231,7 @@ export const characterGetResponseSchema = {
     "ancestry",
     "characterClass",
     "background",
+    "deity",
   ],
 } as const;
 
@@ -297,6 +310,11 @@ export const characterPostRequestBodySchema = {
       type: "string",
       checkIdIsCuid: true,
     },
+    deityId: {
+      description: "Character Deity Id",
+      type: "string",
+      checkIdIsCuid: true,
+    },
   },
   additionalProperties: false,
   required: [
@@ -331,6 +349,7 @@ export const characterPostResponseSchema = {
     "createdUserId",
     "assignedUserId",
     "characterClass",
+    "deity",
   ],
   additionalProperties: false,
 } as const;
@@ -368,6 +387,11 @@ export const characterPatchRequestBodySchema = {
       type: "string",
       checkIdIsCuid: true,
     },
+    deityId: {
+      description: "Character Deity Id",
+      type: "string",
+      checkIdIsCuid: true,
+    },
   },
   additionalProperties: false,
   anyOf: [
@@ -377,5 +401,6 @@ export const characterPatchRequestBodySchema = {
     { required: ["characterClass"] },
     { required: ["backgroundId"] },
     { required: ["heritageId"] },
+    { required: ["deityId"] },
   ],
 } as const;

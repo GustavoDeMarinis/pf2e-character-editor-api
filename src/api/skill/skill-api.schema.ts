@@ -90,6 +90,20 @@ const commonSkillProperties = {
       additionalProperties: false,
     },
   },
+  deities: {
+    description: "Deities That Use This Skill As Their Divine Skill",
+    type: "array",
+    items: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+        rarity: { type: "string", enum: Object.values(Rarity) },
+      },
+      required: ["id", "name", "rarity"],
+      additionalProperties: false,
+    },
+  },
 } as const;
 
 export const skillSearchResponseSchema = {
@@ -128,6 +142,7 @@ export const skillSearchResponseSchema = {
           "associatedAttribute",
           "actions",
           "backgrounds",
+          "deities",
         ],
         additionalProperties: false,
       },
@@ -168,6 +183,7 @@ export const skillGetResponseSchema = {
     "associatedAttribute",
     "actions",
     "backgrounds",
+    "deities",
   ],
   additionalProperties: false,
 } as const;
@@ -196,37 +212,37 @@ export const skillPostRequestBodySchema = {
 export const skillPostResponseSchema = {
   type: "object",
   properties: {
-        id: {
-          description: "Character Id",
-          type: "string",
-        },
-        createdAt: {
-          type: "string",
-          format: "date-time",
-        },
-        updatedAt: {
-          type: "string",
-          format: "date-time",
-        },
-        deletedAt: {
-          type: "string",
-          format: "date-time-nullable",
-        },
-        ...commonSkillProperties,
-   
+    id: {
+      description: "Skill Id",
+      type: "string",
     },
-    required: [
-      "id",
-      "createdAt",
-      "updatedAt",
-      "deletedAt",
-      "name",
-      "description",
-      "associatedAttribute",
-      "actions",
-      "backgrounds",
-    ],
-    additionalProperties: false,
+    createdAt: {
+      type: "string",
+      format: "date-time",
+    },
+    updatedAt: {
+      type: "string",
+      format: "date-time",
+    },
+    deletedAt: {
+      type: "string",
+      format: "date-time-nullable",
+    },
+    ...commonSkillProperties,
+  },
+  required: [
+    "id",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "name",
+    "description",
+    "associatedAttribute",
+    "actions",
+    "backgrounds",
+    "deities",
+  ],
+  additionalProperties: false,
 } as const;
 
 export const skillPatchRequestBodySchema = {

@@ -38,6 +38,13 @@ export const skillSelect = {
       rarity: true,
     },
   },
+  deities: {
+    select: {
+      id: true,
+      name: true,
+      rarity: true,
+    },
+  },
 };
 
 export const skillArgs = Prisma.validator<Prisma.SkillDefaultArgs>()({

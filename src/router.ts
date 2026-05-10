@@ -11,6 +11,8 @@ import { router as skillRouter } from "./api/skill";
 import { router as ancestryRouter } from "./api/ancestry";
 import { router as heritageRouter } from "./api/heritage";
 import { router as backgroundRouter } from "./api/background";
+import { router as domainRouter } from "./api/domain";
+import { router as deityRouter } from "./api/deity";
 
 import { apiDocsMiddleware, swaggerDocument } from "./swagger/config";
 import { Request, Response, NextFunction } from "express";
@@ -59,4 +61,6 @@ router.use("/skill", skillRouter);
 router.use("/ancestry", ancestryRouter);
 router.use("/heritage", heritageRouter);
 router.use("/background", backgroundRouter);
+router.use("/domain", domainRouter);
+router.use("/deity", deityRouter);
 export default router;
