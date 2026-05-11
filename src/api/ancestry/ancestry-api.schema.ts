@@ -1,4 +1,4 @@
-import { AncestrySize, Attribute, Rarity } from "@prisma/client";
+import { AncestrySize, Attribute, FeatType, Rarity } from "@prisma/client";
 import {
   paginationRequestPropertySchema,
   paginationRequiredPropertiesSchema,
@@ -168,6 +168,22 @@ const commonAncestryProperties = {
       additionalProperties: false,
     },
   },
+  feats: {
+    type: "array",
+    description: "Feats available to this ancestry",
+    items: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+        level: { type: "integer" },
+        featType: { type: "string", enum: Object.values(FeatType) },
+        rarity: { type: "string", enum: Object.values(Rarity) },
+      },
+      required: ["id", "name", "level", "featType", "rarity"],
+      additionalProperties: false,
+    },
+  },
 } as const;
 
 export const ancestrySearchResponseSchema = {
@@ -196,6 +212,7 @@ export const ancestrySearchResponseSchema = {
           "languages",
           "rarity",
           "heritages",
+          "feats",
         ],
         additionalProperties: false,
       },
@@ -239,6 +256,7 @@ export const ancestryGetPostResponseSchema = {
     "languages",
     "rarity",
     "heritages",
+    "feats",
   ],
   additionalProperties: false,
 } as const;

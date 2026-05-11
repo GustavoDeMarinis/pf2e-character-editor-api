@@ -1,4 +1,4 @@
-import { Attribute } from "@prisma/client";
+import { Attribute, FeatType } from "@prisma/client";
 import {
   paginationRequestPropertySchema,
   paginationRequiredPropertiesSchema,
@@ -168,6 +168,31 @@ const commonCharacterProperties = {
     required: ["id", "name"],
     additionalProperties: false,
   },
+  characterFeats: {
+    type: "array",
+    description: "Feats assigned to this character",
+    items: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        levelItWasTaken: { type: "integer" },
+        slotType: { type: "string", enum: Object.values(FeatType) },
+        feat: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            name: { type: "string" },
+            featType: { type: "string", enum: Object.values(FeatType) },
+            level: { type: "integer" },
+          },
+          required: ["id", "name", "featType", "level"],
+          additionalProperties: false,
+        },
+      },
+      required: ["id", "levelItWasTaken", "slotType", "feat"],
+      additionalProperties: false,
+    },
+  },
 } as const;
 
 export const characterSearchResponseSchema = {
@@ -192,6 +217,7 @@ export const characterSearchResponseSchema = {
           "characterClass",
           "background",
           "deity",
+          "characterFeats",
         ],
         additionalProperties: false,
       },
@@ -232,6 +258,7 @@ export const characterGetResponseSchema = {
     "characterClass",
     "background",
     "deity",
+    "characterFeats",
   ],
 } as const;
 
@@ -350,6 +377,7 @@ export const characterPostResponseSchema = {
     "assignedUserId",
     "characterClass",
     "deity",
+    "characterFeats",
   ],
   additionalProperties: false,
 } as const;

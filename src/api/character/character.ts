@@ -71,6 +71,21 @@ export const characterSelect = {
       name: true,
     },
   },
+  characterFeats: {
+    select: {
+      id: true,
+      levelItWasTaken: true,
+      slotType: true,
+      feat: {
+        select: {
+          id: true,
+          name: true,
+          featType: true,
+          level: true,
+        },
+      },
+    },
+  },
 };
 
 export const characterArgs = Prisma.validator<Prisma.CharacterDefaultArgs>()({

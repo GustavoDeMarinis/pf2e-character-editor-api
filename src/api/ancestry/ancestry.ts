@@ -50,6 +50,15 @@ export const ancestrySelect = {
       rarity: true,
     },
   },
+  feats: {
+    select: {
+      id: true,
+      name: true,
+      level: true,
+      featType: true,
+      rarity: true,
+    },
+  },
 };
 
 export const ancestryArgs = Prisma.validator<Prisma.AncestryDefaultArgs>()({

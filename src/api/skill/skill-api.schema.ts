@@ -1,4 +1,4 @@
-import { Attribute, Rarity } from "@prisma/client";
+import { Attribute, FeatType, Rarity } from "@prisma/client";
 import {
   paginationRequestPropertySchema,
   paginationRequiredPropertiesSchema,
@@ -104,6 +104,22 @@ const commonSkillProperties = {
       additionalProperties: false,
     },
   },
+  feats: {
+    description: "Feats that require this skill",
+    type: "array",
+    items: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+        level: { type: "integer" },
+        featType: { type: "string", enum: Object.values(FeatType) },
+        rarity: { type: "string", enum: Object.values(Rarity) },
+      },
+      required: ["id", "name", "level", "featType", "rarity"],
+      additionalProperties: false,
+    },
+  },
 } as const;
 
 export const skillSearchResponseSchema = {
@@ -143,6 +159,7 @@ export const skillSearchResponseSchema = {
           "actions",
           "backgrounds",
           "deities",
+          "feats",
         ],
         additionalProperties: false,
       },
@@ -184,6 +201,7 @@ export const skillGetResponseSchema = {
     "actions",
     "backgrounds",
     "deities",
+    "feats",
   ],
   additionalProperties: false,
 } as const;
@@ -241,6 +259,7 @@ export const skillPostResponseSchema = {
     "actions",
     "backgrounds",
     "deities",
+    "feats",
   ],
   additionalProperties: false,
 } as const;

@@ -8,6 +8,7 @@ import {
 } from "./character-api";
 import { authorize } from "../../middleware/security/authorization";
 import { UserRole } from "@prisma/client";
+import { router as characterFeatRouter } from "../character-feat";
 
 const router = Router();
 
@@ -36,5 +37,7 @@ router.delete(
   authorize({ roles: [UserRole.Admin, UserRole.Player] }),
   handleDeleteCharacter
 );
+
+router.use("/:characterId/feats", characterFeatRouter);
 
 export { router };
