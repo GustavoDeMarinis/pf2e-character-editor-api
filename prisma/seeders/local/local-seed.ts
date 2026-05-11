@@ -9,6 +9,7 @@ import { seedLocalCharacterClass } from "./seed-character-class";
 import { seedLocalCharacters } from "./seed-characters";
 import { seedLocalLanguages } from "./seed-languages";
 import { seedLocalSkills } from "./seed-skill";
+import { seedLocalFeats } from "./seed-feat";
 import { seedLocalBackgrounds } from "./seed-background";
 import { seedLocalTraits } from "./seed-traits";
 import { seedLocalUsers } from "./seed-users";
@@ -30,6 +31,7 @@ export const seedLocal = async () => {
   await seedLocalArmorGroup();
   await seedLocalArmorBase();
   await seedLocalSkills();
+  await seedLocalFeats();
   await seedLocalBackgrounds();
   await seedLocalActions();
   await seedLocalDomains();
