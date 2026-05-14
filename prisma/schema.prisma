@@ -35,6 +35,7 @@ model Character {
   heritageId       String?
   deity            Deity?                @relation(fields: [deityId], references: [id])
   deityId          String?
+  characterFeats   CharacterFeat[]
 }
 
 model ClassLevelingMap {
@@ -105,6 +106,7 @@ model Ancestry {
   rarity         Rarity
   characters     Character[]
   heritages      Heritage[]
+  feats          Feat[]
 }
 
 model Language {
@@ -150,6 +152,7 @@ model CharacterClass {
   characters        Character[]
   classLevelingMap  ClassLevelingMap[]
   specialHabilities SpecialHability[]
+  feats             Feat[]
 }
 
 enum UserRole {
@@ -200,6 +203,7 @@ model Skill {
   characterSkillLevel CharacterSkillLevel[]
   backgrounds         Background[]
   deities             Deity[]
+  feats               Feat[]
 }
 
 model Action {
@@ -305,6 +309,7 @@ model Trait {
   heritages   Heritage[]
   backgrounds Background[]
   deities     Deity[]
+  feats       Feat[]
 }
 
 model WeaponCriticalSpecialization {
@@ -482,4 +487,67 @@ model DeityClericSpell {
 
   @@unique([deityId, rank])
   @@index([deityId])
+}
+
+enum FeatType {
+  Ancestry
+  Class
+  Skill
+  General
+  Archetype
+  Bonus
+}
+
+enum ActionCost {
+  Free
+  Reaction
+  One
+  Two
+  Three
+  TwoToThree
+  OneToThree
+  None
+}
+
+model Feat {
+  id               String          @id @default(cuid())
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  deletedAt        DateTime?
+  name             String
+  description      String
+  featType         FeatType
+  level            Int             @default(1)
+  actionCost       ActionCost?
+  rarity           Rarity
+  prerequisites    String?
+  frequency        String?
+  trigger          String?
+  requirements     String?
+  traits           Trait[]
+  characterFeats   CharacterFeat[]
+  ancestry         Ancestry?       @relation(fields: [ancestryId], references: [id])
+  ancestryId       String?
+  characterClass   CharacterClass? @relation(fields: [characterClassId], references: [id])
+  characterClassId String?
+  skill            Skill?          @relation(fields: [skillId], references: [id])
+  skillId          String?
+
+  @@index([featType, level])
+}
+
+model CharacterFeat {
+  id              String    @id @default(cuid())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+  character       Character @relation(fields: [characterId], references: [id])
+  characterId     String
+  feat            Feat      @relation(fields: [featId], references: [id])
+  featId          String
+  levelItWasTaken Int
+  slotType        FeatType
+
+  @@unique([characterId, featId])
+  @@index([characterId])
 }

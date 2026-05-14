@@ -45,6 +45,15 @@ export const skillSelect = {
       rarity: true,
     },
   },
+  feats: {
+    select: {
+      id: true,
+      name: true,
+      level: true,
+      featType: true,
+      rarity: true,
+    },
+  },
 };
 
 export const skillArgs = Prisma.validator<Prisma.SkillDefaultArgs>()({

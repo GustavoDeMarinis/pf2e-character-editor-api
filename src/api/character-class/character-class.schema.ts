@@ -1,4 +1,4 @@
-import { Attribute } from "@prisma/client";
+import { Attribute, FeatType, Rarity } from "@prisma/client";
 import {
   paginationRequestPropertySchema,
   paginationRequiredPropertiesSchema,
@@ -42,6 +42,22 @@ const commonCharacterClassProperties = {
     description: "Amount Of Hitpoints Gained Per Level",
     type: "number",
   },
+  feats: {
+    type: "array",
+    description: "Feats available to this class",
+    items: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+        level: { type: "integer" },
+        featType: { type: "string", enum: Object.values(FeatType) },
+        rarity: { type: "string", enum: Object.values(Rarity) },
+      },
+      required: ["id", "name", "level", "featType", "rarity"],
+      additionalProperties: false,
+    },
+  },
 } as const;
 
 export const characterClassSearchResponseSchema = {
@@ -63,6 +79,7 @@ export const characterClassSearchResponseSchema = {
           "description",
           "keyAttributes",
           "hitPoints",
+          "feats",
         ],
         additionalProperties: false,
       },
@@ -110,6 +127,7 @@ export const characterClassGetResponseSchema = {
     "description",
     "keyAttributes",
     "hitPoints",
+    "feats",
   ],
   additionalProperties: false,
 } as const;
@@ -169,6 +187,7 @@ export const characterClassPostResponseSchema = {
     "description",
     "keyAttributes",
     "hitPoints",
+    "feats",
   ],
   additionalProperties: false,
 } as const;

@@ -1,4 +1,4 @@
-import { getFakeCharacter, getFakeUser } from "../../../testing/fakes";
+import { getFakeCharacter, getFakeCharacterFeat, getFakeFeat, getFakeUser } from "../../../testing/fakes";
 import { mockCount } from "../../../testing/mock-pagination";
 import { prismaMock } from "../../../testing/mock-prisma";
 import { getPaginationOptions } from "../../../utils/pagination";
@@ -73,6 +73,24 @@ describe("Character tests", () => {
         "Character not found"
       );
       expect(prismaMock.character.findUniqueOrThrow).toHaveBeenCalledTimes(1);
+    });
+
+    test("getCharacter result includes characterFeats array", async () => {
+      const fakeFeat = getFakeFeat();
+      const fakeCharacterFeat = getFakeCharacterFeat({ featId: fakeFeat.id });
+      const fakeCharacter = {
+        ...getFakeCharacter(),
+        characterFeats: [fakeCharacterFeat],
+      };
+      prismaMock.character.findUniqueOrThrow.mockResolvedValue(fakeCharacter as any);
+
+      const result = await getCharacter({ id: fakeCharacter.id });
+
+      expect(result).toHaveProperty("characterFeats");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const feats = (result as any).characterFeats as typeof fakeCharacter.characterFeats;
+      expect(feats).toHaveLength(1);
+      expect(feats[0].featId).toBe(fakeFeat.id);
     });
   });
   describe("Insert Character", () => {

@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 import {
+  ActionCost,
   Ancestry,
   AncestrySize,
   ArmorBase,
@@ -8,10 +9,13 @@ import {
   Background,
   Character,
   CharacterClass,
+  CharacterFeat,
   Deity,
   DeitySanctification,
   DivineFont,
   Domain,
+  Feat,
+  FeatType,
   Heritage,
   Language,
   Rarity,
@@ -267,4 +271,43 @@ export const getFakeLanguage = (
     rarity: partialLanguage?.rarity ?? Rarity.Common,
   };
   return language;
+};
+
+export const getFakeFeat = (partialFeat?: Partial<Feat>): Feat => {
+  const feat: Feat = {
+    id: partialFeat?.id ?? cuid(),
+    createdAt: partialFeat?.createdAt ?? new Date(),
+    updatedAt: partialFeat?.updatedAt ?? new Date(),
+    deletedAt: partialFeat?.deletedAt ?? null,
+    name: partialFeat?.name ?? faker.word.noun(),
+    description: partialFeat?.description ?? faker.lorem.sentence(),
+    featType: partialFeat?.featType ?? FeatType.General,
+    level: partialFeat?.level ?? 1,
+    actionCost: partialFeat?.actionCost ?? null,
+    rarity: partialFeat?.rarity ?? Rarity.Common,
+    prerequisites: partialFeat?.prerequisites ?? null,
+    frequency: partialFeat?.frequency ?? null,
+    trigger: partialFeat?.trigger ?? null,
+    requirements: partialFeat?.requirements ?? null,
+    ancestryId: partialFeat?.ancestryId ?? null,
+    characterClassId: partialFeat?.characterClassId ?? null,
+    skillId: partialFeat?.skillId ?? null,
+  };
+  return feat;
+};
+
+export const getFakeCharacterFeat = (
+  partialCharacterFeat?: Partial<CharacterFeat>
+): CharacterFeat => {
+  const characterFeat: CharacterFeat = {
+    id: partialCharacterFeat?.id ?? cuid(),
+    createdAt: partialCharacterFeat?.createdAt ?? new Date(),
+    updatedAt: partialCharacterFeat?.updatedAt ?? new Date(),
+    deletedAt: partialCharacterFeat?.deletedAt ?? null,
+    characterId: partialCharacterFeat?.characterId ?? cuid(),
+    featId: partialCharacterFeat?.featId ?? cuid(),
+    levelItWasTaken: partialCharacterFeat?.levelItWasTaken ?? 1,
+    slotType: partialCharacterFeat?.slotType ?? FeatType.General,
+  };
+  return characterFeat;
 };

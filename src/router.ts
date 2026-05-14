@@ -13,6 +13,7 @@ import { router as heritageRouter } from "./api/heritage";
 import { router as backgroundRouter } from "./api/background";
 import { router as domainRouter } from "./api/domain";
 import { router as deityRouter } from "./api/deity";
+import { router as featRouter } from "./api/feat";
 
 import { apiDocsMiddleware, swaggerDocument } from "./swagger/config";
 import { Request, Response, NextFunction } from "express";
@@ -63,4 +64,5 @@ router.use("/heritage", heritageRouter);
 router.use("/background", backgroundRouter);
 router.use("/domain", domainRouter);
 router.use("/deity", deityRouter);
+router.use("/feat", featRouter);
 export default router;

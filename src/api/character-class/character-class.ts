@@ -21,6 +21,15 @@ export const characterClassSelect = {
   description: true,
   keyAttributes: true,
   hitPoints: true,
+  feats: {
+    select: {
+      id: true,
+      name: true,
+      level: true,
+      featType: true,
+      rarity: true,
+    },
+  },
 };
 
 export const characterClassArgs =
