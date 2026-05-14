@@ -1,4 +1,4 @@
-import { Attribute, FeatType } from "@prisma/client";
+import { Attribute, FeatType, SpellTradition } from "@prisma/client";
 import {
   paginationRequestPropertySchema,
   paginationRequiredPropertiesSchema,
@@ -193,6 +193,35 @@ const commonCharacterProperties = {
       additionalProperties: false,
     },
   },
+  characterSpells: {
+    type: "array",
+    description: "Spells assigned to this character",
+    items: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        isPrepared: { type: "boolean" },
+        preparedAtRank: { type: "integer", nullable: true },
+        spell: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            name: { type: "string" },
+            rank: { type: "integer" },
+            isFocus: { type: "boolean" },
+            traditions: {
+              type: "array",
+              items: { type: "string", enum: Object.values(SpellTradition) },
+            },
+          },
+          required: ["id", "name", "rank", "isFocus", "traditions"],
+          additionalProperties: false,
+        },
+      },
+      required: ["id", "isPrepared", "preparedAtRank", "spell"],
+      additionalProperties: false,
+    },
+  },
 } as const;
 
 export const characterSearchResponseSchema = {
@@ -218,6 +247,7 @@ export const characterSearchResponseSchema = {
           "background",
           "deity",
           "characterFeats",
+          "characterSpells",
         ],
         additionalProperties: false,
       },
@@ -259,6 +289,7 @@ export const characterGetResponseSchema = {
     "background",
     "deity",
     "characterFeats",
+    "characterSpells",
   ],
 } as const;
 
@@ -378,6 +409,7 @@ export const characterPostResponseSchema = {
     "characterClass",
     "deity",
     "characterFeats",
+    "characterSpells",
   ],
   additionalProperties: false,
 } as const;

@@ -9,6 +9,7 @@ import {
 import { authorize } from "../../middleware/security/authorization";
 import { UserRole } from "@prisma/client";
 import { router as characterFeatRouter } from "../character-feat";
+import { router as characterSpellRouter } from "../character-spell";
 
 const router = Router();
 
@@ -39,5 +40,6 @@ router.delete(
 );
 
 router.use("/:characterId/feats", characterFeatRouter);
+router.use("/:characterId/spells", characterSpellRouter);
 
 export { router };

@@ -14,6 +14,7 @@ import { router as backgroundRouter } from "./api/background";
 import { router as domainRouter } from "./api/domain";
 import { router as deityRouter } from "./api/deity";
 import { router as featRouter } from "./api/feat";
+import { router as spellRouter } from "./api/spell";
 
 import { apiDocsMiddleware, swaggerDocument } from "./swagger/config";
 import { Request, Response, NextFunction } from "express";
@@ -65,4 +66,5 @@ router.use("/background", backgroundRouter);
 router.use("/domain", domainRouter);
 router.use("/deity", deityRouter);
 router.use("/feat", featRouter);
+router.use("/spell", spellRouter);
 export default router;
