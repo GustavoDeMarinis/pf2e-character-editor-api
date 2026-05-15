@@ -86,6 +86,22 @@ export const characterSelect = {
       },
     },
   },
+  characterSpells: {
+    select: {
+      id: true,
+      isPrepared: true,
+      preparedAtRank: true,
+      spell: {
+        select: {
+          id: true,
+          name: true,
+          rank: true,
+          isFocus: true,
+          traditions: true,
+        },
+      },
+    },
+  },
 };
 
 export const characterArgs = Prisma.validator<Prisma.CharacterDefaultArgs>()({

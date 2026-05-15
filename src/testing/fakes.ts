@@ -10,6 +10,7 @@ import {
   Character,
   CharacterClass,
   CharacterFeat,
+  CharacterSpell,
   Deity,
   DeitySanctification,
   DivineFont,
@@ -19,6 +20,13 @@ import {
   Heritage,
   Language,
   Rarity,
+  Spell,
+  SpellArea,
+  SpellComponent,
+  SpellHeightening,
+  SpellSaveType,
+  SpellTargetType,
+  SpellTradition,
   Trait,
   User,
   UserRole,
@@ -310,4 +318,63 @@ export const getFakeCharacterFeat = (
     slotType: partialCharacterFeat?.slotType ?? FeatType.General,
   };
   return characterFeat;
+};
+
+export const getFakeSpell = (partialSpell?: Partial<Spell>): Spell => {
+  const spell: Spell = {
+    id: partialSpell?.id ?? cuid(),
+    createdAt: partialSpell?.createdAt ?? new Date(),
+    updatedAt: partialSpell?.updatedAt ?? new Date(),
+    deletedAt: partialSpell?.deletedAt ?? null,
+    name: partialSpell?.name ?? faker.word.noun(),
+    description: partialSpell?.description ?? faker.lorem.sentence(),
+    rank: partialSpell?.rank ?? 1,
+    isFocus: partialSpell?.isFocus ?? false,
+    traditions: partialSpell?.traditions ?? [SpellTradition.Arcane],
+    rarity: partialSpell?.rarity ?? Rarity.Common,
+    components: partialSpell?.components ?? [SpellComponent.Verbal],
+    actionCost: partialSpell?.actionCost ?? ActionCost.One,
+    castTimeText: partialSpell?.castTimeText ?? null,
+    range: partialSpell?.range ?? null,
+    targets: partialSpell?.targets ?? null,
+    targetType: partialSpell?.targetType ?? SpellTargetType.None,
+    areaType: partialSpell?.areaType ?? SpellArea.None,
+    areaSize: partialSpell?.areaSize ?? null,
+    duration: partialSpell?.duration ?? null,
+    savingThrow: partialSpell?.savingThrow ?? SpellSaveType.None,
+    basicSave: partialSpell?.basicSave ?? false,
+  };
+  return spell;
+};
+
+export const getFakeSpellHeightening = (
+  partialHeightening?: Partial<SpellHeightening>
+): SpellHeightening => {
+  const heightening: SpellHeightening = {
+    id: partialHeightening?.id ?? cuid(),
+    createdAt: partialHeightening?.createdAt ?? new Date(),
+    updatedAt: partialHeightening?.updatedAt ?? new Date(),
+    deletedAt: partialHeightening?.deletedAt ?? null,
+    spellId: partialHeightening?.spellId ?? cuid(),
+    interval: partialHeightening?.interval ?? 1,
+    fixedRank: partialHeightening?.fixedRank ?? null,
+    effect: partialHeightening?.effect ?? faker.lorem.sentence(),
+  };
+  return heightening;
+};
+
+export const getFakeCharacterSpell = (
+  partialCharacterSpell?: Partial<CharacterSpell>
+): CharacterSpell => {
+  const characterSpell: CharacterSpell = {
+    id: partialCharacterSpell?.id ?? cuid(),
+    createdAt: partialCharacterSpell?.createdAt ?? new Date(),
+    updatedAt: partialCharacterSpell?.updatedAt ?? new Date(),
+    deletedAt: partialCharacterSpell?.deletedAt ?? null,
+    characterId: partialCharacterSpell?.characterId ?? cuid(),
+    spellId: partialCharacterSpell?.spellId ?? cuid(),
+    isPrepared: partialCharacterSpell?.isPrepared ?? false,
+    preparedAtRank: partialCharacterSpell?.preparedAtRank ?? null,
+  };
+  return characterSpell;
 };
