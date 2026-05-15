@@ -1,4 +1,4 @@
-import { getFakeCharacter, getFakeCharacterFeat, getFakeFeat, getFakeUser } from "../../../testing/fakes";
+import { getFakeCharacter, getFakeCharacterFeat, getFakeCharacterSpell, getFakeFeat, getFakeSpell, getFakeUser } from "../../../testing/fakes";
 import { mockCount } from "../../../testing/mock-pagination";
 import { prismaMock } from "../../../testing/mock-prisma";
 import { getPaginationOptions } from "../../../utils/pagination";
@@ -91,6 +91,24 @@ describe("Character tests", () => {
       const feats = (result as any).characterFeats as typeof fakeCharacter.characterFeats;
       expect(feats).toHaveLength(1);
       expect(feats[0].featId).toBe(fakeFeat.id);
+    });
+
+    test("getCharacter result includes characterSpells array", async () => {
+      const fakeSpell = getFakeSpell();
+      const fakeCharacterSpell = getFakeCharacterSpell({ spellId: fakeSpell.id });
+      const fakeCharacter = {
+        ...getFakeCharacter(),
+        characterSpells: [fakeCharacterSpell],
+      };
+      prismaMock.character.findUniqueOrThrow.mockResolvedValue(fakeCharacter as any);
+
+      const result = await getCharacter({ id: fakeCharacter.id });
+
+      expect(result).toHaveProperty("characterSpells");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const spells = (result as any).characterSpells as typeof fakeCharacter.characterSpells;
+      expect(spells).toHaveLength(1);
+      expect(spells[0].spellId).toBe(fakeSpell.id);
     });
   });
   describe("Insert Character", () => {
