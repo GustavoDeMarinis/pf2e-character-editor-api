@@ -124,7 +124,6 @@ type CharacterToInsert = Pick<
   | "backgroundBoost"
   | "classBoost"
   | "languages"
-  | "classDc"
   | "heritageId"
   | "deityId"
 >;
@@ -317,7 +316,6 @@ export const updateCharacter = async (
     | "backgroundBoost"
     | "classBoost"
     | "languages"
-    | "classDc"
     | "heritageId"
     | "deityId"
   >,

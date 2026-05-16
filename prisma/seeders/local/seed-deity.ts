@@ -37,7 +37,7 @@ const buildLocalDeities = (): Prisma.DeityUncheckedCreateInput[] => [
     sanctification: DeitySanctification.HolyOnly,
     divineFont: DivineFont.HarmOrHeal,
     divineSkillId: skillIds.medicine,
-    favoredWeaponId: null,
+    favoredWeapons: { connect: [] },
     domains: { connect: [
       { id: domainIds.death },
       { id: domainIds.fate },
@@ -62,7 +62,7 @@ const buildLocalDeities = (): Prisma.DeityUncheckedCreateInput[] => [
     sanctification: DeitySanctification.HolyOnly,
     divineFont: DivineFont.Heal,
     divineSkillId: skillIds.religion,
-    favoredWeaponId: null,
+    favoredWeapons: { connect: [] },
     domains: { connect: [
       { id: domainIds.fire },
       { id: domainIds.healing },
@@ -87,7 +87,7 @@ const buildLocalDeities = (): Prisma.DeityUncheckedCreateInput[] => [
     sanctification: DeitySanctification.HolyOnly,
     divineFont: DivineFont.Heal,
     divineSkillId: skillIds.intimidation,
-    favoredWeaponId: null,
+    favoredWeapons: { connect: [] },
     domains: { connect: [
       { id: domainIds.confidence },
       { id: domainIds.might },
@@ -112,7 +112,7 @@ const buildLocalDeities = (): Prisma.DeityUncheckedCreateInput[] => [
     sanctification: DeitySanctification.None,
     divineFont: DivineFont.HarmOrHeal,
     divineSkillId: skillIds.nature,
-    favoredWeaponId: null,
+    favoredWeapons: { connect: [] },
     domains: { connect: [
       { id: domainIds.air },
       { id: domainIds.nature },
@@ -137,7 +137,7 @@ const buildLocalDeities = (): Prisma.DeityUncheckedCreateInput[] => [
     sanctification: DeitySanctification.HolyOnly,
     divineFont: DivineFont.Heal,
     divineSkillId: skillIds.athletics,
-    favoredWeaponId: null,
+    favoredWeapons: { connect: [] },
     domains: { connect: [
       { id: domainIds.cities },
       { id: domainIds.freedom },
@@ -162,7 +162,7 @@ const buildLocalDeities = (): Prisma.DeityUncheckedCreateInput[] => [
     sanctification: DeitySanctification.HolyOnly,
     divineFont: DivineFont.Heal,
     divineSkillId: skillIds.acrobatics,
-    favoredWeaponId: null,
+    favoredWeapons: { connect: [] },
     domains: { connect: [
       { id: domainIds.dreams },
       { id: domainIds.luck },
@@ -187,7 +187,7 @@ const buildLocalDeities = (): Prisma.DeityUncheckedCreateInput[] => [
     sanctification: DeitySanctification.HolyOnly,
     divineFont: DivineFont.Heal,
     divineSkillId: skillIds.survival,
-    favoredWeaponId: weaponBaseIds.longbow,
+    favoredWeapons: { connect: [{ id: weaponBaseIds.longbow }] },
     domains: { connect: [
       { id: domainIds.earth },
       { id: domainIds.family },
@@ -213,7 +213,7 @@ const buildLocalDeities = (): Prisma.DeityUncheckedCreateInput[] => [
     sanctification: DeitySanctification.HolyOnly,
     divineFont: DivineFont.Heal,
     divineSkillId: skillIds.crafting,
-    favoredWeaponId: null,
+    favoredWeapons: { connect: [] },
     domains: { connect: [
       { id: domainIds.creation },
       { id: domainIds.earth },
@@ -238,7 +238,7 @@ const buildLocalDeities = (): Prisma.DeityUncheckedCreateInput[] => [
     sanctification: DeitySanctification.UnholyOnly,
     divineFont: DivineFont.Harm,
     divineSkillId: skillIds.deception,
-    favoredWeaponId: null,
+    favoredWeapons: { connect: [] },
     domains: { connect: [
       { id: domainIds.confidence },
       { id: domainIds.darkness },
@@ -263,7 +263,7 @@ const buildLocalDeities = (): Prisma.DeityUncheckedCreateInput[] => [
     sanctification: DeitySanctification.UnholyOnly,
     divineFont: DivineFont.Harm,
     divineSkillId: skillIds.medicine,
-    favoredWeaponId: null,
+    favoredWeapons: { connect: [] },
     domains: { connect: [
       { id: domainIds.indulgence },
       { id: domainIds.magic },
@@ -288,7 +288,7 @@ const buildLocalDeities = (): Prisma.DeityUncheckedCreateInput[] => [
     sanctification: DeitySanctification.UnholyOnly,
     divineFont: DivineFont.Harm,
     divineSkillId: skillIds.thievery,
-    favoredWeaponId: null,
+    favoredWeapons: { connect: [] },
     domains: { connect: [
       { id: domainIds.death },
       { id: domainIds.secrecy },
@@ -313,7 +313,7 @@ const buildLocalDeities = (): Prisma.DeityUncheckedCreateInput[] => [
     sanctification: DeitySanctification.UnholyOnly,
     divineFont: DivineFont.Harm,
     divineSkillId: skillIds.intimidation,
-    favoredWeaponId: null,
+    favoredWeapons: { connect: [] },
     domains: { connect: [
       { id: domainIds.darkness },
       { id: domainIds.destruction },

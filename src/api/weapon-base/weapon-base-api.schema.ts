@@ -125,7 +125,7 @@ const commonWeaponBaseProperties = {
     description: "Weapon Amount of Bulks To Carry",
     type: "string",
   },
-  deities: {
+  favoredByDeities: {
     description: "Deities That Use This Weapon As Their Favored Weapon",
     type: "array",
     items: {
@@ -169,7 +169,7 @@ export const weaponBaseSearchResponseSchema = {
           "hands",
           "range",
           "bulk",
-          "deities",
+          "favoredByDeities",
         ],
         additionalProperties: false,
       },
@@ -245,7 +245,7 @@ export const weaponBasePostGetResponseSchema = {
     "hands",
     "range",
     "bulk",
-    "deities",
+    "favoredByDeities",
   ],
   additionalProperties: false,
 } as const;

@@ -38,7 +38,7 @@ export const deitySelect = {
       name: true,
     },
   },
-  favoredWeapon: {
+  favoredWeapons: {
     select: {
       id: true,
       name: true,
@@ -87,7 +87,7 @@ type DeityToInsert = {
   sanctification: DeitySanctification;
   divineFont: DivineFont;
   divineSkillId?: string | null;
-  favoredWeaponId?: string | null;
+  favoredWeaponIds: string[];
   domainIds: string[];
   alternateDomainIds: string[];
   traitIds: string[];
@@ -103,7 +103,7 @@ type DeityToUpdate = {
   sanctification?: DeitySanctification;
   divineFont?: DivineFont;
   divineSkillId?: string | null;
-  favoredWeaponId?: string | null;
+  favoredWeaponIds?: string[];
   domainIds?: string[];
   alternateDomainIds?: string[];
   traitIds?: string[];
@@ -114,7 +114,7 @@ export const searchDeities = async (
     name?: string;
     rarity?: Rarity;
     divineSkillId?: string;
-    favoredWeaponId?: string;
+    favoredWeaponIds?: string[];
     divineFont?: DivineFont;
     sanctification?: DeitySanctification;
     isActive?: boolean;
@@ -122,8 +122,12 @@ export const searchDeities = async (
   { skip, take }: PaginationOptions,
   sort?: string
 ): Promise<SearchResult<DeityResult> | ErrorResult> => {
-  const { isActive, ...searchFilters } = search;
+  const { isActive, favoredWeaponIds, ...searchFilters } = search;
   const where: Prisma.DeityWhereInput = { ...searchFilters };
+
+  if (favoredWeaponIds !== undefined) {
+    where.favoredWeapons = { every: { id: { in: favoredWeaponIds } } };
+  }
 
   if (isActive !== undefined) {
     where.deletedAt = !isActive ? { not: null } : null;
@@ -168,7 +172,7 @@ export const getDeity = async ({
 export const insertDeity = async (
   deityToInsert: DeityToInsert
 ): Promise<DeityResult | ErrorResult> => {
-  const { domainIds, alternateDomainIds, traitIds, divineSkillId, favoredWeaponId, ...rest } =
+  const { domainIds, alternateDomainIds, traitIds, divineSkillId, favoredWeaponIds, ...rest } =
     deityToInsert;
 
   if (divineSkillId) {
@@ -179,12 +183,12 @@ export const insertDeity = async (
     if (!skill) return { code: ErrorCode.NotFound, message: "Skill not found" };
   }
 
-  if (favoredWeaponId) {
-    const weapon = await prisma.weaponBase.findUnique({
+  if (favoredWeaponIds.length > 0) {
+    const weapons = await prisma.weaponBase.findMany({
       select: { id: true },
-      where: { id: favoredWeaponId },
+      where: { id: { in: favoredWeaponIds } },
     });
-    if (!weapon)
+    if (weapons.length !== favoredWeaponIds.length)
       return { code: ErrorCode.NotFound, message: "Weapon not found" };
   }
 
@@ -220,7 +224,7 @@ export const insertDeity = async (
   const data: Prisma.DeityUncheckedCreateInput = {
     ...rest,
     divineSkillId: divineSkillId ?? null,
-    favoredWeaponId: favoredWeaponId ?? null,
+    favoredWeapons: { connect: favoredWeaponIds.map((id) => ({ id })) },
     domains: { connect: domainIds.map((id) => ({ id })) },
     alternateDomains: { connect: alternateDomainIds.map((id) => ({ id })) },
     traits: { connect: traitIds.map((id) => ({ id })) },
@@ -242,7 +246,7 @@ export const updateDeity = async (
     return { code: ErrorCode.NotFound, message: "Deity Not Found" };
   }
 
-  const { domainIds, alternateDomainIds, traitIds, divineSkillId, favoredWeaponId, ...rest } =
+  const { domainIds, alternateDomainIds, traitIds, divineSkillId, favoredWeaponIds, ...rest } =
     deityToUpdate;
 
   if (divineSkillId !== undefined && divineSkillId !== null) {
@@ -253,12 +257,12 @@ export const updateDeity = async (
     if (!skill) return { code: ErrorCode.NotFound, message: "Skill not found" };
   }
 
-  if (favoredWeaponId !== undefined && favoredWeaponId !== null) {
-    const weapon = await prisma.weaponBase.findUnique({
+  if (favoredWeaponIds !== undefined && favoredWeaponIds.length > 0) {
+    const weapons = await prisma.weaponBase.findMany({
       select: { id: true },
-      where: { id: favoredWeaponId },
+      where: { id: { in: favoredWeaponIds } },
     });
-    if (!weapon)
+    if (weapons.length !== favoredWeaponIds.length)
       return { code: ErrorCode.NotFound, message: "Weapon not found" };
   }
 
@@ -287,7 +291,9 @@ export const updateDeity = async (
   const data: Prisma.DeityUncheckedUpdateInput = {
     ...rest,
     ...(divineSkillId !== undefined && { divineSkillId }),
-    ...(favoredWeaponId !== undefined && { favoredWeaponId }),
+    ...(favoredWeaponIds !== undefined && {
+      favoredWeapons: { set: favoredWeaponIds.map((id) => ({ id })) },
+    }),
     ...(domainIds !== undefined && {
       domains: { set: domainIds.map((domainId) => ({ id: domainId })) },
     }),

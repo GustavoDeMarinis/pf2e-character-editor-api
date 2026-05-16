@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "ActionCost" AS ENUM ('Free', 'Reaction', 'One', 'Two', 'Three', 'TwoToThree', 'OneToThree', 'None');
+
 -- AlterTable
 ALTER TABLE "_AncestryToLanguage" ADD CONSTRAINT "_AncestryToLanguage_AB_pkey" PRIMARY KEY ("A", "B");
 
@@ -56,7 +59,7 @@ CREATE TABLE "Action" (
     "name" TEXT NOT NULL,
     "description" TEXT,
     "skillId" TEXT NOT NULL,
-    "combatActions" INTEGER,
+    "actionCost" "ActionCost",
     "criticalSuccess" TEXT,
     "success" TEXT,
     "failure" TEXT,

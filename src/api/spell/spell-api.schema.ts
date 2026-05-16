@@ -1,5 +1,6 @@
 import {
   ActionCost,
+  HeighteningKind,
   Rarity,
   SpellArea,
   SpellComponent,
@@ -90,12 +91,12 @@ const commonSpellProperties = {
       type: "object",
       properties: {
         id: { type: "string" },
-        interval: { type: "integer", nullable: true },
-        fixedRank: { type: "integer", nullable: true },
+        kind: { type: "string", enum: Object.values(HeighteningKind) },
+        bump: { type: "integer" },
         effect: { type: "string" },
       },
       additionalProperties: false,
-      required: ["id", "interval", "fixedRank", "effect"],
+      required: ["id", "kind", "bump", "effect"],
     },
   },
 } as const;
@@ -130,26 +131,21 @@ const commonSpellRequired = [
 const heighteningInputSchema = {
   type: "object",
   properties: {
-    interval: { type: "integer", nullable: true, minimum: 1, maximum: 10 },
-    fixedRank: { type: "integer", nullable: true, minimum: 1, maximum: 10 },
+    kind: {
+      type: "string",
+      enum: Object.values(HeighteningKind),
+      description: "Interval = 'Heightened (+N)' (effect repeats every N ranks); FixedRank = 'Heightened (Nth)' (effect applies at one rank).",
+    },
+    bump: {
+      type: "integer",
+      minimum: 1,
+      maximum: 10,
+      description: "Interpreted by `kind`: for Interval, the +N step; for FixedRank, the absolute rank.",
+    },
     effect: { type: "string", description: "Heightening effect text" },
   },
   additionalProperties: false,
-  required: ["interval", "fixedRank", "effect"],
-  oneOf: [
-    {
-      properties: {
-        interval: { type: "integer" },
-        fixedRank: { type: "null" },
-      },
-    },
-    {
-      properties: {
-        interval: { type: "null" },
-        fixedRank: { type: "integer" },
-      },
-    },
-  ],
+  required: ["kind", "bump", "effect"],
 } as const;
 
 export const spellSearchRequestQuerySchema = {

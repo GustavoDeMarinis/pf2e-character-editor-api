@@ -1,5 +1,6 @@
 import {
   ActionCost,
+  HeighteningKind,
   Prisma,
   Rarity,
   SpellArea,
@@ -60,8 +61,8 @@ const buildLocalSpells = (): Prisma.SpellUncheckedCreateInput[] => [
     heightenings: {
       create: [
         {
-          interval: 1,
-          fixedRank: null,
+          kind: HeighteningKind.Interval,
+          bump: 1,
           effect:
             "The amount of healing or damage increases by 1d8, and the extra healing for the 2-action version increases by 8.",
         },
@@ -89,8 +90,8 @@ const buildLocalSpells = (): Prisma.SpellUncheckedCreateInput[] => [
     heightenings: {
       create: [
         {
-          interval: 1,
-          fixedRank: null,
+          kind: HeighteningKind.Interval,
+          bump: 1,
           effect:
             "The amount of healing or damage increases by 1d8, and the extra damage for the 2-action version increases by 8.",
         },
@@ -119,8 +120,8 @@ const buildLocalSpells = (): Prisma.SpellUncheckedCreateInput[] => [
     heightenings: {
       create: [
         {
-          interval: 1,
-          fixedRank: null,
+          kind: HeighteningKind.Interval,
+          bump: 1,
           effect: "The damage increases by 2d6.",
         },
       ],
@@ -147,8 +148,8 @@ const buildLocalSpells = (): Prisma.SpellUncheckedCreateInput[] => [
     heightenings: {
       create: [
         {
-          interval: 2,
-          fixedRank: null,
+          kind: HeighteningKind.Interval,
+          bump: 2,
           effect: "You shoot one additional missile with each action.",
         },
       ],
@@ -225,14 +226,14 @@ const buildLocalSpells = (): Prisma.SpellUncheckedCreateInput[] => [
     heightenings: {
       create: [
         {
-          interval: null,
-          fixedRank: 3,
+          kind: HeighteningKind.FixedRank,
+          bump: 3,
           effect:
             "You learn the school of magic for the highest-rank effect within range that the spell detects.",
         },
         {
-          interval: null,
-          fixedRank: 4,
+          kind: HeighteningKind.FixedRank,
+          bump: 4,
           effect:
             "As 3rd rank, but you also pinpoint the source of the highest-rank magic.",
         },
@@ -261,8 +262,8 @@ const buildLocalSpells = (): Prisma.SpellUncheckedCreateInput[] => [
     heightenings: {
       create: [
         {
-          interval: 4,
-          fixedRank: null,
+          kind: HeighteningKind.Interval,
+          bump: 4,
           effect:
             "The item bonus to AC increases by 1, and the maximum Dexterity modifier increases by 1.",
         },
@@ -333,8 +334,8 @@ const buildLocalSpells = (): Prisma.SpellUncheckedCreateInput[] => [
     heightenings: {
       create: [
         {
-          interval: null,
-          fixedRank: 4,
+          kind: HeighteningKind.FixedRank,
+          bump: 4,
           effect:
             "The creatures fall unconscious for 1 round on a failure, even if not damaged.",
         },
@@ -431,8 +432,8 @@ const buildLocalSpells = (): Prisma.SpellUncheckedCreateInput[] => [
     heightenings: {
       create: [
         {
-          interval: 3,
-          fixedRank: null,
+          kind: HeighteningKind.Interval,
+          bump: 3,
           effect:
             "The initial damage and the persistent acid damage both increase by 1d6, and the splash damage increases by 1.",
         },
@@ -460,8 +461,8 @@ const buildLocalSpells = (): Prisma.SpellUncheckedCreateInput[] => [
     heightenings: {
       create: [
         {
-          interval: 1,
-          fixedRank: null,
+          kind: HeighteningKind.Interval,
+          bump: 1,
           effect: "The damage increases by 1d4+1.",
         },
       ],
@@ -488,8 +489,8 @@ const buildLocalSpells = (): Prisma.SpellUncheckedCreateInput[] => [
     traits: { connect: [] },
     heightenings: {
       create: [
-        { interval: null, fixedRank: 6, effect: "The status bonus increases to +2." },
-        { interval: null, fixedRank: 9, effect: "The status bonus increases to +3." },
+        { kind: HeighteningKind.FixedRank, bump: 6, effect: "The status bonus increases to +2." },
+        { kind: HeighteningKind.FixedRank, bump: 9, effect: "The status bonus increases to +3." },
       ],
     },
   },
@@ -578,8 +579,8 @@ const buildLocalSpells = (): Prisma.SpellUncheckedCreateInput[] => [
     traits: { connect: [] },
     heightenings: {
       create: [
-        { interval: null, fixedRank: 4, effect: "The resistance increases to 10." },
-        { interval: null, fixedRank: 7, effect: "The resistance increases to 15." },
+        { kind: HeighteningKind.FixedRank, bump: 4, effect: "The resistance increases to 10." },
+        { kind: HeighteningKind.FixedRank, bump: 7, effect: "The resistance increases to 15." },
       ],
     },
   },
@@ -645,8 +646,8 @@ const buildLocalSpells = (): Prisma.SpellUncheckedCreateInput[] => [
     heightenings: {
       create: [
         {
-          interval: 1,
-          fixedRank: null,
+          kind: HeighteningKind.Interval,
+          bump: 1,
           effect:
             "The amount of healing increases by 6, and the damage to undead increases by 1d6.",
         },

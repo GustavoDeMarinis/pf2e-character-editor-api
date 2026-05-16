@@ -44,8 +44,9 @@ const commonArmorBaseProperties = {
     type: "number",
   },
   bulk: {
-    description: "Amount of Bulks The Armor Weights",
+    description: "Amount of Bulks The Armor Weights (null = 0 bulk)",
     type: "string",
+    nullable: true,
   },
   strengthReq: {
     description: "Strength Required To Use Armor Without Penalties",

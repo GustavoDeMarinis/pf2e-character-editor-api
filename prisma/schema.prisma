@@ -13,6 +13,8 @@ model Character {
   updatedAt        DateTime              @updatedAt
   deletedAt        DateTime?
   characterName    String
+  // assignedUserId is required: when a DM creates a character without an assignee,
+  // it is assigned to the DM (an NPC until reassigned).
   ancestry         Ancestry              @relation(fields: [ancestryId], references: [id])
   ancestryId       String
   background       Background?           @relation(fields: [backgroundId], references: [id])
@@ -29,7 +31,6 @@ model Character {
   backgroundBoost  Attribute[]
   classBoost       Attribute
   languages        Language[]
-  classDc          Int
   skills           CharacterSkillLevel[]
   heritage         Heritage?             @relation(fields: [heritageId], references: [id])
   heritageId       String?
@@ -37,14 +38,22 @@ model Character {
   deityId          String?
   characterFeats   CharacterFeat[]
   characterSpells  CharacterSpell[]
+
+  @@index([ancestryId])
+  @@index([backgroundId])
+  @@index([createdByUserId])
+  @@index([assignedUserId])
+  @@index([characterClassId])
+  @@index([heritageId])
+  @@index([deityId])
 }
 
 model ClassLevelingMap {
-  id                        String            @id @default(cuid())
-  createdAt                 DateTime          @default(now())
-  updatedAt                 DateTime          @updatedAt
+  id                        String           @id @default(cuid())
+  createdAt                 DateTime         @default(now())
+  updatedAt                 DateTime         @updatedAt
   deletedAt                 DateTime?
-  characterClass            CharacterClass    @relation(fields: [characterClassId], references: [id])
+  characterClass            CharacterClass   @relation(fields: [characterClassId], references: [id])
   characterClassId          String
   level                     Int
   attributeIncrease         Boolean
@@ -65,10 +74,12 @@ model ClassLevelingMap {
   fortitudeProficiency      Proficiency?
   reflexProficiency         Proficiency?
   willProficiency           Proficiency?
-  specialHabilities         SpecialHability[]
+  specialAbilities          SpecialAbility[]
+
+  @@index([characterClassId])
 }
 
-model SpecialHability {
+model SpecialAbility {
   id                 String            @id @default(cuid())
   createdAt          DateTime          @default(now())
   updatedAt          DateTime          @updatedAt
@@ -80,6 +91,9 @@ model SpecialHability {
   characterClassId   String
   classLevelingMap   ClassLevelingMap? @relation(fields: [classLevelingMapId], references: [id])
   classLevelingMapId String?
+
+  @@index([characterClassId])
+  @@index([classLevelingMapId])
 }
 
 enum Proficiency {
@@ -119,7 +133,7 @@ model Language {
   description String?
   ancestries  Ancestry[]
   rarity      Rarity
-  Character   Character[]
+  characters  Character[]
 }
 
 enum AncestrySize {
@@ -142,18 +156,18 @@ enum Attribute {
 }
 
 model CharacterClass {
-  id                String             @id @default(cuid())
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  deletedAt         DateTime?
-  className         String
-  description       String?
-  keyAttributes     Attribute[]
-  hitPoints         Int
-  characters        Character[]
-  classLevelingMap  ClassLevelingMap[]
-  specialHabilities SpecialHability[]
-  feats             Feat[]
+  id               String             @id @default(cuid())
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  deletedAt        DateTime?
+  className        String
+  description      String?
+  keyAttributes    Attribute[]
+  hitPoints        Int
+  characters       Character[]
+  classLevelingMap ClassLevelingMap[]
+  specialAbilities SpecialAbility[]
+  feats            Feat[]
 }
 
 enum UserRole {
@@ -208,21 +222,23 @@ model Skill {
 }
 
 model Action {
-  id              String    @id @default(cuid())
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id              String      @id @default(cuid())
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
   deletedAt       DateTime?
   name            String
   description     String?
   traits          Trait[]
-  skill           Skill     @relation(fields: [skillId], references: [id])
+  skill           Skill       @relation(fields: [skillId], references: [id])
   skillId         String
-  combatActions   Int?
+  actionCost      ActionCost?
   criticalSuccess String?
   success         String?
   failure         String?
   criticalFailure String?
   isUntrained     Boolean
+
+  @@index([skillId])
 }
 
 model CharacterSkillLevel {
@@ -236,6 +252,9 @@ model CharacterSkillLevel {
   skillId         String
   proficiency     Proficiency
   levelItWasTaken Int?
+
+  @@index([characterId])
+  @@index([skillId])
 }
 
 enum WeaponCategory {
@@ -279,7 +298,9 @@ model WeaponBase {
   hands              WeaponHands[]
   range              Int?
   bulk               String?
-  deities            Deity[]
+  favoredByDeities   Deity[]            @relation("Deity_favoredWeapons")
+
+  @@index([weaponGroupId])
 }
 
 model WeaponGroup {
@@ -291,6 +312,8 @@ model WeaponGroup {
   weaponBases                    WeaponBase[]
   criticalSpecialization         WeaponCriticalSpecialization @relation(fields: [weaponCriticalSpecializationId], references: [id])
   weaponCriticalSpecializationId String
+
+  @@index([weaponCriticalSpecializationId])
 }
 
 model Trait {
@@ -354,9 +377,11 @@ model ArmorBase {
   speedPenalty Int
   strengthReq  Int
   price        Int
-  bulk         String
+  bulk         String?
   armorGroup   ArmorGroup    @relation(fields: [armorGroupId], references: [id])
   armorGroupId String
+
+  @@index([armorGroupId])
 }
 
 model ArmorGroup {
@@ -440,14 +465,14 @@ enum DivineFont {
 }
 
 model Domain {
-  id               String  @id @default(cuid())
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
+  id               String    @id @default(cuid())
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
   deletedAt        DateTime?
   name             String
   description      String?
-  deities          Deity[]    @relation("Deity_domains")
-  alternateDeities Deity[]    @relation("Deity_alternate_domains")
+  deities          Deity[]   @relation("Deity_domains")
+  alternateDeities Deity[]   @relation("Deity_alternate_domains")
 }
 
 model Deity {
@@ -465,8 +490,7 @@ model Deity {
   divineFont       DivineFont
   divineSkill      Skill?              @relation(fields: [divineSkillId], references: [id])
   divineSkillId    String?
-  favoredWeapon    WeaponBase?         @relation(fields: [favoredWeaponId], references: [id])
-  favoredWeaponId  String?
+  favoredWeapons   WeaponBase[]        @relation("Deity_favoredWeapons")
   domains          Domain[]            @relation("Deity_domains")
   alternateDomains Domain[]            @relation("Deity_alternate_domains")
   clericSpells     DeityClericSpell[]
@@ -474,7 +498,6 @@ model Deity {
   characters       Character[]
 
   @@index([divineSkillId])
-  @@index([favoredWeaponId])
 }
 
 model DeityClericSpell {
@@ -484,11 +507,13 @@ model DeityClericSpell {
   deletedAt DateTime?
   deity     Deity     @relation(fields: [deityId], references: [id])
   deityId   String
+  spell     Spell     @relation(fields: [spellId], references: [id])
   spellId   String
   rank      Int
 
   @@unique([deityId, rank])
   @@index([deityId])
+  @@index([spellId])
 }
 
 enum FeatType {
@@ -517,6 +542,8 @@ model Feat {
   updatedAt        DateTime        @updatedAt
   deletedAt        DateTime?
   name             String
+  // TODO: decide whether description should be nullable to allow partial creation,
+  // matching the convention used by most other entities (Trait, Ancestry, Heritage, etc.).
   description      String
   featType         FeatType
   level            Int             @default(1)
@@ -536,6 +563,9 @@ model Feat {
   skillId          String?
 
   @@index([featType, level])
+  @@index([ancestryId])
+  @@index([characterClassId])
+  @@index([skillId])
 }
 
 model CharacterFeat {
@@ -593,44 +623,51 @@ enum SpellArea {
 }
 
 model Spell {
-  id              String             @id @default(cuid())
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @updatedAt
-  deletedAt       DateTime?
-  name            String
-  description     String
-  rank            Int
-  isFocus         Boolean            @default(false)
-  traditions      SpellTradition[]
-  traits          Trait[]
-  rarity          Rarity
-  components      SpellComponent[]
-  actionCost      ActionCost
-  castTimeText    String?
-  range           String?
-  targets         String?
-  targetType      SpellTargetType
-  areaType        SpellArea
-  areaSize        Int?
-  duration        String?
-  savingThrow     SpellSaveType
-  basicSave       Boolean            @default(false)
-  heightenings    SpellHeightening[]
-  characterSpells CharacterSpell[]
+  id               String             @id @default(cuid())
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  deletedAt        DateTime?
+  name             String
+  // TODO: see TODO on Feat.description — same decision applies here.
+  description      String
+  rank             Int
+  isFocus          Boolean            @default(false)
+  traditions       SpellTradition[]
+  traits           Trait[]
+  rarity           Rarity
+  components       SpellComponent[]
+  actionCost       ActionCost
+  castTimeText     String?
+  range            String?
+  targets          String?
+  targetType       SpellTargetType
+  areaType         SpellArea
+  areaSize         Int?
+  duration         String?
+  savingThrow      SpellSaveType
+  basicSave        Boolean            @default(false)
+  heightenings     SpellHeightening[]
+  characterSpells  CharacterSpell[]
+  clericForDeities DeityClericSpell[]
 
   @@index([rank])
   @@index([isFocus])
 }
 
+enum HeighteningKind {
+  Interval // "Heightened (+N)": effect repeats every N ranks above base; bump = N
+  FixedRank // "Heightened (Nth)": effect applies at one specific rank; bump = rank
+}
+
 model SpellHeightening {
-  id        String    @id @default(cuid())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id        String          @id @default(cuid())
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
   deletedAt DateTime?
-  spell     Spell     @relation(fields: [spellId], references: [id])
+  spell     Spell           @relation(fields: [spellId], references: [id])
   spellId   String
-  interval  Int?
-  fixedRank Int?
+  kind      HeighteningKind
+  bump      Int
   effect    String
 
   @@index([spellId])
@@ -648,6 +685,10 @@ model CharacterSpell {
   isPrepared     Boolean   @default(false)
   preparedAtRank Int?
 
+  // The composite unique covers prepared spells (rank distinguishes duplicates).
+  // For "known" spells (preparedAtRank IS NULL) Postgres treats NULLs as distinct,
+  // so a partial unique index `(characterId, spellId) WHERE preparedAtRank IS NULL`
+  // is added in the migration to prevent duplicate known-spell rows.
   @@unique([characterId, spellId, preparedAtRank])
   @@index([characterId])
 }

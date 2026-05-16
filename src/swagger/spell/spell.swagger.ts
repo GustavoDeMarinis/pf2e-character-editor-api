@@ -146,11 +146,10 @@ const insertSpell = {
     "### Cantrip status\n" +
     "There is no `isCantrip` column. Cantrip status is **derived from `rank === 0`** and appears " +
     "only in responses. The `?isCantrip=` search filter maps to `rank: 0` / `rank: { gt: 0 }`.\n\n" +
-    "### Heightenings (XOR rule)\n" +
-    "Each heightening row is `{ interval, fixedRank, effect }` with **exactly one** of `interval` / `fixedRank` " +
-    "non-null. Violating this returns **400** with `must match exactly one schema in oneOf`.\n\n" +
-    "- `interval: N, fixedRank: null` — incremental (\"Heightened (+N)\").\n" +
-    "- `interval: null, fixedRank: N` — fixed (\"Heightened (Nth)\").\n\n" +
+    "### Heightenings\n" +
+    "Each heightening row is `{ kind, bump, effect }` where `kind` is a discriminator:\n\n" +
+    "- `kind: \"Interval\"`, `bump: N` — incremental (\"Heightened (+N)\"): the effect repeats every N ranks above base.\n" +
+    "- `kind: \"FixedRank\"`, `bump: N` — fixed (\"Heightened (Nth)\"): the effect applies at exactly rank N.\n\n" +
     "### Other rules\n" +
     "- Spell names are globally unique. Duplicates return **409**.\n" +
     "- Any provided `traitId` that does not exist returns **404**.\n" +

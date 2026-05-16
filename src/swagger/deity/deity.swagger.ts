@@ -11,7 +11,7 @@ import { securitySchema } from "../security.swagger";
 
 const searchDeity = {
   tags: ["Deity"],
-  description: "## Search Deities\nFilter by name, rarity, divineSkillId, favoredWeaponId, divineFont, sanctification, or active status.",
+  description: "## Search Deities\nFilter by name, rarity, divineSkillId, favoredWeaponIds, divineFont, sanctification, or active status.",
   operationId: "searchDeity",
   security: [securitySchema],
   parameters: [
@@ -47,9 +47,9 @@ const searchDeity = {
     },
     {
       in: "query",
-      name: "favoredWeaponId",
-      schema: deitySearchRequestQuerySchema.properties.favoredWeaponId,
-      description: deitySearchRequestQuerySchema.properties.favoredWeaponId.description,
+      name: "favoredWeaponIds",
+      schema: deitySearchRequestQuerySchema.properties.favoredWeaponIds,
+      description: deitySearchRequestQuerySchema.properties.favoredWeaponIds.description,
     },
     {
       in: "query",
