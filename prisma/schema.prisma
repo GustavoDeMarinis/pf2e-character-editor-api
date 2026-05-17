@@ -214,11 +214,12 @@ model Skill {
   name                String
   description         String?
   associatedAttribute Attribute
-  actions             Action[]
-  characterSkillLevel CharacterSkillLevel[]
-  backgrounds         Background[]
-  deities             Deity[]
-  feats               Feat[]
+  actions                  Action[]
+  characterSkillLevel      CharacterSkillLevel[]
+  backgrounds              Background[]
+  deities                  Deity[]
+  feats                    Feat[]
+  ritualsAsSecondaryCheck  Ritual[]
 }
 
 model Action {
@@ -335,6 +336,7 @@ model Trait {
   deities     Deity[]
   feats       Feat[]
   spells      Spell[]
+  rituals     Ritual[]
 }
 
 model WeaponCriticalSpecialization {
@@ -691,4 +693,44 @@ model CharacterSpell {
   // is added in the migration to prevent duplicate known-spell rows.
   @@unique([characterId, spellId, preparedAtRank])
   @@index([characterId])
+}
+
+model Ritual {
+  id                   String              @id @default(cuid())
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  deletedAt            DateTime?
+  name                 String
+  description          String
+  rank                 Int
+  rarity               Rarity
+  traits               Trait[]
+  castTime             String
+  cost                 String?
+  primaryCheck         String
+  secondaryCasters     Int                 @default(0)
+  secondaryCheckSkills Skill[]
+  range                String?
+  targets              String?
+  duration             String?
+  criticalSuccess      String?
+  success              String?
+  failure              String?
+  criticalFailure      String?
+  heightenings         RitualHeightening[]
+
+  @@index([rank])
+}
+
+model RitualHeightening {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  ritual    Ritual   @relation(fields: [ritualId], references: [id])
+  ritualId  String
+  fixedRank Int
+  effect    String
+
+  @@index([ritualId])
 }
