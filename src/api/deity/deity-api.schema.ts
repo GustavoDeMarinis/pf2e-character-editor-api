@@ -62,15 +62,17 @@ const commonDeityProperties = {
     required: ["id", "name"],
     nullable: true,
   },
-  favoredWeapon: {
-    type: "object",
-    properties: {
-      id: { type: "string" },
-      name: { type: "string" },
+  favoredWeapons: {
+    type: "array",
+    items: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+      },
+      additionalProperties: false,
+      required: ["id", "name"],
     },
-    additionalProperties: false,
-    required: ["id", "name"],
-    nullable: true,
   },
   domains: {
     type: "array",
@@ -113,7 +115,11 @@ export const deitySearchRequestQuerySchema = {
     name: { type: "string", description: "Deity Name" },
     rarity: { type: "string", enum: Object.values(Rarity), description: "Deity Rarity" },
     divineSkillId: { type: "string", description: "Filter by Divine Skill Id", checkIdIsCuid: true },
-    favoredWeaponId: { type: "string", description: "Filter by Favored Weapon Id", checkIdIsCuid: true },
+    favoredWeaponIds: {
+      type: "array",
+      description: "Filter by Favored Weapon Ids (matches deities whose favored weapons are all within this set)",
+      items: { type: "string", checkIdIsCuid: true },
+    },
     divineFont: { type: "string", enum: Object.values(DivineFont), description: "Divine Font" },
     sanctification: {
       type: "string",
@@ -149,7 +155,7 @@ export const deitySearchResponseSchema = {
           "sanctification",
           "divineFont",
           "divineSkill",
-          "favoredWeapon",
+          "favoredWeapons",
           "domains",
           "alternateDomains",
           "clericSpells",
@@ -193,7 +199,7 @@ export const deityGetPostResponseSchema = {
     "sanctification",
     "divineFont",
     "divineSkill",
-    "favoredWeapon",
+    "favoredWeapons",
     "domains",
     "alternateDomains",
     "clericSpells",
@@ -240,10 +246,11 @@ export const deityPostRequestBodySchema = {
       description: "Divine Skill Id",
       checkIdIsCuid: true,
     },
-    favoredWeaponId: {
-      type: "string",
-      description: "Favored Weapon Id",
-      checkIdIsCuid: true,
+    favoredWeaponIds: {
+      type: "array",
+      description: "Favored Weapon Ids",
+      items: { type: "string", checkIdIsCuid: true },
+      default: [],
     },
     domainIds: {
       type: "array",
@@ -264,7 +271,7 @@ export const deityPostRequestBodySchema = {
       default: [],
     },
   },
-  required: ["name", "rarity", "edicts", "anathema", "divineAttributes", "sanctification", "divineFont"],
+  required: ["name", "rarity", "edicts", "anathema", "divineAttributes", "sanctification", "divineFont", "favoredWeaponIds"],
   additionalProperties: false,
 } as const;
 
@@ -306,10 +313,10 @@ export const deityPatchRequestBodySchema = {
       description: "Divine Skill Id",
       checkIdIsCuid: true,
     },
-    favoredWeaponId: {
-      type: "string",
-      description: "Favored Weapon Id",
-      checkIdIsCuid: true,
+    favoredWeaponIds: {
+      type: "array",
+      description: "Favored Weapon Ids",
+      items: { type: "string", checkIdIsCuid: true },
     },
     domainIds: {
       type: "array",
@@ -338,7 +345,7 @@ export const deityPatchRequestBodySchema = {
     { required: ["sanctification"] },
     { required: ["divineFont"] },
     { required: ["divineSkillId"] },
-    { required: ["favoredWeaponId"] },
+    { required: ["favoredWeaponIds"] },
     { required: ["domainIds"] },
     { required: ["alternateDomainIds"] },
     { required: ["traitIds"] },

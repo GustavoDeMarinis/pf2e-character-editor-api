@@ -13,6 +13,9 @@ CREATE TYPE "SpellSaveType" AS ENUM ('Fortitude', 'Reflex', 'Will', 'None');
 -- CreateEnum
 CREATE TYPE "SpellArea" AS ENUM ('Burst', 'Cone', 'Line', 'Emanation', 'Cylinder', 'None');
 
+-- CreateEnum
+CREATE TYPE "HeighteningKind" AS ENUM ('Interval', 'FixedRank');
+
 -- CreateTable
 CREATE TABLE "Spell" (
     "id" TEXT NOT NULL,
@@ -47,8 +50,8 @@ CREATE TABLE "SpellHeightening" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
     "spellId" TEXT NOT NULL,
-    "interval" INTEGER,
-    "fixedRank" INTEGER,
+    "kind" "HeighteningKind" NOT NULL,
+    "bump" INTEGER NOT NULL,
     "effect" TEXT NOT NULL,
 
     CONSTRAINT "SpellHeightening_pkey" PRIMARY KEY ("id")
@@ -92,6 +95,11 @@ CREATE INDEX "CharacterSpell_characterId_idx" ON "CharacterSpell"("characterId")
 CREATE UNIQUE INDEX "CharacterSpell_characterId_spellId_preparedAtRank_key" ON "CharacterSpell"("characterId", "spellId", "preparedAtRank");
 
 -- CreateIndex
+-- Partial unique index: prevents duplicate "known" spells (preparedAtRank IS NULL),
+-- which the composite unique above cannot enforce because Postgres treats NULLs as distinct.
+CREATE UNIQUE INDEX "CharacterSpell_known_unique" ON "CharacterSpell"("characterId", "spellId") WHERE "preparedAtRank" IS NULL;
+
+-- CreateIndex
 CREATE INDEX "_SpellToTrait_B_index" ON "_SpellToTrait"("B");
 
 -- AddForeignKey
@@ -108,3 +116,11 @@ ALTER TABLE "_SpellToTrait" ADD CONSTRAINT "_SpellToTrait_A_fkey" FOREIGN KEY ("
 
 -- AddForeignKey
 ALTER TABLE "_SpellToTrait" ADD CONSTRAINT "_SpellToTrait_B_fkey" FOREIGN KEY ("B") REFERENCES "Trait"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- Backfill: DeityClericSpell.spellId FK + index. The column was created in 20260427223536
+-- but the Spell table didn't exist yet, so the constraint is added here.
+-- CreateIndex
+CREATE INDEX "DeityClericSpell_spellId_idx" ON "DeityClericSpell"("spellId");
+
+-- AddForeignKey
+ALTER TABLE "DeityClericSpell" ADD CONSTRAINT "DeityClericSpell_spellId_fkey" FOREIGN KEY ("spellId") REFERENCES "Spell"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

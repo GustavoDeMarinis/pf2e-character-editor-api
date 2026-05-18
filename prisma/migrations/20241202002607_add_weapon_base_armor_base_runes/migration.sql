@@ -96,7 +96,7 @@ CREATE TABLE "ArmorBase" (
     "speedPenalty" INTEGER NOT NULL,
     "strengthReq" INTEGER NOT NULL,
     "price" INTEGER NOT NULL,
-    "bulk" TEXT NOT NULL,
+    "bulk" TEXT,
     "armorGroupId" TEXT NOT NULL,
 
     CONSTRAINT "ArmorBase_pkey" PRIMARY KEY ("id")

@@ -26,7 +26,7 @@ const baseInsert = (partial?: object) => ({
   sanctification: "HolyOnly" as const,
   divineFont: "Heal" as const,
   divineSkillId: null,
-  favoredWeaponId: null,
+  favoredWeaponIds: [] as string[],
   domainIds: [] as string[],
   alternateDomainIds: [] as string[],
   traitIds: [] as string[],
@@ -133,14 +133,13 @@ describe("Deity tests", () => {
       expect(prismaMock.deity.create).not.toHaveBeenCalled();
     });
 
-    test("insertDeity returns 404 when favoredWeaponId does not exist", async () => {
+    test("insertDeity returns 404 when a favoredWeaponIds entry does not exist", async () => {
       const fakeWeapon = getFakeWeaponBase();
 
-      prismaMock.skill.findUnique.mockResolvedValue(null);
-      prismaMock.weaponBase.findUnique.mockResolvedValue(null);
+      prismaMock.weaponBase.findMany.mockResolvedValue([]);
 
       const result = await insertDeity(
-        baseInsert({ favoredWeaponId: fakeWeapon.id })
+        baseInsert({ favoredWeaponIds: [fakeWeapon.id] })
       );
 
       expect(result).toStrictEqual({

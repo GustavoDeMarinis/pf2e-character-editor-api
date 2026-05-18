@@ -14,8 +14,7 @@ ADD COLUMN     "ancestryBoost" "Attribute"[],
 ADD COLUMN     "ancestryFlaw" "Attribute"[],
 ADD COLUMN     "ancestryId" TEXT NOT NULL,
 ADD COLUMN     "backgroundBoost" "Attribute"[],
-ADD COLUMN     "classBoost" "Attribute" NOT NULL,
-ADD COLUMN     "classDc" INTEGER NOT NULL;
+ADD COLUMN     "classBoost" "Attribute" NOT NULL;
 
 -- CreateTable
 CREATE TABLE "ClassLevelingMap" (
@@ -48,7 +47,7 @@ CREATE TABLE "ClassLevelingMap" (
 );
 
 -- CreateTable
-CREATE TABLE "SpecialHability" (
+CREATE TABLE "SpecialAbility" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -59,7 +58,7 @@ CREATE TABLE "SpecialHability" (
     "characterClassId" TEXT NOT NULL,
     "classLevelingMapId" TEXT,
 
-    CONSTRAINT "SpecialHability_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "SpecialAbility_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -136,10 +135,10 @@ ALTER TABLE "Character" ADD CONSTRAINT "Character_ancestryId_fkey" FOREIGN KEY (
 ALTER TABLE "ClassLevelingMap" ADD CONSTRAINT "ClassLevelingMap_characterClassId_fkey" FOREIGN KEY ("characterClassId") REFERENCES "CharacterClass"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SpecialHability" ADD CONSTRAINT "SpecialHability_characterClassId_fkey" FOREIGN KEY ("characterClassId") REFERENCES "CharacterClass"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "SpecialAbility" ADD CONSTRAINT "SpecialAbility_characterClassId_fkey" FOREIGN KEY ("characterClassId") REFERENCES "CharacterClass"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SpecialHability" ADD CONSTRAINT "SpecialHability_classLevelingMapId_fkey" FOREIGN KEY ("classLevelingMapId") REFERENCES "ClassLevelingMap"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "SpecialAbility" ADD CONSTRAINT "SpecialAbility_classLevelingMapId_fkey" FOREIGN KEY ("classLevelingMapId") REFERENCES "ClassLevelingMap"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_CharacterToLanguage" ADD CONSTRAINT "_CharacterToLanguage_A_fkey" FOREIGN KEY ("A") REFERENCES "Character"("id") ON DELETE CASCADE ON UPDATE CASCADE;

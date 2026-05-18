@@ -387,7 +387,6 @@ export const characterPostRequestBodySchema = {
     "backgroundBoost",
     "classBoost",
     "languageIds",
-    "classDc",
   ],
 } as const;
 

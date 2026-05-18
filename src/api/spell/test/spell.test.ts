@@ -1,5 +1,6 @@
 import {
   ActionCost,
+  HeighteningKind,
   Rarity,
   SpellArea,
   SpellComponent,
@@ -40,7 +41,7 @@ const baseSpellInput = {
   savingThrow: SpellSaveType.None,
   basicSave: false,
   traitIds: [] as string[],
-  heightenings: [] as Array<{ interval: number | null; fixedRank: number | null; effect: string }>,
+  heightenings: [] as Array<{ kind: HeighteningKind; bump: number; effect: string }>,
 };
 
 describe("Spell tests", () => {
@@ -174,7 +175,7 @@ describe("Spell tests", () => {
 
   describe("Insert Spell", () => {
     test("insertSpell creates a spell with heightenings", async () => {
-      const fakeHeightening = getFakeSpellHeightening({ interval: 1, fixedRank: null });
+      const fakeHeightening = getFakeSpellHeightening({ kind: HeighteningKind.Interval, bump: 1 });
       const fakeSpell = {
         ...getFakeSpell(),
         traits: [],
@@ -185,7 +186,7 @@ describe("Spell tests", () => {
 
       const result = await insertSpell({
         ...baseSpellInput,
-        heightenings: [{ interval: 1, fixedRank: null, effect: "Increase healing by 1d8." }],
+        heightenings: [{ kind: HeighteningKind.Interval, bump: 1, effect: "Increase healing by 1d8." }],
       });
 
       expect(prismaMock.spell.create).toHaveBeenCalledTimes(1);
@@ -232,31 +233,6 @@ describe("Spell tests", () => {
       expect(result).toBe(fakeSpell);
     });
 
-    test("insertSpell rejects when a heightening has both interval and fixedRank set", async () => {
-      const result = await insertSpell({
-        ...baseSpellInput,
-        heightenings: [{ interval: 1, fixedRank: 3, effect: "Both set — invalid." }],
-      });
-
-      expect(result).toStrictEqual({
-        code: ErrorCode.BadRequest,
-        message: "Each heightening must have exactly one of `interval` or `fixedRank` set",
-      });
-      expect(prismaMock.spell.create).not.toHaveBeenCalled();
-    });
-
-    test("insertSpell rejects when a heightening has neither interval nor fixedRank set", async () => {
-      const result = await insertSpell({
-        ...baseSpellInput,
-        heightenings: [{ interval: null, fixedRank: null, effect: "Neither set — invalid." }],
-      });
-
-      expect(result).toStrictEqual({
-        code: ErrorCode.BadRequest,
-        message: "Each heightening must have exactly one of `interval` or `fixedRank` set",
-      });
-      expect(prismaMock.spell.create).not.toHaveBeenCalled();
-    });
   });
 
   describe("Update Spell", () => {
@@ -283,7 +259,7 @@ describe("Spell tests", () => {
         { id: fakeSpell.id },
         {
           name: "Updated",
-          heightenings: [{ interval: 1, fixedRank: null, effect: "New effect." }],
+          heightenings: [{ kind: HeighteningKind.Interval, bump: 1, effect: "New effect." }],
         }
       );
 

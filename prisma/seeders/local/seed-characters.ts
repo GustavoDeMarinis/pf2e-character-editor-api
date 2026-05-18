@@ -18,7 +18,6 @@ const buildLocalCharacters = (): Prisma.CharacterUncheckedCreateInput[] => {
       classBoost: Attribute.Strength,
       ancestryBoost: [Attribute.Strength, Attribute.Constitution],
       backgroundBoost: [Attribute.Strength, Attribute.Constitution],
-      classDc: CHARACTERLEVEL + 10 + 4 + 3,
     },
     {
       characterName: "Boro",
@@ -30,7 +29,6 @@ const buildLocalCharacters = (): Prisma.CharacterUncheckedCreateInput[] => {
       classBoost: Attribute.Strength,
       ancestryBoost: [Attribute.Dexterity, Attribute.Constitution],
       backgroundBoost: [Attribute.Strength, Attribute.Constitution],
-      classDc: CHARACTERLEVEL + 10 + 4 + 3,
     },
     {
       characterName: "Harumi",
@@ -42,7 +40,6 @@ const buildLocalCharacters = (): Prisma.CharacterUncheckedCreateInput[] => {
       classBoost: Attribute.Wisdom,
       ancestryBoost: [Attribute.Wisdom, Attribute.Intelligence],
       backgroundBoost: [Attribute.Wisdom, Attribute.Dexterity],
-      classDc: CHARACTERLEVEL + 10 + 4 + 3,
     },
     {
       characterName: "Dunah",
@@ -54,7 +51,6 @@ const buildLocalCharacters = (): Prisma.CharacterUncheckedCreateInput[] => {
       classBoost: Attribute.Wisdom,
       ancestryBoost: [Attribute.Wisdom, Attribute.Constitution],
       backgroundBoost: [Attribute.Wisdom, Attribute.Dexterity],
-      classDc: CHARACTERLEVEL + 10 + 4 + 3,
     },
     {
       characterName: "Ithrael",
@@ -66,7 +62,6 @@ const buildLocalCharacters = (): Prisma.CharacterUncheckedCreateInput[] => {
       classBoost: Attribute.Strength,
       ancestryBoost: [Attribute.Strength, Attribute.Intelligence],
       backgroundBoost: [Attribute.Strength, Attribute.Dexterity],
-      classDc: CHARACTERLEVEL + 10 + 4 + 3,
     },
   ];
 

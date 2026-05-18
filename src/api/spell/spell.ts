@@ -1,4 +1,5 @@
 import {
+  HeighteningKind,
   Prisma,
   Rarity,
   Spell,
@@ -49,8 +50,8 @@ export const spellSelect = {
   heightenings: {
     select: {
       id: true,
-      interval: true,
-      fixedRank: true,
+      kind: true,
+      bump: true,
       effect: true,
     },
   },
@@ -63,8 +64,8 @@ export const spellArgs = Prisma.validator<Prisma.SpellDefaultArgs>()({
 export type SpellResult = Prisma.SpellGetPayload<typeof spellArgs>;
 
 type HeighteningInput = {
-  interval: number | null;
-  fixedRank: number | null;
+  kind: HeighteningKind;
+  bump: number;
   effect: string;
 };
 
@@ -114,23 +115,6 @@ type SpellToUpdate = Pick<
 > & {
   traitIds?: string[];
   heightenings?: HeighteningInput[];
-};
-
-const validateHeighteningXor = (
-  heightenings: HeighteningInput[]
-): ErrorResult | null => {
-  for (const h of heightenings) {
-    const hasInterval = h.interval !== null && h.interval !== undefined;
-    const hasFixed = h.fixedRank !== null && h.fixedRank !== undefined;
-    if (hasInterval === hasFixed) {
-      return {
-        code: ErrorCode.BadRequest,
-        message:
-          "Each heightening must have exactly one of `interval` or `fixedRank` set",
-      };
-    }
-  }
-  return null;
 };
 
 const validateTraitIds = async (
@@ -245,9 +229,6 @@ export const getSpell = async ({
 export const insertSpell = async (
   spellToInsert: SpellToInsert
 ): Promise<SpellResult | ErrorResult> => {
-  const xorError = validateHeighteningXor(spellToInsert.heightenings);
-  if (xorError) return xorError;
-
   const traitError = await validateTraitIds(spellToInsert.traitIds);
   if (traitError) return traitError;
 
@@ -268,8 +249,8 @@ export const insertSpell = async (
     traits: { connect: traitIds.map((id) => ({ id })) },
     heightenings: {
       create: heightenings.map((h) => ({
-        interval: h.interval,
-        fixedRank: h.fixedRank,
+        kind: h.kind,
+        bump: h.bump,
         effect: h.effect,
       })),
     },
@@ -287,11 +268,6 @@ export const updateSpell = async (
   });
   if (!existing || existing.deletedAt) {
     return { code: ErrorCode.NotFound, message: "Spell Not Found" };
-  }
-
-  if (spellToUpdate.heightenings !== undefined) {
-    const xorError = validateHeighteningXor(spellToUpdate.heightenings);
-    if (xorError) return xorError;
   }
 
   if (spellToUpdate.traitIds !== undefined) {
@@ -313,8 +289,8 @@ export const updateSpell = async (
       prisma.spellHeightening.createMany({
         data: heightenings.map((h) => ({
           spellId: id as string,
-          interval: h.interval,
-          fixedRank: h.fixedRank,
+          kind: h.kind,
+          bump: h.bump,
           effect: h.effect,
         })),
       }),

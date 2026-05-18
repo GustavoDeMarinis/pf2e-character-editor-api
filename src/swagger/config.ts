@@ -18,6 +18,7 @@ import { featPaths } from "./feat/feat.swagger";
 import { characterFeatPaths } from "./character-feat/character-feat.swagger";
 import { spellPaths } from "./spell/spell.swagger";
 import { characterSpellPaths } from "./character-spell/character-spell.swagger";
+import { ritualPaths } from "./ritual/ritual.swagger";
 
 export const swaggerDocument = {
   openapi: "3.0.1",
@@ -55,6 +56,7 @@ export const swaggerDocument = {
     ...characterFeatPaths,
     ...spellPaths,
     ...characterSpellPaths,
+    ...ritualPaths,
   },
 };
 

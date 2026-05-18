@@ -50,7 +50,7 @@ export const weaponBaseSelect = {
   hands: true,
   range: true,
   bulk: true,
-  deities: {
+  favoredByDeities: {
     select: {
       id: true,
       name: true,

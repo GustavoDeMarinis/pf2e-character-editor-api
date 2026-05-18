@@ -1,9 +1,6 @@
 -- CreateEnum
 CREATE TYPE "FeatType" AS ENUM ('Ancestry', 'Class', 'Skill', 'General', 'Archetype', 'Bonus');
 
--- CreateEnum
-CREATE TYPE "ActionCost" AS ENUM ('Free', 'Reaction', 'One', 'Two', 'Three', 'TwoToThree', 'OneToThree', 'None');
-
 -- CreateTable
 CREATE TABLE "Feat" (
     "id" TEXT NOT NULL,
