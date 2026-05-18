@@ -12,6 +12,7 @@ import { seedLocalSkills } from "./seed-skill";
 import { seedLocalFeats } from "./seed-feat";
 import { seedLocalSpells } from "./seed-spell";
 import { seedLocalRituals } from "./seed-ritual";
+import { seedLocalFocusSpellGrants } from "./seed-focus-spell-grant";
 import { seedLocalBackgrounds } from "./seed-background";
 import { seedLocalTraits } from "./seed-traits";
 import { seedLocalUsers } from "./seed-users";
@@ -40,4 +41,5 @@ export const seedLocal = async () => {
   await seedLocalActions();
   await seedLocalDomains();
   await seedLocalDeities();
+  await seedLocalFocusSpellGrants();
 };
