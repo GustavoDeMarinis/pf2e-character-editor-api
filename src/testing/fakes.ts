@@ -21,6 +21,8 @@ import {
   Heritage,
   Language,
   Rarity,
+  Ritual,
+  RitualHeightening,
   Spell,
   SpellArea,
   SpellComponent,
@@ -357,6 +359,46 @@ export const getFakeSpellHeightening = (
     spellId: partialHeightening?.spellId ?? cuid(),
     kind: partialHeightening?.kind ?? HeighteningKind.Interval,
     bump: partialHeightening?.bump ?? 1,
+    effect: partialHeightening?.effect ?? faker.lorem.sentence(),
+  };
+  return heightening;
+};
+
+export const getFakeRitual = (partialRitual?: Partial<Ritual>): Ritual => {
+  const ritual: Ritual = {
+    id: partialRitual?.id ?? cuid(),
+    createdAt: partialRitual?.createdAt ?? new Date(),
+    updatedAt: partialRitual?.updatedAt ?? new Date(),
+    deletedAt: partialRitual?.deletedAt ?? null,
+    name: partialRitual?.name ?? faker.word.noun(),
+    description: partialRitual?.description ?? faker.lorem.sentence(),
+    rank: partialRitual?.rank ?? 5,
+    rarity: partialRitual?.rarity ?? Rarity.Common,
+    castTime: partialRitual?.castTime ?? "1 day",
+    cost: partialRitual?.cost ?? null,
+    primaryCheck: partialRitual?.primaryCheck ?? "Religion (master)",
+    secondaryCasters: partialRitual?.secondaryCasters ?? 0,
+    range: partialRitual?.range ?? null,
+    targets: partialRitual?.targets ?? null,
+    duration: partialRitual?.duration ?? null,
+    criticalSuccess: partialRitual?.criticalSuccess ?? null,
+    success: partialRitual?.success ?? null,
+    failure: partialRitual?.failure ?? null,
+    criticalFailure: partialRitual?.criticalFailure ?? null,
+  };
+  return ritual;
+};
+
+export const getFakeRitualHeightening = (
+  partialHeightening?: Partial<RitualHeightening>
+): RitualHeightening => {
+  const heightening: RitualHeightening = {
+    id: partialHeightening?.id ?? cuid(),
+    createdAt: partialHeightening?.createdAt ?? new Date(),
+    updatedAt: partialHeightening?.updatedAt ?? new Date(),
+    deletedAt: partialHeightening?.deletedAt ?? null,
+    ritualId: partialHeightening?.ritualId ?? cuid(),
+    fixedRank: partialHeightening?.fixedRank ?? 5,
     effect: partialHeightening?.effect ?? faker.lorem.sentence(),
   };
   return heightening;
