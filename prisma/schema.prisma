@@ -168,6 +168,7 @@ model CharacterClass {
   classLevelingMap ClassLevelingMap[]
   specialAbilities SpecialAbility[]
   feats            Feat[]
+  focusSpellGrants FocusSpellGrant[]
 }
 
 enum UserRole {
@@ -467,14 +468,15 @@ enum DivineFont {
 }
 
 model Domain {
-  id               String    @id @default(cuid())
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id               String            @id @default(cuid())
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
   deletedAt        DateTime?
   name             String
   description      String?
-  deities          Deity[]   @relation("Deity_domains")
-  alternateDeities Deity[]   @relation("Deity_alternate_domains")
+  deities          Deity[]           @relation("Deity_domains")
+  alternateDeities Deity[]           @relation("Deity_alternate_domains")
+  focusSpellGrants FocusSpellGrant[]
 }
 
 model Deity {
@@ -651,6 +653,7 @@ model Spell {
   heightenings     SpellHeightening[]
   characterSpells  CharacterSpell[]
   clericForDeities DeityClericSpell[]
+  focusSpellGrants FocusSpellGrant[]
 
   @@index([rank])
   @@index([isFocus])
@@ -733,4 +736,21 @@ model RitualHeightening {
   effect    String
 
   @@index([ritualId])
+}
+
+model FocusSpellGrant {
+  id               String          @id @default(cuid())
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  deletedAt        DateTime?
+  spell            Spell           @relation(fields: [spellId], references: [id])
+  spellId          String
+  characterClass   CharacterClass? @relation(fields: [characterClassId], references: [id])
+  characterClassId String?
+  domain           Domain?         @relation(fields: [domainId], references: [id])
+  domainId         String?
+
+  @@index([spellId])
+  @@index([characterClassId])
+  @@index([domainId])
 }
