@@ -16,6 +16,7 @@ import { router as deityRouter } from "./api/deity";
 import { router as featRouter } from "./api/feat";
 import { router as spellRouter } from "./api/spell";
 import { router as ritualRouter } from "./api/ritual";
+import { router as focusSpellGrantRouter } from "./api/focus-spell-grant";
 
 import { apiDocsMiddleware, swaggerDocument } from "./swagger/config";
 import { Request, Response, NextFunction } from "express";
@@ -69,4 +70,5 @@ router.use("/deity", deityRouter);
 router.use("/feat", featRouter);
 router.use("/spell", spellRouter);
 router.use("/ritual", ritualRouter);
+router.use("/focus-spell-grant", focusSpellGrantRouter);
 export default router;
