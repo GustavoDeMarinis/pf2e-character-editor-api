@@ -9,8 +9,10 @@ import {
   Background,
   Character,
   CharacterClass,
+  CharacterCondition,
   CharacterFeat,
   CharacterSpell,
+  Condition,
   Deity,
   DeitySanctification,
   DivineFont,
@@ -435,3 +437,28 @@ export const getFakeCharacterSpell = (
   };
   return characterSpell;
 };
+
+export const getFakeCondition = (partial?: Partial<Condition>): Condition => ({
+  id: partial?.id ?? cuid(),
+  createdAt: partial?.createdAt ?? new Date(),
+  updatedAt: partial?.updatedAt ?? new Date(),
+  deletedAt: partial?.deletedAt ?? null,
+  name: partial?.name ?? faker.word.noun(),
+  description: partial?.description ?? faker.lorem.sentence(),
+  hasValue: partial?.hasValue ?? false,
+});
+
+export const getFakeCharacterCondition = (
+  partial?: Partial<CharacterCondition>
+): CharacterCondition => ({
+  id: partial?.id ?? cuid(),
+  createdAt: partial?.createdAt ?? new Date(),
+  updatedAt: partial?.updatedAt ?? new Date(),
+  deletedAt: partial?.deletedAt ?? null,
+  characterId: partial?.characterId ?? cuid(),
+  conditionId: partial?.conditionId ?? cuid(),
+  value: partial?.value ?? null,
+  source: partial?.source ?? null,
+  appliedAt: partial?.appliedAt ?? new Date(),
+  expiresAt: partial?.expiresAt ?? null,
+});
