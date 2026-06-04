@@ -17,6 +17,7 @@ import {
   Domain,
   Feat,
   FeatType,
+  FocusSpellGrant,
   HeighteningKind,
   Heritage,
   Language,
@@ -402,6 +403,21 @@ export const getFakeRitualHeightening = (
     effect: partialHeightening?.effect ?? faker.lorem.sentence(),
   };
   return heightening;
+};
+
+export const getFakeFocusSpellGrant = (
+  partialFocusSpellGrant?: Partial<FocusSpellGrant>
+): FocusSpellGrant => {
+  const focusSpellGrant: FocusSpellGrant = {
+    id: partialFocusSpellGrant?.id ?? cuid(),
+    createdAt: partialFocusSpellGrant?.createdAt ?? new Date(),
+    updatedAt: partialFocusSpellGrant?.updatedAt ?? new Date(),
+    deletedAt: partialFocusSpellGrant?.deletedAt ?? null,
+    spellId: partialFocusSpellGrant?.spellId ?? cuid(),
+    characterClassId: partialFocusSpellGrant?.characterClassId ?? null,
+    domainId: partialFocusSpellGrant?.domainId ?? null,
+  };
+  return focusSpellGrant;
 };
 
 export const getFakeCharacterSpell = (
