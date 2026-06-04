@@ -102,6 +102,17 @@ export const characterSelect = {
       },
     },
   },
+  characterConditions: {
+    where: { deletedAt: null },
+    select: {
+      id: true,
+      value: true,
+      source: true,
+      appliedAt: true,
+      expiresAt: true,
+      condition: { select: { id: true, name: true, hasValue: true } },
+    },
+  },
 };
 
 export const characterArgs = Prisma.validator<Prisma.CharacterDefaultArgs>()({

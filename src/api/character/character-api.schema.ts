@@ -222,6 +222,32 @@ const commonCharacterProperties = {
       additionalProperties: false,
     },
   },
+  characterConditions: {
+    type: "array",
+    description: "Active conditions applied to this character",
+    items: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        value: { type: "integer", minimum: 1, nullable: true },
+        source: { type: "string", nullable: true },
+        appliedAt: { type: "string", format: "date-time" },
+        expiresAt: { type: "string", format: "date-time-nullable" },
+        condition: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            name: { type: "string" },
+            hasValue: { type: "boolean" },
+          },
+          required: ["id", "name", "hasValue"],
+          additionalProperties: false,
+        },
+      },
+      required: ["id", "value", "source", "appliedAt", "expiresAt", "condition"],
+      additionalProperties: false,
+    },
+  },
 } as const;
 
 export const characterSearchResponseSchema = {
@@ -248,6 +274,7 @@ export const characterSearchResponseSchema = {
           "deity",
           "characterFeats",
           "characterSpells",
+          "characterConditions",
         ],
         additionalProperties: false,
       },
@@ -290,6 +317,7 @@ export const characterGetResponseSchema = {
     "deity",
     "characterFeats",
     "characterSpells",
+    "characterConditions",
   ],
 } as const;
 
@@ -409,6 +437,7 @@ export const characterPostResponseSchema = {
     "deity",
     "characterFeats",
     "characterSpells",
+    "characterConditions",
   ],
   additionalProperties: false,
 } as const;
