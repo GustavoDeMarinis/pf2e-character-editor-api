@@ -36,8 +36,9 @@ model Character {
   heritageId       String?
   deity            Deity?                @relation(fields: [deityId], references: [id])
   deityId          String?
-  characterFeats   CharacterFeat[]
-  characterSpells  CharacterSpell[]
+  characterFeats      CharacterFeat[]
+  characterSpells     CharacterSpell[]
+  characterConditions CharacterCondition[]
 
   @@index([ancestryId])
   @@index([backgroundId])
@@ -753,4 +754,35 @@ model FocusSpellGrant {
   @@index([spellId])
   @@index([characterClassId])
   @@index([domainId])
+}
+
+model Condition {
+  id                  String               @id @default(cuid())
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  deletedAt           DateTime?
+  name                String               @unique
+  description         String
+  hasValue            Boolean              @default(false)
+  overrides           Condition[]          @relation("ConditionOverrides")
+  overriddenBy        Condition[]          @relation("ConditionOverrides")
+  characterConditions CharacterCondition[]
+}
+
+model CharacterCondition {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  character   Character @relation(fields: [characterId], references: [id])
+  characterId String
+  condition   Condition @relation(fields: [conditionId], references: [id])
+  conditionId String
+  value       Int?
+  source      String?
+  appliedAt   DateTime  @default(now())
+  expiresAt   DateTime?
+
+  @@index([characterId])
+  @@index([conditionId])
 }
