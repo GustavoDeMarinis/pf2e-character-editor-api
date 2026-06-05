@@ -17,11 +17,13 @@ import {
   DeitySanctification,
   DivineFont,
   Domain,
+  Equipment,
   Feat,
   FeatType,
   FocusSpellGrant,
   HeighteningKind,
   Heritage,
+  ItemUsage,
   Language,
   Rarity,
   Ritual,
@@ -437,6 +439,21 @@ export const getFakeCharacterSpell = (
   };
   return characterSpell;
 };
+
+export const getFakeEquipment = (partial?: Partial<Equipment>): Equipment => ({
+  id: partial?.id ?? cuid(),
+  createdAt: partial?.createdAt ?? new Date(),
+  updatedAt: partial?.updatedAt ?? new Date(),
+  deletedAt: partial?.deletedAt ?? null,
+  name: partial?.name ?? faker.commerce.productName(),
+  description: partial?.description ?? faker.lorem.sentence(),
+  level: partial?.level ?? 0,
+  price: partial?.price ?? faker.number.int({ min: 1, max: 1000 }),
+  bulk: partial?.bulk ?? "L",
+  hands: partial?.hands ?? null,
+  usage: partial?.usage ?? ItemUsage.Stowed,
+  rarity: partial?.rarity ?? Rarity.Common,
+});
 
 export const getFakeCondition = (partial?: Partial<Condition>): Condition => ({
   id: partial?.id ?? cuid(),
