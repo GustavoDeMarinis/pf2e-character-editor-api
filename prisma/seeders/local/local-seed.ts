@@ -19,6 +19,8 @@ import { seedLocalUsers } from "./seed-users";
 import { seedLocalWeaponBase } from "./seed-weapon-base";
 import { seedLocalWeaponCriticalSpecialization } from "./seed-weapon-critical-specialization";
 import { seedLocalWeaponGroup } from "./seed-weapon-group";
+import { seedLocalConditions } from "./seed-condition";
+import { seedLocalCharacterConditions } from "./seed-character-condition";
 
 export const seedLocal = async () => {
   await seedLocalUsers();
@@ -28,6 +30,7 @@ export const seedLocal = async () => {
   await seedLocalHeritages();
   await seedLocalCharacterClass();
   await seedLocalCharacters();
+  await seedLocalConditions();
   await seedLocalWeaponCriticalSpecialization();
   await seedLocalWeaponGroup();
   await seedLocalWeaponBase();
@@ -42,4 +45,5 @@ export const seedLocal = async () => {
   await seedLocalDomains();
   await seedLocalDeities();
   await seedLocalFocusSpellGrants();
+  await seedLocalCharacterConditions();
 };

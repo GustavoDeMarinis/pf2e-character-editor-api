@@ -1,41 +1,36 @@
 import Router from "express-promise-router";
-
 import { authorize } from "../../middleware/security/authorization";
 import { UserRole } from "@prisma/client";
 import {
-  handleDeleteLanguage,
-  handleGetLanguage,
-  handlePatchLanguage,
-  handlePostLanguage,
-  handleSearchLanguage,
-} from "./language-api";
+  handleDeleteCondition,
+  handleGetCondition,
+  handlePatchCondition,
+  handlePostCondition,
+  handleSearchConditions,
+} from "./condition-api";
 
 const router = Router();
 
 router.get(
   "/",
   authorize({ roles: [UserRole.Admin, UserRole.Player] }),
-  handleSearchLanguage
+  handleSearchConditions
 );
 router.get(
-  "/:languageId",
+  "/:conditionId",
   authorize({ roles: [UserRole.Admin, UserRole.Player] }),
-  handleGetLanguage
+  handleGetCondition
 );
-router.post(
-  "/",
-  authorize({ roles: [UserRole.Admin] }),
-  handlePostLanguage
-);
+router.post("/", authorize({ roles: [UserRole.Admin] }), handlePostCondition);
 router.patch(
-  "/:languageId",
+  "/:conditionId",
   authorize({ roles: [UserRole.Admin] }),
-  handlePatchLanguage
+  handlePatchCondition
 );
 router.delete(
-  "/:languageId",
+  "/:conditionId",
   authorize({ roles: [UserRole.Admin] }),
-  handleDeleteLanguage
+  handleDeleteCondition
 );
 
 export { router };

@@ -35,16 +35,21 @@ type LanguageToInsert = Pick<
 
 export const searchLanguage = async (
   search: {
+    name?: string;
     rarity?: Rarity;
     isActive?: boolean;
   },
   { skip, take }: PaginationOptions,
   sort?: string
 ): Promise<SearchResult<LanguageResult> | ErrorResult> => {
-  const { isActive, ...searchFilters } = search;
-  const where: Prisma.LanguageWhereInput = {
-    ...searchFilters,
-  };
+  const { isActive, name, rarity } = search;
+  const where: Prisma.LanguageWhereInput = {};
+  if (name !== undefined) {
+    where.name = { contains: name, mode: "insensitive" };
+  }
+  if (rarity !== undefined) {
+    where.rarity = rarity;
+  }
   if (isActive !== undefined) {
     where.deletedAt = !isActive ? { not: null } : null;
   }
@@ -60,7 +65,7 @@ export const searchLanguage = async (
 
   logDebug({
     subService,
-    message: `Character Search found (${count}) results`,
+    message: `Language Search found (${count}) results`,
     details: {
       count: count,
       filter: where,
@@ -81,37 +86,26 @@ export const getLanguage = async ({
     where,
     select: languageSelect,
   });
-  if (language) {
-    logDebug({
-      subService,
-      message: "Language Retrieved by Id",
-      details: { language },
-    });
-  }
+  logDebug({
+    subService,
+    message: "Language Retrieved by Id",
+    details: { language },
+  });
   return language;
 };
 
 export const insertLanguage = async (
   languageToInsert: LanguageToInsert
 ): Promise<LanguageResult | ErrorResult> => {
-  const existingLanguage = await prisma.language.findMany({
-    select: {
-      id: true,
-      deletedAt: true,
-      name: true,
-    },
-    where: {
-      name: languageToInsert.name,
-    },
+  const existingLanguage = await prisma.language.findFirst({
+    select: { id: true, deletedAt: true },
+    where: { name: languageToInsert.name },
   });
-  const activeLanguage = existingLanguage.find(
-    (language) => language.deletedAt === null
-  );
 
-  if (activeLanguage) {
+  if (existingLanguage && !existingLanguage.deletedAt) {
     return {
       code: ErrorCode.DataConflict,
-      message: "There is already an Language record with that name",
+      message: "A language with that name already exists",
     };
   }
   const data: Prisma.LanguageUncheckedCreateInput = {
@@ -133,6 +127,27 @@ export const updateLanguage = async (
   >,
   reactivate?: false
 ): Promise<Language | ErrorResult> => {
+  const existing = await prisma.language.findUnique({
+    select: { id: true, deletedAt: true },
+    where: { id },
+  });
+  if (!existing || existing.deletedAt) {
+    return { code: ErrorCode.NotFound, message: "Language Not Found" };
+  }
+
+  if (typeof languageToUpdate.name === "string") {
+    const nameConflict = await prisma.language.findFirst({
+      select: { id: true, deletedAt: true },
+      where: { name: languageToUpdate.name, id: { not: id } },
+    });
+    if (nameConflict && !nameConflict.deletedAt) {
+      return {
+        code: ErrorCode.DataConflict,
+        message: "A language with that name already exists",
+      };
+    }
+  }
+
   const data: Prisma.LanguageUncheckedUpdateInput = {
     ...languageToUpdate,
   };
@@ -163,7 +178,7 @@ export const deleteLanguage = async ({
   if (!existingLanguage || existingLanguage.deletedAt) {
     return {
       code: ErrorCode.NotFound,
-      message: `Ancestry Not Found`,
+      message: `Language Not Found`,
     };
   }
   const data = {

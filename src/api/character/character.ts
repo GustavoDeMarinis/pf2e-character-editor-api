@@ -59,6 +59,12 @@ export const characterSelect = {
   backgroundBoost: true,
   classBoost: true,
   level: true,
+  languages: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
   heritage: {
     select: {
       id: true,
@@ -102,6 +108,17 @@ export const characterSelect = {
       },
     },
   },
+  characterConditions: {
+    where: { deletedAt: null },
+    select: {
+      id: true,
+      value: true,
+      source: true,
+      appliedAt: true,
+      expiresAt: true,
+      condition: { select: { id: true, name: true, hasValue: true } },
+    },
+  },
 };
 
 export const characterArgs = Prisma.validator<Prisma.CharacterDefaultArgs>()({
@@ -123,10 +140,9 @@ type CharacterToInsert = Pick<
   | "ancestryFlaw"
   | "backgroundBoost"
   | "classBoost"
-  | "languages"
   | "heritageId"
   | "deityId"
->;
+> & { languageIds: string[] };
 
 export const searchCharacters = async (
   search: {
@@ -290,10 +306,14 @@ export const insertCharacter = async (
     };
   }
 
+  const { languageIds, ...rest } = characterToInsert;
   const createdCharacter = prisma.character.create({
     select: characterSelect,
     data: {
-      ...characterToInsert,
+      ...rest,
+      languages: {
+        connect: languageIds.map((languageId) => ({ id: languageId })),
+      },
     },
   });
 
@@ -315,10 +335,9 @@ export const updateCharacter = async (
     | "ancestryFlaw"
     | "backgroundBoost"
     | "classBoost"
-    | "languages"
     | "heritageId"
     | "deityId"
-  >,
+  > & { languageIds?: string[] },
   reactivate?: false,
   callerAuth?: CallerAuth
 ) => {
@@ -385,7 +404,13 @@ export const updateCharacter = async (
     }
   }
 
-  const data: Prisma.CharacterUncheckedUpdateInput = { ...characterToUpdate };
+  const { languageIds, ...rest } = characterToUpdate;
+  const data: Prisma.CharacterUncheckedUpdateInput = { ...rest };
+  if (languageIds !== undefined) {
+    data.languages = {
+      set: languageIds.map((languageId) => ({ id: languageId })),
+    };
+  }
   if (reactivate) {
     data.deletedAt = null;
   }
