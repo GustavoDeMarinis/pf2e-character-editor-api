@@ -18,6 +18,7 @@ import { router as spellRouter } from "./api/spell";
 import { router as ritualRouter } from "./api/ritual";
 import { router as focusSpellGrantRouter } from "./api/focus-spell-grant";
 import { router as conditionRouter } from "./api/condition";
+import { router as equipmentRouter } from "./api/equipment";
 
 import { apiDocsMiddleware, swaggerDocument } from "./swagger/config";
 import { Request, Response, NextFunction } from "express";
@@ -73,4 +74,5 @@ router.use("/spell", spellRouter);
 router.use("/ritual", ritualRouter);
 router.use("/focus-spell-grant", focusSpellGrantRouter);
 router.use("/condition", conditionRouter);
+router.use("/equipment", equipmentRouter);
 export default router;

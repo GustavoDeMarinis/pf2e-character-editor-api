@@ -22,6 +22,7 @@ import { ritualPaths } from "./ritual/ritual.swagger";
 import { focusSpellGrantPaths } from "./focus-spell-grant/focus-spell-grant.swagger";
 import { conditionPaths } from "./condition/condition.swagger";
 import { characterConditionPaths } from "./character-condition/character-condition.swagger";
+import { equipmentPaths } from "./equipment/equipment.swagger";
 
 export const swaggerDocument = {
   openapi: "3.0.1",
@@ -63,6 +64,7 @@ export const swaggerDocument = {
     ...focusSpellGrantPaths,
     ...conditionPaths,
     ...characterConditionPaths,
+    ...equipmentPaths,
   },
 };
 

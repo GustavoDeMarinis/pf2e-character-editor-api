@@ -339,6 +339,7 @@ model Trait {
   feats       Feat[]
   spells      Spell[]
   rituals     Ritual[]
+  equipment   Equipment[]
 }
 
 model WeaponCriticalSpecialization {
@@ -785,4 +786,29 @@ model CharacterCondition {
 
   @@index([characterId])
   @@index([conditionId])
+}
+
+enum ItemUsage {
+  Held
+  Worn
+  Stowed
+  Affixed
+}
+
+model Equipment {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  name        String
+  description String?
+  level       Int       @default(0)
+  price       Int // in copper pieces (smallest PF2e denomination)
+  bulk        String // "—", "L", "1", "2", ...
+  hands       Int? // 0, 1, or 2 (when held)
+  usage       ItemUsage
+  rarity      Rarity
+  traits      Trait[]
+
+  @@index([level])
 }
