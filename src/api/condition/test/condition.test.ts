@@ -108,7 +108,7 @@ describe("Condition tests", () => {
       const overrideId = "override-cond-id";
 
       prismaMock.condition.findFirst.mockResolvedValue(null);
-      prismaMock.condition.findMany.mockResolvedValue([{ id: overrideId }]);
+      prismaMock.condition.findMany.mockResolvedValue([getFakeCondition({ id: overrideId })]);
       prismaMock.condition.create.mockResolvedValue(fake);
 
       const result = await insertCondition({
@@ -190,7 +190,7 @@ describe("Condition tests", () => {
       const overrideId = "override-456";
 
       prismaMock.condition.findUnique.mockResolvedValue(fake);
-      prismaMock.condition.findMany.mockResolvedValue([{ id: overrideId }]);
+      prismaMock.condition.findMany.mockResolvedValue([getFakeCondition({ id: overrideId })]);
       prismaMock.condition.update.mockResolvedValue(fake);
 
       await updateCondition({ id: fake.id }, { overrideIds: [overrideId] });

@@ -19,6 +19,13 @@ const searchLanguage = {
   parameters: [
     {
       in: "query",
+      name: "name",
+      schema: languageSearchRequestQuerySchema.properties.name,
+      description:
+        languageSearchRequestQuerySchema.properties.name.description,
+    },
+    {
+      in: "query",
       name: "rarity",
       schema: languageSearchRequestQuerySchema.properties.rarity,
       description:

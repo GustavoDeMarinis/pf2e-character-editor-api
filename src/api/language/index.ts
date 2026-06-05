@@ -18,23 +18,23 @@ router.get(
   handleSearchLanguage
 );
 router.get(
-  "/:characterId",
+  "/:languageId",
   authorize({ roles: [UserRole.Admin, UserRole.Player] }),
   handleGetLanguage
 );
 router.post(
   "/",
-  authorize({ roles: [UserRole.Admin, UserRole.Player] }),
+  authorize({ roles: [UserRole.Admin] }),
   handlePostLanguage
 );
 router.patch(
-  "/:characterId",
-  authorize({ roles: [UserRole.Admin, UserRole.Player] }),
+  "/:languageId",
+  authorize({ roles: [UserRole.Admin] }),
   handlePatchLanguage
 );
 router.delete(
-  "/:characterId",
-  authorize({ roles: [UserRole.Admin, UserRole.Player] }),
+  "/:languageId",
+  authorize({ roles: [UserRole.Admin] }),
   handleDeleteLanguage
 );
 

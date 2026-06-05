@@ -168,6 +168,19 @@ const commonCharacterProperties = {
     required: ["id", "name"],
     additionalProperties: false,
   },
+  languages: {
+    type: "array",
+    description: "Languages known by this character",
+    items: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+      },
+      required: ["id", "name"],
+      additionalProperties: false,
+    },
+  },
   characterFeats: {
     type: "array",
     description: "Feats assigned to this character",
@@ -272,6 +285,7 @@ export const characterSearchResponseSchema = {
           "characterClass",
           "background",
           "deity",
+          "languages",
           "characterFeats",
           "characterSpells",
           "characterConditions",
@@ -315,6 +329,7 @@ export const characterGetResponseSchema = {
     "characterClass",
     "background",
     "deity",
+    "languages",
     "characterFeats",
     "characterSpells",
     "characterConditions",
@@ -435,6 +450,7 @@ export const characterPostResponseSchema = {
     "assignedUserId",
     "characterClass",
     "deity",
+    "languages",
     "characterFeats",
     "characterSpells",
     "characterConditions",
@@ -457,12 +473,13 @@ export const characterPatchRequestBodySchema = {
       description: "User Assigned Id",
       type: "string",
     },
-    ancestry: {
-      description: "Character Ancestry",
+    ancestryId: {
+      description: "Character Ancestry Id",
       type: "string",
+      checkIdIsCuid: true,
     },
-    characterClass: {
-      description: "Character Class",
+    characterClassId: {
+      description: "Character Class Id",
       type: "string",
     },
     backgroundId: {
@@ -480,15 +497,24 @@ export const characterPatchRequestBodySchema = {
       type: "string",
       checkIdIsCuid: true,
     },
+    languageIds: {
+      type: "array",
+      description: "Character Known Languages",
+      items: {
+        type: "string",
+        checkIdIsCuid: true,
+      },
+    },
   },
   additionalProperties: false,
   anyOf: [
     { required: ["characterName"] },
     { required: ["assignedUserId"] },
-    { required: ["ancestry"] },
-    { required: ["characterClass"] },
+    { required: ["ancestryId"] },
+    { required: ["characterClassId"] },
     { required: ["backgroundId"] },
     { required: ["heritageId"] },
     { required: ["deityId"] },
+    { required: ["languageIds"] },
   ],
 } as const;

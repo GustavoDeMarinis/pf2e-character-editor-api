@@ -1,4 +1,4 @@
-import { UserRole } from "@prisma/client";
+import { CharacterCondition, UserRole } from "@prisma/client";
 import {
   getFakeCharacter,
   getFakeCharacterCondition,
@@ -105,7 +105,7 @@ describe("CharacterCondition tests", () => {
       const fakeCC = getFakeCharacterCondition({ characterId: char.id, conditionId: cond.id, value: 2 });
 
       prismaMock.character.findUnique.mockResolvedValue(char);
-      prismaMock.condition.findUnique.mockResolvedValue({ id: cond.id, hasValue: true } as never);
+      prismaMock.condition.findUnique.mockResolvedValue(getFakeCondition({ id: cond.id, hasValue: true }));
       prismaMock.characterCondition.create.mockResolvedValue(fakeCC);
 
       const result = await applyConditionToCharacter(
@@ -126,7 +126,7 @@ describe("CharacterCondition tests", () => {
       const cc2 = getFakeCharacterCondition({ characterId: char.id, conditionId: cond.id });
 
       prismaMock.character.findUnique.mockResolvedValue(char);
-      prismaMock.condition.findUnique.mockResolvedValue({ id: cond.id, hasValue: false } as never);
+      prismaMock.condition.findUnique.mockResolvedValue(getFakeCondition({ id: cond.id, hasValue: false }));
       prismaMock.characterCondition.create
         .mockResolvedValueOnce(cc1)
         .mockResolvedValueOnce(cc2);
@@ -145,7 +145,7 @@ describe("CharacterCondition tests", () => {
       const cond = getFakeCondition({ hasValue: false });
 
       prismaMock.character.findUnique.mockResolvedValue(char);
-      prismaMock.condition.findUnique.mockResolvedValue({ id: cond.id, hasValue: false } as never);
+      prismaMock.condition.findUnique.mockResolvedValue(getFakeCondition({ id: cond.id, hasValue: false }));
 
       const result = await applyConditionToCharacter(
         char.id,
@@ -166,7 +166,7 @@ describe("CharacterCondition tests", () => {
       const cond = getFakeCondition({ hasValue: true });
 
       prismaMock.character.findUnique.mockResolvedValue(char);
-      prismaMock.condition.findUnique.mockResolvedValue({ id: cond.id, hasValue: true } as never);
+      prismaMock.condition.findUnique.mockResolvedValue(getFakeCondition({ id: cond.id, hasValue: true }));
 
       const result = await applyConditionToCharacter(char.id, { conditionId: cond.id }, adminAuth);
 
@@ -225,11 +225,14 @@ describe("CharacterCondition tests", () => {
       const adminAuth = getFakeCurrentUserAuthorization({ role: UserRole.Admin });
       const char = getFakeCharacter();
       const fakeCC = getFakeCharacterCondition({ characterId: char.id, value: 2, deletedAt: null });
-      const existingSelect = { characterId: char.id, deletedAt: null, condition: { hasValue: true } };
+      const existingSelect = {
+        ...getFakeCharacterCondition({ characterId: char.id, deletedAt: null }),
+        condition: { hasValue: true },
+      } as unknown as CharacterCondition;
       const updated = { ...fakeCC, value: 1 };
 
       prismaMock.character.findUnique.mockResolvedValue(char);
-      prismaMock.characterCondition.findUnique.mockResolvedValue(existingSelect as never);
+      prismaMock.characterCondition.findUnique.mockResolvedValue(existingSelect);
       prismaMock.characterCondition.update.mockResolvedValue(updated);
 
       const result = await updateCharacterCondition(
@@ -245,10 +248,13 @@ describe("CharacterCondition tests", () => {
     test("updateCharacterCondition returns 400 when value provided for hasValue=false", async () => {
       const adminAuth = getFakeCurrentUserAuthorization({ role: UserRole.Admin });
       const char = getFakeCharacter();
-      const existingSelect = { characterId: char.id, deletedAt: null, condition: { hasValue: false } };
+      const existingSelect = {
+        ...getFakeCharacterCondition({ characterId: char.id, deletedAt: null }),
+        condition: { hasValue: false },
+      } as unknown as CharacterCondition;
 
       prismaMock.character.findUnique.mockResolvedValue(char);
-      prismaMock.characterCondition.findUnique.mockResolvedValue(existingSelect as never);
+      prismaMock.characterCondition.findUnique.mockResolvedValue(existingSelect);
 
       const result = await updateCharacterCondition(
         { characterId: char.id, characterConditionId: "cc-id" },
@@ -266,10 +272,13 @@ describe("CharacterCondition tests", () => {
     test("updateCharacterCondition returns 400 when value cleared for hasValue=true", async () => {
       const adminAuth = getFakeCurrentUserAuthorization({ role: UserRole.Admin });
       const char = getFakeCharacter();
-      const existingSelect = { characterId: char.id, deletedAt: null, condition: { hasValue: true } };
+      const existingSelect = {
+        ...getFakeCharacterCondition({ characterId: char.id, deletedAt: null }),
+        condition: { hasValue: true },
+      } as unknown as CharacterCondition;
 
       prismaMock.character.findUnique.mockResolvedValue(char);
-      prismaMock.characterCondition.findUnique.mockResolvedValue(existingSelect as never);
+      prismaMock.characterCondition.findUnique.mockResolvedValue(existingSelect);
 
       const result = await updateCharacterCondition(
         { characterId: char.id, characterConditionId: "cc-id" },
@@ -307,10 +316,13 @@ describe("CharacterCondition tests", () => {
     test("updateCharacterCondition returns 404 when assignment is soft-deleted", async () => {
       const adminAuth = getFakeCurrentUserAuthorization({ role: UserRole.Admin });
       const char = getFakeCharacter();
-      const existingSelect = { characterId: char.id, deletedAt: new Date(), condition: { hasValue: false } };
+      const existingSelect = {
+        ...getFakeCharacterCondition({ characterId: char.id, deletedAt: new Date() }),
+        condition: { hasValue: false },
+      } as unknown as CharacterCondition;
 
       prismaMock.character.findUnique.mockResolvedValue(char);
-      prismaMock.characterCondition.findUnique.mockResolvedValue(existingSelect as never);
+      prismaMock.characterCondition.findUnique.mockResolvedValue(existingSelect);
 
       const result = await updateCharacterCondition(
         { characterId: char.id, characterConditionId: "cc-id" },
@@ -327,10 +339,13 @@ describe("CharacterCondition tests", () => {
     test("updateCharacterCondition returns 404 when assignment belongs to a different character", async () => {
       const adminAuth = getFakeCurrentUserAuthorization({ role: UserRole.Admin });
       const char = getFakeCharacter();
-      const existingSelect = { characterId: "other-char-id", deletedAt: null, condition: { hasValue: false } };
+      const existingSelect = {
+        ...getFakeCharacterCondition({ characterId: "other-char-id", deletedAt: null }),
+        condition: { hasValue: false },
+      } as unknown as CharacterCondition;
 
       prismaMock.character.findUnique.mockResolvedValue(char);
-      prismaMock.characterCondition.findUnique.mockResolvedValue(existingSelect as never);
+      prismaMock.characterCondition.findUnique.mockResolvedValue(existingSelect);
 
       const result = await updateCharacterCondition(
         { characterId: char.id, characterConditionId: "cc-id" },
@@ -367,10 +382,13 @@ describe("CharacterCondition tests", () => {
       const adminAuth = getFakeCurrentUserAuthorization({ role: UserRole.Admin });
       const char = getFakeCharacter({ createdByUserId: "other-id", assignedUserId: "other-id" });
       const fakeCC = getFakeCharacterCondition({ characterId: char.id, deletedAt: null });
-      const existingSelect = { characterId: char.id, deletedAt: null, condition: { hasValue: false } };
+      const existingSelect = {
+        ...getFakeCharacterCondition({ characterId: char.id, deletedAt: null }),
+        condition: { hasValue: false },
+      } as unknown as CharacterCondition;
 
       prismaMock.character.findUnique.mockResolvedValue(char);
-      prismaMock.characterCondition.findUnique.mockResolvedValue(existingSelect as never);
+      prismaMock.characterCondition.findUnique.mockResolvedValue(existingSelect);
       prismaMock.characterCondition.update.mockResolvedValue(fakeCC);
 
       const result = await updateCharacterCondition(

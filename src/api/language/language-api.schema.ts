@@ -8,6 +8,10 @@ import {
 export const languageSearchRequestQuerySchema = {
   type: "object",
   properties: {
+    name: {
+      description: "Language Name Filter (partial, case-insensitive)",
+      type: "string",
+    },
     rarity: {
       description: "Language Rarity Filter",
       type: "string",
@@ -15,7 +19,7 @@ export const languageSearchRequestQuerySchema = {
     },
     isActive: {
       type: "boolean",
-      description: "Is The Character Active?",
+      description: "Is The Language Active?",
     },
     sort: {
       type: "string",
