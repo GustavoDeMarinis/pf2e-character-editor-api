@@ -21,6 +21,7 @@ import { seedLocalWeaponCriticalSpecialization } from "./seed-weapon-critical-sp
 import { seedLocalWeaponGroup } from "./seed-weapon-group";
 import { seedLocalConditions } from "./seed-condition";
 import { seedLocalCharacterConditions } from "./seed-character-condition";
+import { seedLocalEquipment } from "./seed-equipment";
 
 export const seedLocal = async () => {
   await seedLocalUsers();
@@ -36,6 +37,7 @@ export const seedLocal = async () => {
   await seedLocalWeaponBase();
   await seedLocalArmorGroup();
   await seedLocalArmorBase();
+  await seedLocalEquipment();
   await seedLocalSkills();
   await seedLocalFeats();
   await seedLocalSpells();
